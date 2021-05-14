@@ -16,3 +16,12 @@ notifications:
     - "Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`."
     - "Execution time: *%{duration}*"
     - "Message: %{message}"
+
+addons:
+  sonarcloud:
+    organization: onioncracker
+    token: ${SONAR_TOKEN}
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=onioncracker_spacey-backend-2021
