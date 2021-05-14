@@ -7,7 +7,7 @@ deploy:
   app: spacey-backend
 branches:
   only:
-    - main
+    - master
 notifications:
   slack: nceducationce-3ag6276:Qe0g8czGFaIzczklQAbXYs89
   on_success: always  # change: send a notification when the build status changes.
