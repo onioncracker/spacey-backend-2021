@@ -1,0 +1,18 @@
+before_install:
+  - chmod +x ./mvnw
+language: java
+deploy:
+  provider: heroku
+  api-key: $HEROKU_API_KEY
+  app: spacey-backend
+branches:
+  only:
+    - main
+notifications:
+  slack: nceducationce-3ag6276:Qe0g8czGFaIzczklQAbXYs89
+  on_success: always  # change: send a notification when the build status changes.
+  on_failure: always  # always: always send a notification.
+  template:
+    - "Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}`."
+    - "Execution time: *%{duration}*"
+    - "Message: %{message}"
