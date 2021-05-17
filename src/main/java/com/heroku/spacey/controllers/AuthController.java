@@ -31,9 +31,9 @@ public class AuthController {
     public ResponseEntity userRegistration(@RequestBody UserRegisterDto registerDto){
         try{
             userService.create(registerDto);
-            return ResponseEntity.ok("user registered successfully");
+            return ResponseEntity.ok("user registered successfully");  // TODO change to returning auth token
         }catch (Exception e){
-            return ResponseEntity.unprocessableEntity().build(); // TODO change status code
+            return ResponseEntity.unprocessableEntity().body(e.toString()); // TODO change status code
         }
     }
 
@@ -51,7 +51,7 @@ public class AuthController {
                     )
                     .body("successfully logged in");
         }catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.toString());
         }
     }
 }
