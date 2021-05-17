@@ -24,10 +24,10 @@ public class JwtTokenProvider {
     @Value("${jwt.token.validity}")
     public long TOKEN_VALIDITY;
 
-    @Value("${jwt.token.key}")
+    @Value("${jwt.signing.key}")
     public String SIGNING_KEY;
 
-    @Value("${jwt.authorities.validity}")
+    @Value("${jwt.authorities.key}")
     public String AUTHORITIES_KEY;
 
     @Autowired
