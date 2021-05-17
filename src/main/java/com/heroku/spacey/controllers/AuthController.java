@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -30,9 +31,9 @@ public class AuthController {
     public ResponseEntity userRegistration(@RequestBody UserRegisterDto registerDto) {
         try {
             userService.create(registerDto);
-            return ResponseEntity.ok("user registered successfully");
-        } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.toString());
+            return ResponseEntity.ok("user registered successfully");  // TODO change to returning auth token
+        }catch (Exception e){
+            return ResponseEntity.unprocessableEntity().body(e.toString()); // TODO change status code
         }
     }
 
@@ -45,7 +46,7 @@ public class AuthController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.generateToken(user))
                     .body("successfully logged in");
-        } catch (BadCredentialsException ex) {
+        }catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.toString());
         }
     }

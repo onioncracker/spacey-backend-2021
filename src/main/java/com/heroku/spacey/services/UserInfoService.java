@@ -20,7 +20,7 @@ public class UserInfoService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // this is for testing untill db is configured
-        UserInfoModel userInfoModel = new UserInfoModel("user", "password");
+        UserInfoModel userInfoModel = new UserInfoModel("user", passwordEncoder.encode("password"));
         userInfoModel.setGrantedAuthorities("ROLE_USER");
 
         return userInfoModel;        // TODO here implement returning user object from database
