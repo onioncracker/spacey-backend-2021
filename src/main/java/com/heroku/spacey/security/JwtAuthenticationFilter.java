@@ -46,6 +46,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
+//        try{
+//            String userId = jwtTokenProvider.getUserIdFromToken(authToken);
+//        } catch (ExpiredJwtException e){
+//            logger.warn("Token has expired", e);
+//        } catch (SignatureException e){
+//            logger.error("Authentication failed");
+//        } catch (Exception e){
+//            logger.error("Error", e);
+//        }
+
         filterChain.doFilter(request, response);
     }
 }
