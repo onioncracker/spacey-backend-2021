@@ -30,26 +30,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-//
-//    @Bean
-//    public AuthenticationManager authenticationManager() throws Exception {
-//        return super.authenticationManager();
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
-                    .csrf().disable()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf()
+                .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                    .authorizeRequests().antMatchers(
-                        "/register",
-                                    "/login",
-                                    "/hello"
-                        ).permitAll()
-                    .anyRequest().authenticated()
+                .authorizeRequests()
+                .antMatchers("/register", "/login")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
                 .and()
-                    .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

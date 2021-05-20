@@ -29,17 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(header != null && header.startsWith(TOKEN_PREFIX)) {
+        if (header != null && header.startsWith(TOKEN_PREFIX)) {
             String authToken = header.replace(TOKEN_PREFIX, "");
             UserDetails userDetails = null;
-            try{
+            try {
                 userDetails = userService.loadUserByUsername(jwtTokenProvider.getUsernameFromToken(authToken));
-            } catch (UsernameNotFoundException e){
+            } catch (UsernameNotFoundException e) {
                 logger.warn("user not found", e);
             }
 
-            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null){
-
+            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 if (jwtTokenProvider.validateToken(authToken)) {
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
                             null, userDetails.getAuthorities());
@@ -47,16 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-//        try{
-//            String userId = jwtTokenProvider.getUserIdFromToken(authToken);
-//        } catch (ExpiredJwtException e){
-//            logger.warn("Token has expired", e);
-//        } catch (SignatureException e){
-//            logger.error("Authentication failed");
-//        } catch (Exception e){
-//            logger.error("Error", e);
-//        }
-
         filterChain.doFilter(request, response);
     }
 }

@@ -13,14 +13,13 @@ import java.util.HashSet;
 
 @Data
 public class UserModel implements UserDetails, Serializable {
-
-    private String id;        // should it be here or not??
+    private String id;
     private String password;
     private String login;
     private Collection<GrantedAuthority> grantedAuthorities;
     private boolean enabled = true;
 
-    public UserModel(String login, String password){
+    public UserModel(String login, String password) {
         this.login = login;
         this.password = password;
     }
@@ -31,7 +30,7 @@ public class UserModel implements UserDetails, Serializable {
     }
 
     public void setGrantedAuthorities(String role) {
-        this.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(role));  // TODO change role setting
+        this.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
     public String getId() {

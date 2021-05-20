@@ -4,9 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserRegisterDto {
-
     private String email;
-
     private String password;
 
     public String getPassword() {
@@ -17,5 +15,4 @@ public class UserRegisterDto {
         return email;
     }
 
-    // TODO extend with other registration fields
 }

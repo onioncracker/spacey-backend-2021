@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -28,29 +27,25 @@ public class AuthController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/register")
-    public ResponseEntity userRegistration(@RequestBody UserRegisterDto registerDto){
-        try{
+    public ResponseEntity userRegistration(@RequestBody UserRegisterDto registerDto) {
+        try {
             userService.create(registerDto);
-            return ResponseEntity.ok("user registered successfully");  // TODO change to returning auth token
-        }catch (Exception e){
-            return ResponseEntity.unprocessableEntity().body(e.toString()); // TODO change status code
+            return ResponseEntity.ok("user registered successfully");
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.toString());
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginDto loginDto){
-        try{
+    public ResponseEntity login(@RequestBody LoginDto loginDto) {
+        try {
             Authentication authenticate = authenticationManager
-                    .authenticate(
-                            new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
             UserModel user = (UserModel) authenticate.getPrincipal();
             return ResponseEntity.ok()
-                    .header(
-                            HttpHeaders.AUTHORIZATION,
-                            jwtTokenProvider.generateToken(user)
-                    )
+                    .header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.generateToken(user))
                     .body("successfully logged in");
-        }catch (BadCredentialsException ex) {
+        } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.toString());
         }
     }

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import static java.lang.String.format;
 
 @Component
@@ -32,10 +33,6 @@ public class JwtTokenProvider {
 
     @Autowired
     private Logger logger;
-
-//    public String getUserIdFromToken(String token){
-//        return getClaimFromToken(token, Claims::getAudience);  // changing to getSubject may be needed
-//    }
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -71,12 +68,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-//    public Boolean validateToken(String token, UserModel user){
-//        String login = getUsernameFromToken(token);
-//        return (!isTokenExpired(token) && login.equals(user.getUsername()));
-//    }
-
-        public Boolean validateToken(String token){
+    public Boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token);
             return true;
@@ -94,10 +86,9 @@ public class JwtTokenProvider {
         return false;
     }
 
-//    public
-
-    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserModel userInfo) {
-
+    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token,
+                                                               final Authentication existingAuth,
+                                                               final UserModel userInfo) {
         final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
         final Claims claims = claimsJws.getBody();
@@ -108,6 +99,5 @@ public class JwtTokenProvider {
                         .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(userInfo, "", authorities);
-
     }
 }
