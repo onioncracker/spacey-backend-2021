@@ -1,6 +1,6 @@
 package com.heroku.spacey.security;
 
-import com.heroku.spacey.models.UserInfoModel;
+import com.heroku.spacey.models.UserModel;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class JwtTokenProvider {
         return expiration.before(new Date());
     }
 
-    public String generateToken(UserInfoModel user) {
+    public String generateToken(UserModel user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -71,7 +71,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-//    public Boolean validateToken(String token, UserInfoModel user){
+//    public Boolean validateToken(String token, UserModel user){
 //        String login = getUsernameFromToken(token);
 //        return (!isTokenExpired(token) && login.equals(user.getUsername()));
 //    }
@@ -96,7 +96,7 @@ public class JwtTokenProvider {
 
 //    public
 
-    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserInfoModel userInfo) {
+    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserModel userInfo) {
 
         final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);

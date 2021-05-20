@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 @Data
-public class UserInfoModel implements UserDetails, Serializable {
+public class UserModel implements UserDetails, Serializable {
 
     private String id;        // should it be here or not??
     private String password;
@@ -20,7 +20,7 @@ public class UserInfoModel implements UserDetails, Serializable {
     private Collection<GrantedAuthority> grantedAuthorities;
     private boolean enabled = true;
 
-    public UserInfoModel(String login, String password){
+    public UserModel(String login, String password){
         this.login = login;
         this.password = password;
     }

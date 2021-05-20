@@ -1,9 +1,6 @@
 package com.heroku.spacey.security;
 
-import com.heroku.spacey.models.UserInfoModel;
-import com.heroku.spacey.services.UserInfoService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
+import com.heroku.spacey.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +21,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UserInfoService userInfoService;
+    private UserService userService;
 
     private final String TOKEN_PREFIX = "Bearer ";
 
@@ -36,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String authToken = header.replace(TOKEN_PREFIX, "");
             UserDetails userDetails = null;
             try{
-                userDetails = userInfoService.loadUserByUsername(jwtTokenProvider.getUsernameFromToken(authToken));
+                userDetails = userService.loadUserByUsername(jwtTokenProvider.getUsernameFromToken(authToken));
             } catch (UsernameNotFoundException e){
                 logger.warn("user not found", e);
             }

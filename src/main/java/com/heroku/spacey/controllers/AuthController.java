@@ -2,9 +2,9 @@ package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.dto.LoginDto;
 import com.heroku.spacey.dto.UserRegisterDto;
-import com.heroku.spacey.models.UserInfoModel;
+import com.heroku.spacey.models.UserModel;
 import com.heroku.spacey.security.JwtTokenProvider;
-import com.heroku.spacey.services.UserInfoService;
+import com.heroku.spacey.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
-    private UserInfoService userService;
+    private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -43,7 +43,7 @@ public class AuthController {
             Authentication authenticate = authenticationManager
                     .authenticate(
                             new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-            UserInfoModel user = (UserInfoModel) authenticate.getPrincipal();
+            UserModel user = (UserModel) authenticate.getPrincipal();
             return ResponseEntity.ok()
                     .header(
                             HttpHeaders.AUTHORIZATION,
