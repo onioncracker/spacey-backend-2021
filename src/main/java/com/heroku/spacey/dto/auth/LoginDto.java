@@ -1,4 +1,4 @@
-package com.heroku.spacey.dto;
+package com.heroku.spacey.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

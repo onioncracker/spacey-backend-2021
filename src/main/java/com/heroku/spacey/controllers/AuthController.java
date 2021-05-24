@@ -1,7 +1,7 @@
 package com.heroku.spacey.controllers;
 
-import com.heroku.spacey.dto.LoginDto;
-import com.heroku.spacey.dto.UserRegisterDto;
+import com.heroku.spacey.dto.auth.LoginDto;
+import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.models.UserModel;
 import com.heroku.spacey.security.JwtTokenProvider;
 import com.heroku.spacey.services.UserService;

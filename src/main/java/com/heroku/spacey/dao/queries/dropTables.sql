@@ -1,0 +1,12 @@
+DROP TABLE product_to_carts CASCADE;
+DROP TABLE product_to_compares CASCADE ;
+DROP TABLE product_carts CASCADE ;
+DROP TABLE material_to_products CASCADE ;
+DROP TABLE materials CASCADE ;
+DROP TABLE product_orders CASCADE ;
+DROP TABLE orders CASCADE ;
+DROP TABLE product_details CASCADE ;
+DROP TABLE products CASCADE ;
+DROP TABLE categories CASCADE ;
+DROP TABLE user_details CASCADE ;
+DROP TABLE login_infos CASCADE ;
