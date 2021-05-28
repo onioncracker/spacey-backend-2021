@@ -1,5 +1,7 @@
 package com.heroku.spacey.dto;
 
+import com.heroku.spacey.utils.EmailConstraint;
+import com.heroku.spacey.utils.PasswordConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class LoginDto {
 
+    @EmailConstraint
     private String email;
+
+    @PasswordConstraint
     private String password;
 
     public String getEmail() {
