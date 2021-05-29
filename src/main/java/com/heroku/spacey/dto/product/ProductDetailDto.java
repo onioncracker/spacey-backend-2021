@@ -6,14 +6,14 @@ import java.sql.Date;
 
 @Data
 public class ProductDetailDto {
-    private int productId;
-    private int categoryId;
+    private Integer productId;
+    private Integer categoryId;
     private String name;
     private Date dateAddProduct;
-    private boolean sex;
-    private double price;
+    private Boolean sex;
+    private Double price;
     private String photo;
     private String description;
-    private double discount;
-    private boolean availability;
+    private Double discount;
+    private Boolean availability;
 }

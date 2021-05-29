@@ -30,39 +30,34 @@ CREATE TABLE product_carts
     OverallPrice MONEY
 );
 
-
 CREATE TABLE categories
 (
     Id SERIAL PRIMARY KEY,
     Name CHARACTER VARYING(30)
 );
 
-
 CREATE TABLE products
 (
     Id SERIAL PRIMARY KEY,
-    CategoryId INTEGER,
+    CategoryId INTEGER REFERENCES categories(id) ON DELETE CASCADE,
     Name CHARACTER VARYING(50),
     CreatedDate TIMESTAMP,
     ProductSex CHARACTER VARYING(20),
     Price DECIMAL,
-    Photo BYTEA,
+    Photo CHARACTER VARYING(50),
     Description CHARACTER VARYING(512),
     Discount NUMERIC,
-    IsAvailable BOOL,
-    FOREIGN KEY (CategoryId) REFERENCES categories(id) ON DELETE CASCADE
+    IsAvailable BOOL
 );
-
 
 CREATE TABLE product_to_carts
 (
-    CartId INTEGER REFERENCES product_carts,
-    ProductId INTEGER REFERENCES products,
+    CartId INTEGER REFERENCES product_carts ON DELETE CASCADE,
+    ProductId INTEGER REFERENCES products(Id) ON DELETE CASCADE,
     Amount INTEGER,
     Sum MONEY,
     PRIMARY KEY (CartId, ProductId)
 );
-
 
 CREATE TABLE materials
 (
@@ -70,16 +65,12 @@ CREATE TABLE materials
     Name CHARACTER VARYING(30)
 );
 
-
 CREATE TABLE material_to_products
 (
-    MaterialId INTEGER NOT NULL,
-    ProductId INTEGER NOT NULL,
-    PRIMARY KEY (MaterialId, ProductId),
-    FOREIGN KEY (MaterialId) REFERENCES materials(id) ON UPDATE CASCADE,
-    FOREIGN KEY (ProductId) REFERENCES materials(id) ON UPDATE CASCADE
+    MaterialId INTEGER REFERENCES materials(id) ON DELETE CASCADE,
+    ProductId INTEGER REFERENCES products(id) ON DELETE CASCADE,
+    PRIMARY KEY(MaterialId, ProductId)
 );
-
 
 CREATE TABLE product_to_compares
 (
@@ -92,7 +83,7 @@ CREATE TABLE product_to_compares
 CREATE TABLE product_details
 (
     Id SERIAL PRIMARY KEY,
-    ProductId INTEGER REFERENCES products,
+    ProductId INTEGER REFERENCES products(id) ON DELETE CASCADE,
     Color CHARACTER VARYING(30),
     SizeProduct CHARACTER VARYING(5),
     Amount INTEGER

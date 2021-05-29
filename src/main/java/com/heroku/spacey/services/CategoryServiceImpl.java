@@ -3,20 +3,20 @@ package com.heroku.spacey.services;
 import com.heroku.spacey.dao.UnitOfWork;
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.entity.Category;
+import com.heroku.spacey.contracts.CategoryService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CategoryService {
-    private UnitOfWork unitOfWork;
+public class CategoryServiceImpl implements CategoryService {
+    private final UnitOfWork unitOfWork;
 
-    public CategoryService(UnitOfWork unitOfWork) {
+    public CategoryServiceImpl(UnitOfWork unitOfWork) {
         this.unitOfWork = unitOfWork;
     }
 
-    @Transactional
+    @Override
     public void addCategory(CategoryDto categoryDto) {
-        Category category = new Category();
+        var category = new Category();
         category.setName(categoryDto.getName());
         unitOfWork.getCategoryDao().insert(category);
     }

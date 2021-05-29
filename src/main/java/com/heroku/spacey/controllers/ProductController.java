@@ -1,36 +1,35 @@
 package com.heroku.spacey.controllers;
 
+import com.heroku.spacey.contracts.ProductService;
 import com.heroku.spacey.dto.product.AddProductDto;
-import com.heroku.spacey.services.CategoryService;
-import com.heroku.spacey.services.ProductService;
-import org.springframework.http.HttpStatus;
+import com.heroku.spacey.dto.product.UpdateProductDto;
+import com.heroku.spacey.services.ProductServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProductController {
-    final ProductService productService;
-    final CategoryService categoryService;
+    private final ProductService productService;
 
-    public ProductController(ProductService productService, CategoryService categoryService) {
-        this.productService = productService;
-        this.categoryService = categoryService;
+    public ProductController(ProductServiceImpl productServiceImpl) {
+        this.productService = productServiceImpl;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity getProductById(@PathVariable int id) {
+    @PostMapping("/add")
+    public ResponseEntity<String> addProduct(@RequestBody AddProductDto addProductDto) {
         try {
-            return ResponseEntity.ok(productService.getProductDetailById(id));
+            productService.addProduct(addProductDto);
+            return ResponseEntity.ok("successfully");
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.toString());
         }
     }
 
-    @PostMapping("/add")
-    public ResponseEntity addProduct(@RequestBody AddProductDto addProductDto) {
+    @PutMapping("/edit")
+    public ResponseEntity<String> editProduct(@RequestBody UpdateProductDto updateProductDto) {
         try {
-            productService.addProduct(addProductDto);
-            return ResponseEntity.ok("text");
+            productService.updateProduct(updateProductDto);
+            return ResponseEntity.ok("successfully");
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.toString());
         }

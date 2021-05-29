@@ -15,8 +15,14 @@ public class Product {
     private String photo;
     private String description;
     private double discount;
-    private boolean isAvailable;
-    private int productDetailsId;
+    private Boolean isAvailable;
+
+    private Material material;
     private int materialId;
+
+    private Category category;
     private int categoryId;
+
+    private ProductDetails productDetails;
+    private int productDetailsId;
 }

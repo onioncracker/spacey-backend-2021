@@ -4,7 +4,12 @@ import com.heroku.spacey.entity.Product;
 
 public interface ProductDao {
     Product getById(int id);
+
     int insert(Product product);
-    int update(Product product);
-    int delete(int id);
+
+    void update(Product product);
+
+    void delete(int id);
+
+    void addMaterialToProduct(int materialId, int productId);
 }
