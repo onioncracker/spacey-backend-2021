@@ -1,7 +1,6 @@
 package com.heroku.spacey.models;
 
 import lombok.Data;
-import org.intellij.lang.annotations.Identifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 
 @Data
 public class UserModel implements UserDetails, Serializable {

@@ -47,7 +47,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/products",
                         "/products/{id}",
                         "/products/compared-products",
-                        "/products/compared-products/{id}"
+                        "/products/compared-products/{id}",
+                        "/add",
+                        "/edit",
+                        "/remove/**",
+                        "/cancel/**"
                         )
                 .permitAll()
                 .anyRequest()
