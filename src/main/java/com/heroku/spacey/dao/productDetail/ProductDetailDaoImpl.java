@@ -41,15 +41,6 @@ public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
         return -1;
     }
 
-//    @Override
-//    public int insert(ProductDetails productDetails) {
-//        String sql = "INSERT INTO product_details(productid, color, sizeproduct, amount) VALUES (?, ?, ?, ?)";
-//        Object[] params = new Object[]{productDetails.getProductId(), productDetails.getColor(),
-//                productDetails.getSizeProduct(), productDetails.getAmount()};
-//        int count = getJdbcTemplate().update(sql, params);
-//        return count;
-//    }
-
     @Override
     public void update(ProductDetails productDetails) {
         String sql = "UPDATE product_details SET color = ?, " +

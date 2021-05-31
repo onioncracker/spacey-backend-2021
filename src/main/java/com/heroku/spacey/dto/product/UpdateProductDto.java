@@ -3,6 +3,8 @@ package com.heroku.spacey.dto.product;
 import com.heroku.spacey.dto.category.UpdateCategoryDto;
 import com.heroku.spacey.dto.material.UpdateMaterialDto;
 import java.math.BigDecimal;
+
+import com.heroku.spacey.dto.productDetail.UpdateProductDetailDto;
 import lombok.Data;
 
 @Data

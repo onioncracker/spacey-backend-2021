@@ -1,4 +1,4 @@
-package com.heroku.spacey.dto.product;
+package com.heroku.spacey.dto.productDetail;
 
 import lombok.Data;
 

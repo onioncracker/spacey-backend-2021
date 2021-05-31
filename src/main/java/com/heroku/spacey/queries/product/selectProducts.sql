@@ -4,11 +4,6 @@ SELECT * FROM categories;
 SELECT * FROM materials;
 SELECT * FROM material_to_products;
 
---Add a discount
-UPDATE products p
-SET discount = 100
-WHERE p.id = 2;
-
 --Cancel adding a product
 DELETE FROM products p
 USING product_details AS pd, categories AS ct,
@@ -18,12 +13,18 @@ AND (mtp.productid=p.id)
 AND (mtp.materialid=mt.id)
 AND p.id = 2;
 
-SELECT * FROM categories ORDER BY id;
---Edit product
-UPDATE categories
-SET name = ?
-WHERE id = ?;
+SELECT p.*, c.*, m.*, pd.*
+FROM products p
+INNER JOIN material_to_products mtp on p.id = mtp.productid
+INNER JOIN materials m on mtp.materialid = m.id
+INNER JOIN categories c on p.categoryid = c.id
+INNER JOIN product_details pd on p.id = pd.productid
+WHERE p.id = 13;
 
---Remove existing product
---UPDATE products p
---SET
+SELECT p.id, m.id, c.id, pd.id
+FROM products p
+         INNER JOIN material_to_products mtp on p.id = mtp.productid
+         INNER JOIN materials m on mtp.materialid = m.id
+         INNER JOIN categories c on p.categoryid = c.id
+         INNER JOIN product_details pd on p.id = pd.productid
+WHERE p.id = 10

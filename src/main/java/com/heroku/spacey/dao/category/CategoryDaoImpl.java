@@ -13,12 +13,12 @@ import java.sql.Statement;
 import java.util.Objects;
 
 @Repository
-@PropertySource("classpath:productCatalog.properties")
+@PropertySource("classpath:/productCatalog.properties")
 public class CategoryDaoImpl extends BaseDao implements CategoryDao {
     private final CategoryMapper mapper = new CategoryMapper();
 
-    @Value("${category.getId}")
-    private String sqlInsert;
+    //@Value("${category.catalog.getId}")
+    //private String sqlInsert;
 
     public CategoryDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -26,9 +26,9 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
 
     @Override
     public Category getById(int id) {
-        //String sql = "SELECT * FROM categories WHERE id = ?";
+        String sql = "SELECT * FROM categories WHERE id = ?";
         Object[] params = new Object[]{id};
-        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sqlInsert, mapper, params);
+        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sql, mapper, params);
     }
 
     @Override
@@ -43,20 +43,11 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
         return -1;
     }
 
-//    @Override
-//    public int insert(Category category) {
-//        String sql = "INSERT INTO categories(name) VALUES (?)";
-//        Object[] params = new Object[]{category.getName()};
-//        int count = getJdbcTemplate().update(sql, params);
-//        return count;
-//    }
-
     @Override
     public void update(Category category) {
         String sql = "UPDATE categories SET name = ? WHERE id = ?";
         Object[] params = new Object[]{category.getName(), category.getId()};
         Objects.requireNonNull(getJdbcTemplate()).update(sql, params);
-
     }
 
     @Override

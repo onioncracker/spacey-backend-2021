@@ -34,4 +34,24 @@ public class ProductController {
             return ResponseEntity.unprocessableEntity().body(e.toString());
         }
     }
+
+    @PutMapping("/remove/{id}")
+    public ResponseEntity<String> removeProduct(@PathVariable int id) {
+        try {
+            productService.removeProduct(id);
+            return ResponseEntity.ok("successfully");
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.toString());
+        }
+    }
+
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<String> cancelAddingProduct(@PathVariable int id) {
+        try {
+            productService.cancelProduct(id);
+            return ResponseEntity.ok("successfully");
+        } catch (Exception e) {
+            return ResponseEntity.unprocessableEntity().body(e.toString());
+        }
+    }
 }

@@ -18,8 +18,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(AddProductDto addProductDto) {
         var product = MapperProfile.adapt(addProductDto);
-
-        var catTest = unitOfWork.getCategoryDao().getById(10);
         var categoryId = unitOfWork.getCategoryDao().insert(product.getCategory());
         product.setCategoryId(categoryId);
 
@@ -27,17 +25,40 @@ public class ProductServiceImpl implements ProductService {
         product.getProductDetails().setProductId(productId);
         unitOfWork.getProductDetailDao().insert(product.getProductDetails());
 
-        var materialId = unitOfWork.getMaterialDao().insert(product.getMaterial());
-        unitOfWork.getProductDao().addMaterialToProduct(materialId, productId);
+        for (int i = 0; i < addProductDto.getMaterials().size(); i++) {
+            var materialId = unitOfWork.getMaterialDao().insert(product.getMaterials().get(i));
+            unitOfWork.getProductDao().addMaterialToProduct(materialId, productId);
+        }
     }
 
     @Override
     public void updateProduct(UpdateProductDto updateProductDto) {
         var product = MapperProfile.adapt(updateProductDto);
-
         unitOfWork.getCategoryDao().update(product.getCategory());
         unitOfWork.getProductDao().update(product);
         unitOfWork.getProductDetailDao().update(product.getProductDetails());
-        unitOfWork.getMaterialDao().update(product.getMaterial());
+        //
+        // unitOfWork.getMaterialDao().update(product.);
+    }
+
+    @Override
+    public void removeProduct(int id) {
+        var product = unitOfWork.getProductDao().getById(id);
+        if (product == null) {
+            return; //TODO throw exception to frontend
+        }
+        unitOfWork.getProductDao().remove(id);
+    }
+
+    @Override
+    public void cancelProduct(int id) {
+        var products = unitOfWork.getProductDao().getByIdForDelete(id);
+        if (products == null) {
+            return; //TODO throw exception to frontend
+        }
+        unitOfWork.getProductDao().delete(id);
+        unitOfWork.getMaterialDao().delete(id);
+        unitOfWork.getCategoryDao().delete(id);
+        unitOfWork.getProductDetailDao().delete(id);
     }
 }

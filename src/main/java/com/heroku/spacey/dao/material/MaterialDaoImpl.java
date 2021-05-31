@@ -39,14 +39,6 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
         return -1;
     }
 
-//    @Override
-//    public int insert(Material material) {
-//        String sql = "INSERT INTO materials(name) VALUES (?)";
-//        Object[] params = new Object[]{material.getName()};
-//        int count = getJdbcTemplate().update(sql, params);
-//        return count;
-//    }
-
     @Override
     public void update(Material material) {
         String sql = "UPDATE materials SET name = ? WHERE id = ?";

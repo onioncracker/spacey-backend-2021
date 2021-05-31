@@ -47,7 +47,8 @@ CREATE TABLE products
     Photo CHARACTER VARYING(50),
     Description CHARACTER VARYING(512),
     Discount NUMERIC,
-    IsAvailable BOOL
+    IsAvailable BOOL,
+    IsDeleted BOOL
 );
 
 CREATE TABLE product_to_carts
