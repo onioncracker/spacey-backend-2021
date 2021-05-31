@@ -15,10 +15,26 @@ public class ProductServiceImpl implements ProductService {
         this.unitOfWork = unitOfWork;
     }
 
+//    @Override
+//    public void addProduct(AddProductDto addProductDto) {
+//        var product = MapperProfile.adapt(addProductDto);
+//        var categoryId = unitOfWork.getCategoryDao().insert(product.getCategory());
+//        product.setCategoryId(categoryId);
+//
+//        var productId = unitOfWork.getProductDao().insert(product);
+//        product.getProductDetails().setProductId(productId);
+//        unitOfWork.getProductDetailDao().insert(product.getProductDetails());
+//
+//        for (int i = 0; i < addProductDto.getMaterials().size(); i++) {
+//            var materialId = unitOfWork.getMaterialDao().insert(product.getMaterials().get(i));
+//            unitOfWork.getProductDao().addMaterialToProduct(materialId, productId);
+//        }
+//    }
+
     @Override
     public void addProduct(AddProductDto addProductDto) {
         var product = MapperProfile.adapt(addProductDto);
-        var categoryId = unitOfWork.getCategoryDao().insert(product.getCategory());
+        var categoryId = addProductDto.getCategory().getId();
         product.setCategoryId(categoryId);
 
         var productId = unitOfWork.getProductDao().insert(product);
@@ -26,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
         unitOfWork.getProductDetailDao().insert(product.getProductDetails());
 
         for (int i = 0; i < addProductDto.getMaterials().size(); i++) {
-            var materialId = unitOfWork.getMaterialDao().insert(product.getMaterials().get(i));
+            var materialId = addProductDto.getMaterials().get(i).getId();
             unitOfWork.getProductDao().addMaterialToProduct(materialId, productId);
         }
     }
@@ -34,17 +50,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(UpdateProductDto updateProductDto) {
         var product = MapperProfile.adapt(updateProductDto);
-        unitOfWork.getCategoryDao().update(product.getCategory());
         unitOfWork.getProductDao().update(product);
         unitOfWork.getProductDetailDao().update(product.getProductDetails());
-        //
-        // unitOfWork.getMaterialDao().update(product.);
     }
 
     @Override
     public void removeProduct(int id) {
-        var product = unitOfWork.getProductDao().getById(id);
-        if (product == null) {
+        var isFound = unitOfWork.getProductDao().isExist(id);
+        if (!isFound) {
             return; //TODO throw exception to frontend
         }
         unitOfWork.getProductDao().remove(id);
@@ -52,13 +65,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void cancelProduct(int id) {
-        var products = unitOfWork.getProductDao().getByIdForDelete(id);
-        if (products == null) {
+        var isFound = unitOfWork.getProductDao().isExist(id);
+        if (!isFound) {
             return; //TODO throw exception to frontend
         }
         unitOfWork.getProductDao().delete(id);
-        unitOfWork.getMaterialDao().delete(id);
-        unitOfWork.getCategoryDao().delete(id);
-        unitOfWork.getProductDetailDao().delete(id);
     }
 }

@@ -27,6 +27,11 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     }
 
     @Override
+    public int getByName(String name) {
+        return 2;
+    }
+
+    @Override
     public int insert(Material material) {
         String sql = "INSERT INTO materials(name) VALUES (?)";
         try (PreparedStatement statement = getDataSource()

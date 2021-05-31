@@ -17,9 +17,6 @@ import java.util.Objects;
 public class CategoryDaoImpl extends BaseDao implements CategoryDao {
     private final CategoryMapper mapper = new CategoryMapper();
 
-    //@Value("${category.catalog.getId}")
-    //private String sqlInsert;
-
     public CategoryDaoImpl(DataSource dataSource) {
         super(dataSource);
     }

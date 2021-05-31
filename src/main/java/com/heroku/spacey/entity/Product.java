@@ -17,7 +17,6 @@ public class Product {
     private String description;
     private double discount;
     private Boolean isAvailable;
-    private Boolean isDeleted;
 
     private List<Material> materials;
     private Category category;

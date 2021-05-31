@@ -19,7 +19,6 @@ public class ProductMapper implements RowMapper<Product> {
         product.setDescription(resultSet.getString("description"));
         product.setDiscount(resultSet.getDouble("discount"));
         product.setIsAvailable(resultSet.getBoolean("isavailable"));
-        product.setIsDeleted(resultSet.getBoolean("isdeleted"));
 
         var categoryMapper = new CategoryForProductMapper();
         var materialMapper = new MaterialForProductMapper();

@@ -9,6 +9,8 @@ public interface ProductDao {
 
     List<Product> getByIdForDelete(int id);
 
+    boolean isExist(int id);
+
     int insert(Product product);
 
     void update(Product product);

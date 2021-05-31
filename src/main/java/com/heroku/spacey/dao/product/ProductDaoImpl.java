@@ -1,6 +1,7 @@
 package com.heroku.spacey.dao.product;
 
 import com.heroku.spacey.dao.general.BaseDao;
+import com.heroku.spacey.dao.general.IdMapper;
 import com.heroku.spacey.entity.Product;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Repository
 public class ProductDaoImpl extends BaseDao implements ProductDao {
     private final ProductMapper mapper = new ProductMapper();
+    private final IdMapper idMapper = new IdMapper();
 
     public ProductDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -35,6 +37,16 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
             return null;
         }
         return products.get(0);
+    }
+
+    @Override
+    public boolean isExist(int id) {
+        String sql = "SELECT p.id \n" +
+                "FROM products p\n" +
+                "WHERE p.id = ?";
+        Object[] params = new Object[]{id};
+        var products = getJdbcTemplate().query(sql, idMapper, params);
+        return !products.isEmpty();
     }
 
     @Override
@@ -104,7 +116,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 
     @Override
     public void remove(int id) {
-        String sql = "UPDATE products SET isdeleted = true WHERE id = ?";
+        String sql = "UPDATE products SET isavailable = false WHERE id = ?";
         Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 }
