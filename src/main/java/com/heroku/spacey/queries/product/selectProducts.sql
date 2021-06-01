@@ -4,6 +4,9 @@ SELECT * FROM categories;
 SELECT * FROM materials;
 SELECT * FROM material_to_products;
 
+SELECT m.id FROM materials m WHERE m.id = 2;
+
+
 INSERT INTO categories(id, name) VALUES (1, 'shoes');
 INSERT INTO categories(id, name) VALUES (2, 'shirts');
 INSERT INTO categories(id, name) VALUES (3, 'belts');
@@ -20,7 +23,6 @@ AND (mtp.productid=p.id)
 AND (mtp.materialid=mt.id)
 AND p.id = 2;
 
-DELETE FROM products p WHERE id = 15;
 
 
 

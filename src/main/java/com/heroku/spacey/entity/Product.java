@@ -22,6 +22,6 @@ public class Product {
     private Category category;
     private int categoryId;
 
-    private ProductDetails productDetails;
+    private ProductDetail productDetail;
     private int productDetailsId;
 }

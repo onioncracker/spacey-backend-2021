@@ -1,9 +1,8 @@
 package com.heroku.spacey.dao.category;
 
 import com.heroku.spacey.dao.general.BaseDao;
+import com.heroku.spacey.dao.general.IdMapper;
 import com.heroku.spacey.entity.Category;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -13,9 +12,9 @@ import java.sql.Statement;
 import java.util.Objects;
 
 @Repository
-@PropertySource("classpath:/productCatalog.properties")
 public class CategoryDaoImpl extends BaseDao implements CategoryDao {
     private final CategoryMapper mapper = new CategoryMapper();
+    private final IdMapper idMapper = new IdMapper();
 
     public CategoryDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -25,7 +24,21 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
     public Category getById(int id) {
         String sql = "SELECT * FROM categories WHERE id = ?";
         Object[] params = new Object[]{id};
-        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sql, mapper, params);
+        var categories = Objects.requireNonNull(getJdbcTemplate()).query(sql, mapper, params);
+        if (categories.isEmpty()) {
+            return null;
+        }
+        return categories.get(0);
+    }
+
+    @Override
+    public boolean isExist(int id) {
+        String sql = "SELECT c.id \n" +
+                "FROM categories c\n" +
+                "WHERE c.id = ?";
+        Object[] params = new Object[]{id};
+        var category = getJdbcTemplate().query(sql, idMapper, params);
+        return !category.isEmpty();
     }
 
     @Override
@@ -50,6 +63,6 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM categories WHERE id=?";
-        getJdbcTemplate().update(sql, id);
+        Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 }

@@ -1,15 +1,15 @@
 package com.heroku.spacey.dao.productDetail;
 
-import com.heroku.spacey.entity.ProductDetails;
+import com.heroku.spacey.entity.ProductDetail;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ProductDetailMapper implements RowMapper<ProductDetails> {
+public class ProductDetailMapper implements RowMapper<ProductDetail> {
     @Override
-    public ProductDetails mapRow(ResultSet resultSet, int i) throws SQLException {
-        var productDetails = new ProductDetails();
+    public ProductDetail mapRow(ResultSet resultSet, int i) throws SQLException {
+        var productDetails = new ProductDetail();
         productDetails.setId(resultSet.getInt("id"));
         productDetails.setColor(resultSet.getString("color"));
         productDetails.setSizeProduct(resultSet.getString("sizeproduct"));

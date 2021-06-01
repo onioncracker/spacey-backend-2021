@@ -3,7 +3,6 @@ package com.heroku.spacey.dto.category;
 import lombok.Data;
 
 @Data
-public class UpdateCategoryDto {
-    private Integer id;
+public class AddCategoryDto {
     private String name;
 }

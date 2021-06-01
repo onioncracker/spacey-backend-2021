@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Objects;
 
 @Repository
@@ -22,7 +21,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
     }
 
     @Override
-    public Product getById(int id) {
+    public Product get(int id) {
         String sql = "SELECT p.*, c.id category_id, c.name category_name, m.id material_id, m.name material_name,\n" +
                 "pd.id pd_id, pd.productid pd_product_id, pd.color pd_color, pd.sizeproduct pd_size, pd.amount pd_amount\n" +
                 "FROM products p\n" +
@@ -47,23 +46,6 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
         Object[] params = new Object[]{id};
         var products = getJdbcTemplate().query(sql, idMapper, params);
         return !products.isEmpty();
-    }
-
-    @Override
-    public List<Product> getByIdForDelete(int id) {
-        String sql = "SELECT p.id, c.id category_id, m.id material_id, pd.id pd_id\n" +
-                "FROM products p\n" +
-                "INNER JOIN material_to_products mtp on p.id = mtp.productid\n" +
-                "INNER JOIN materials m on mtp.materialid = m.id\n" +
-                "INNER JOIN categories c on p.categoryid = c.id\n" +
-                "INNER JOIN product_details pd on p.id = pd.productid\n" +
-                "WHERE p.id = ?";
-        Object[] params = new Object[]{id};
-        var products = getJdbcTemplate().query(sql, mapper, params);
-        if (products.isEmpty()) {
-            return null;
-        }
-        return products;
     }
 
     @Override

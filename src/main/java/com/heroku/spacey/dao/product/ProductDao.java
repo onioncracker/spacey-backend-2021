@@ -2,12 +2,8 @@ package com.heroku.spacey.dao.product;
 
 import com.heroku.spacey.entity.Product;
 
-import java.util.List;
-
 public interface ProductDao {
-    Product getById(int id);
-
-    List<Product> getByIdForDelete(int id);
+    Product get(int id);
 
     boolean isExist(int id);
 

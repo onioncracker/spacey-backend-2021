@@ -5,7 +5,7 @@ import com.heroku.spacey.entity.Material;
 public interface MaterialDao {
     Material getById(int id);
 
-    int getByName(String name);
+    boolean isExist(int id);
 
     int insert(Material material);
 

@@ -1,7 +1,7 @@
 package com.heroku.spacey.dao.productDetail;
 
 import com.heroku.spacey.dao.general.BaseDao;
-import com.heroku.spacey.entity.ProductDetails;
+import com.heroku.spacey.entity.ProductDetail;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -19,21 +19,21 @@ public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
     }
 
     @Override
-    public ProductDetails getById(int id) {
+    public ProductDetail getById(int id) {
         String sql = "SELECT * FROM product_details WHERE id = ?";
         Object[] params = new Object[]{id};
         return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sql, mapper, params);
     }
 
     @Override
-    public int insert(ProductDetails productDetails) {
+    public int insert(ProductDetail productDetail) {
         String sql = "INSERT INTO product_details(productid, color, sizeproduct, amount) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = getDataSource()
                 .getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, productDetails.getProductId());
-            statement.setString(2, productDetails.getColor());
-            statement.setString(3, productDetails.getSizeProduct());
-            statement.setInt(4, productDetails.getAmount());
+            statement.setInt(1, productDetail.getProductId());
+            statement.setString(2, productDetail.getColor());
+            statement.setString(3, productDetail.getSizeProduct());
+            statement.setInt(4, productDetail.getAmount());
             return add(statement);
         } catch (SQLException e) {
             e.getMessage();
@@ -42,12 +42,12 @@ public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
     }
 
     @Override
-    public void update(ProductDetails productDetails) {
+    public void update(ProductDetail productDetail) {
         String sql = "UPDATE product_details SET color = ?, " +
                 "sizeproduct = ?, amount = ? WHERE id = ?";
         Object[] params = new Object[]{
-                productDetails.getColor(), productDetails.getSizeProduct(),
-                productDetails.getAmount(), productDetails.getId()
+                productDetail.getColor(), productDetail.getSizeProduct(),
+                productDetail.getAmount(), productDetail.getId()
         };
         Objects.requireNonNull(getJdbcTemplate()).update(sql, params);
     }
@@ -55,6 +55,6 @@ public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM product_details WHERE id=?";
-        getJdbcTemplate().update(sql, id);
+        Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 }

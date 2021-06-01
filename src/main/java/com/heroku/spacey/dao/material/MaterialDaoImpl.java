@@ -1,7 +1,7 @@
 package com.heroku.spacey.dao.material;
 
 import com.heroku.spacey.dao.general.BaseDao;
-import com.heroku.spacey.entity.Category;
+import com.heroku.spacey.dao.general.IdMapper;
 import com.heroku.spacey.entity.Material;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +14,7 @@ import java.util.Objects;
 @Repository
 public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     private final MaterialMapper mapper = new MaterialMapper();
+    private final IdMapper idMapper = new IdMapper();
 
     public MaterialDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -27,8 +28,13 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     }
 
     @Override
-    public int getByName(String name) {
-        return 2;
+    public boolean isExist(int id) {
+        String sql = "SELECT m.id \n" +
+                "FROM materials m\n" +
+                "WHERE m.id = ?";
+        Object[] params = new Object[]{id};
+        var materials = getJdbcTemplate().query(sql, idMapper, params);
+        return !materials.isEmpty();
     }
 
     @Override
@@ -54,6 +60,6 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM materials WHERE id=?";
-        getJdbcTemplate().update(sql, id);
+        Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 }

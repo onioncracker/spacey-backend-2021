@@ -31,7 +31,7 @@ public class ProductMapper implements RowMapper<Product> {
 
         product.setMaterials(materials);
         product.setCategory(category);
-        product.setProductDetails(productDetails);
+        product.setProductDetail(productDetails);
         return product;
     }
 }

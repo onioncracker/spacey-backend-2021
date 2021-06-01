@@ -1,13 +1,13 @@
 package com.heroku.spacey.dao.productDetail;
 
-import com.heroku.spacey.entity.ProductDetails;
+import com.heroku.spacey.entity.ProductDetail;
 
 public interface ProductDetailDao {
-    ProductDetails getById(int id);
+    ProductDetail getById(int id);
 
-    int insert(ProductDetails productDetails);
+    int insert(ProductDetail productDetail);
 
-    void update(ProductDetails productDetails);
+    void update(ProductDetail productDetail);
 
     void delete(int id);
 }

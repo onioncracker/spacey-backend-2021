@@ -3,6 +3,7 @@ package com.heroku.spacey.services;
 import com.heroku.spacey.dao.UnitOfWork;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.contracts.ProductService;
+import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
 import com.heroku.spacey.mapper.MapperProfile;
 import org.springframework.stereotype.Service;
@@ -15,21 +16,14 @@ public class ProductServiceImpl implements ProductService {
         this.unitOfWork = unitOfWork;
     }
 
-//    @Override
-//    public void addProduct(AddProductDto addProductDto) {
-//        var product = MapperProfile.adapt(addProductDto);
-//        var categoryId = unitOfWork.getCategoryDao().insert(product.getCategory());
-//        product.setCategoryId(categoryId);
-//
-//        var productId = unitOfWork.getProductDao().insert(product);
-//        product.getProductDetails().setProductId(productId);
-//        unitOfWork.getProductDetailDao().insert(product.getProductDetails());
-//
-//        for (int i = 0; i < addProductDto.getMaterials().size(); i++) {
-//            var materialId = unitOfWork.getMaterialDao().insert(product.getMaterials().get(i));
-//            unitOfWork.getProductDao().addMaterialToProduct(materialId, productId);
-//        }
-//    }
+    @Override
+    public ProductDto getById(int id) {
+        var product = unitOfWork.getProductDao().get(id);
+        if (product == null) {
+            return null;
+        }
+        return MapperProfile.adapt(product);
+    }
 
     @Override
     public void addProduct(AddProductDto addProductDto) {
@@ -38,8 +32,8 @@ public class ProductServiceImpl implements ProductService {
         product.setCategoryId(categoryId);
 
         var productId = unitOfWork.getProductDao().insert(product);
-        product.getProductDetails().setProductId(productId);
-        unitOfWork.getProductDetailDao().insert(product.getProductDetails());
+        product.getProductDetail().setProductId(productId);
+        unitOfWork.getProductDetailDao().insert(product.getProductDetail());
 
         for (int i = 0; i < addProductDto.getMaterials().size(); i++) {
             var materialId = addProductDto.getMaterials().get(i).getId();
@@ -51,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(UpdateProductDto updateProductDto) {
         var product = MapperProfile.adapt(updateProductDto);
         unitOfWork.getProductDao().update(product);
-        unitOfWork.getProductDetailDao().update(product.getProductDetails());
+        unitOfWork.getProductDetailDao().update(product.getProductDetail());
     }
 
     @Override
