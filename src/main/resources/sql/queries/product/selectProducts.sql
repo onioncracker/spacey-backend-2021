@@ -4,7 +4,7 @@ FROM products p
          INNER JOIN materials m on mtp.materialid = m.id
          INNER JOIN categories c on p.categoryid = c.id
          INNER JOIN product_details pd on p.id = pd.productid
-WHERE p.id = 7;
+WHERE p.id = 62;
 
 
 SELECT p.id, m.id, c.id, pd.id

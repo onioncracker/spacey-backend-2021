@@ -7,8 +7,6 @@ public interface CategoryDao {
 
     int insert(Category category);
 
-    boolean isExist(int id);
-
     void update(Category category);
 
     void delete(int id);

@@ -9,7 +9,6 @@ import lombok.Data;
 
 @Data
 public class UpdateProductDto {
-    private Integer id;
     private String name;
     private String productSex;
     private BigDecimal price;

@@ -13,7 +13,7 @@ public interface ProductDao {
 
     void delete(int id);
 
-    void remove(int id);
+    void deactivate(int id);
 
     void addMaterialToProduct(int materialId, int productId);
 }

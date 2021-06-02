@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/category")
 public class CategoryController {
     private final CategoryService categoryService;
     private static final String CATEGORY_NOT_FOUND = "category not found by id";
@@ -16,7 +17,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/api/category/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable int id) {
         try {
             var category = categoryService.getById(id);
@@ -29,8 +30,8 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/api/category/add")
-    public ResponseEntity addCategory(@RequestBody CategoryDto categoryDto) {
+    @PostMapping("/add")
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
         try {
             categoryService.addCategory(categoryDto);
             return new ResponseEntity("added category successfully", HttpStatus.CREATED);
@@ -39,8 +40,8 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/api/category/edit/{id}")
-    public ResponseEntity<String> editCategory(@RequestBody CategoryDto categoryDto, @PathVariable int id) {
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<CategoryDto> editCategory(@RequestBody CategoryDto categoryDto, @PathVariable int id) {
         try {
             var category = categoryService.getById(id);
             if (category == null) {
@@ -53,8 +54,8 @@ public class CategoryController {
         }
     }
 
-    @DeleteMapping("/api/category/delete/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable int id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable int id) {
         try {
             var category = categoryService.getById(id);
             if (category == null) {

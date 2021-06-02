@@ -26,11 +26,11 @@ public class ProductMapper implements RowMapper<Product> {
         var productDetailsMapper = new ProductDetailsForProductMapper();
 
         var category = categoryMapper.mapRow(resultSet, i);
-        var materials = materialMapper.mapRow(resultSet, i);
         var productDetails = productDetailsMapper.mapRow(resultSet, i);
+        var materials = materialMapper.mapRow(resultSet, i);
 
         product.setMaterials(materials);
-        product.setCategory(category);
+        product.setProductCategory(category);
         product.setProductDetail(productDetails);
         return product;
     }

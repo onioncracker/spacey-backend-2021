@@ -1,9 +1,10 @@
 package com.heroku.spacey.dao.material;
 
 import com.heroku.spacey.dao.common.BaseDao;
-import com.heroku.spacey.dao.common.IdMapper;
 import com.heroku.spacey.entity.Material;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -14,9 +15,18 @@ import java.util.Objects;
 
 @Slf4j
 @Repository
+@PropertySource("classpath:sql/material_queries.properties")
 public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     private final MaterialMapper mapper = new MaterialMapper();
-    private final IdMapper idMapper = new IdMapper();
+
+    @Value("${material_get_by_id}")
+    private String getMaterialById;
+    @Value("${insert_material}")
+    private String editMaterial;
+    @Value("${update_material}")
+    private String updateMaterial;
+    @Value("${delete_material}")
+    private String deleteMaterial;
 
     public MaterialDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -24,22 +34,13 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
 
     @Override
     public Material getById(int id) {
-        var sql = "SELECT * FROM materials WHERE id = ?";
-        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sql, mapper, id);
-    }
-
-    @Override
-    public boolean isExist(int id) {
-        var sql = "SELECT m.id FROM materials m WHERE m.id = ?";
-        var materials = Objects.requireNonNull(getJdbcTemplate()).query(sql, idMapper, id);
-        return !materials.isEmpty();
+        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(getMaterialById, mapper, id);
     }
 
     @Override
     public int insert(Material material) {
-        var sql = "INSERT INTO materials(name) VALUES (?)";
         try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
-                .getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                .getConnection().prepareStatement(editMaterial, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, material.getName());
             return add(statement);
         } catch (SQLException e) {
@@ -50,14 +51,12 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
 
     @Override
     public void update(Material material) {
-        var sql = "UPDATE materials SET name = ? WHERE id = ?";
         var params = new Object[]{material.getName(), material.getId()};
-        Objects.requireNonNull(getJdbcTemplate()).update(sql, params);
+        Objects.requireNonNull(getJdbcTemplate()).update(updateMaterial, params);
     }
 
     @Override
     public void delete(int id) {
-        var sql = "DELETE FROM materials WHERE id=?";
-        Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
+        Objects.requireNonNull(getJdbcTemplate()).update(deleteMaterial, id);
     }
 }

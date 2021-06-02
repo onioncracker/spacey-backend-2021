@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/material")
 public class MaterialController {
     private final MaterialService materialService;
     private static final String MATERIAL_NOT_FOUND = "material not found by id";
@@ -15,7 +16,7 @@ public class MaterialController {
         this.materialService = materialService;
     }
 
-    @GetMapping("/api/material/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MaterialDto> getMaterial(@PathVariable int id) {
         try {
             var material = materialService.getById(id);
@@ -28,8 +29,8 @@ public class MaterialController {
         }
     }
 
-    @PostMapping("/api/material/add")
-    public ResponseEntity addMaterial(@RequestBody MaterialDto materialDto) {
+    @PostMapping("/add")
+    public ResponseEntity<MaterialDto> addMaterial(@RequestBody MaterialDto materialDto) {
         try {
             materialService.addMaterial(materialDto);
             return new ResponseEntity("added material successfully", HttpStatus.CREATED);
@@ -38,8 +39,8 @@ public class MaterialController {
         }
     }
 
-    @PutMapping("/api/material/edit/{id}")
-    public ResponseEntity<String> editMaterial(@RequestBody MaterialDto materialDto, @PathVariable int id) {
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<MaterialDto> editMaterial(@RequestBody MaterialDto materialDto, @PathVariable int id) {
         try {
             var material = materialService.getById(id);
             if (material == null) {
@@ -52,8 +53,8 @@ public class MaterialController {
         }
     }
 
-    @DeleteMapping("/api/material/delete/{id}")
-    public ResponseEntity<String> deleteMaterial(@PathVariable int id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<MaterialDto> deleteMaterial(@PathVariable int id) {
         try {
             var material = materialService.getById(id);
             if (material == null) {

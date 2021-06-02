@@ -1,47 +1,45 @@
 package com.heroku.spacey.services;
 
-import com.heroku.spacey.dao.common.UnitOfWorkImpl;
-import com.heroku.spacey.dao.category.CategoryDaoImpl;
+import com.heroku.spacey.dao.common.UnitOfWork;
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.contracts.CategoryService;
-import com.heroku.spacey.mapper.MapperProfile;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.heroku.spacey.mapper.CategoryConvertor;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-    private final UnitOfWorkImpl unitOfWorkImpl;
-    private final CategoryDaoImpl categoryDao;
+    private final UnitOfWork unitOfWork;
+    private final CategoryConvertor categoryConvertor;
 
-    public CategoryServiceImpl(UnitOfWorkImpl unitOfWorkImpl, @Autowired CategoryDaoImpl categoryDao) {
-        this.unitOfWorkImpl = unitOfWorkImpl;
-        this.categoryDao = categoryDao;
+    public CategoryServiceImpl(UnitOfWork unitOfWork, CategoryConvertor categoryConvertor) {
+        this.unitOfWork = unitOfWork;
+        this.categoryConvertor = categoryConvertor;
     }
 
     @Override
     public CategoryDto getById(int id) {
-        var category = categoryDao.getById(id);
+        var category = unitOfWork.getCategoryDao().getById(id);
         if (category == null) {
             return null;
         }
-        return MapperProfile.adapt(category);
+        return categoryConvertor.adapt(category);
     }
 
     @Override
     public void addCategory(CategoryDto categoryDto) {
-        var category = MapperProfile.adapt(categoryDto);
-        unitOfWorkImpl.getCategoryDao().insert(category);
+        var category = categoryConvertor.adapt(categoryDto);
+        unitOfWork.getCategoryDao().insert(category);
     }
 
     @Override
     public void updateCategory(CategoryDto categoryDto, int id) {
-        var category = MapperProfile.adapt(categoryDto);
+        var category = categoryConvertor.adapt(categoryDto);
         category.setId(id);
-        unitOfWorkImpl.getCategoryDao().update(category);
+        unitOfWork.getCategoryDao().update(category);
     }
 
     @Override
     public void deleteCategory(int id) {
-        unitOfWorkImpl.getCategoryDao().delete(id);
+        unitOfWork.getCategoryDao().delete(id);
     }
 }

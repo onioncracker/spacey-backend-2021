@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/product")
 public class ProductController {
     private final ProductService productService;
 
@@ -17,21 +18,22 @@ public class ProductController {
         this.productService = productServiceImpl;
     }
 
-    @GetMapping("/api/product/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getCategory(@PathVariable int id) {
         try {
             var product = productService.getById(id);
             if (product == null) {
                 return new ResponseEntity("product not found by id", HttpStatus.NOT_FOUND);
             }
-            return ResponseEntity.ok(product);
+            var test = new ResponseEntity(product, HttpStatus.OK);
+            return test;
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PostMapping("/api/product/add")
-    public ResponseEntity<String> addProduct(@RequestBody AddProductDto addProductDto) {
+    @PostMapping("/add")
+    public ResponseEntity<ProductDto> addProduct(@RequestBody AddProductDto addProductDto) {
         try {
             productService.addProduct(addProductDto);
             return new ResponseEntity("added product successfully", HttpStatus.CREATED);
@@ -40,18 +42,18 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/api/product/edit/{id}")
-    public ResponseEntity<String> editProduct(@RequestBody UpdateProductDto updateProductDto) {
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<ProductDto> editProduct(@RequestBody UpdateProductDto updateProductDto, @PathVariable int id) {
         try {
-            productService.updateProduct(updateProductDto);
+            productService.updateProduct(updateProductDto, id);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/api/product/remove/{id}")
-    public ResponseEntity<String> removeProduct(@PathVariable int id) {
+    @PutMapping("/remove/{id}")
+    public ResponseEntity<ProductDto> removeProduct(@PathVariable int id) {
         try {
             productService.removeProduct(id);
             return new ResponseEntity(HttpStatus.OK);
@@ -60,8 +62,8 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/api/product/cancel/{id}")
-    public ResponseEntity<String> cancelAddingProduct(@PathVariable int id) {
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<ProductDto> cancelAddingProduct(@PathVariable int id) {
         try {
             productService.cancelProduct(id);
             return new ResponseEntity(HttpStatus.OK);

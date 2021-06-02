@@ -19,7 +19,7 @@ public class Product {
     private Boolean isAvailable;
 
     private List<Material> materials;
-    private Category category;
+    private Category productCategory;
     private int categoryId;
 
     private ProductDetail productDetail;

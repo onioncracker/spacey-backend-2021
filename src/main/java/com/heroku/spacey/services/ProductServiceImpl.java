@@ -1,70 +1,76 @@
 package com.heroku.spacey.services;
 
-import com.heroku.spacey.dao.common.UnitOfWorkImpl;
+import com.heroku.spacey.dao.common.UnitOfWork;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.contracts.ProductService;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
-import com.heroku.spacey.mapper.MapperProfile;
+import com.heroku.spacey.mapper.ProductConvertor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    private final UnitOfWorkImpl unitOfWorkImpl;
+    private final UnitOfWork unitOfWork;
+    private final ProductConvertor productConvertor;
 
-    public ProductServiceImpl(UnitOfWorkImpl unitOfWorkImpl) {
-        this.unitOfWorkImpl = unitOfWorkImpl;
+    public ProductServiceImpl(UnitOfWork unitOfWork) {
+        this.unitOfWork = unitOfWork;
+        this.productConvertor = new ProductConvertor();
     }
 
     @Override
     public ProductDto getById(int id) {
-        var product = unitOfWorkImpl.getProductDao().get(id);
+        var product = unitOfWork.getProductDao().get(id);
         if (product == null) {
             return null;
         }
-        return MapperProfile.adapt(product);
+        var test = productConvertor.adapt(product);
+        return test;
     }
 
     @Override
     public void addProduct(AddProductDto addProductDto) {
-        var product = MapperProfile.adapt(addProductDto);
+        var product = productConvertor.adapt(addProductDto);
         var categoryId = addProductDto.getCategory().getId();
         product.setCategoryId(categoryId);
 
-        var productId = unitOfWorkImpl.getProductDao().insert(product);
+        var productId = unitOfWork.getProductDao().insert(product);
         product.getProductDetail().setProductId(productId);
-        unitOfWorkImpl.getProductDetailDao().insert(product.getProductDetail());
+        unitOfWork.getProductDetailDao().insert(product.getProductDetail());
 
         for (var i = 0; i < addProductDto.getMaterials().size(); i++) {
             var materialId = addProductDto.getMaterials().get(i).getId();
-            unitOfWorkImpl.getProductDao().addMaterialToProduct(materialId, productId);
+            unitOfWork.getProductDao().addMaterialToProduct(materialId, productId);
         }
+        unitOfWork.commit();
     }
 
     @Override
-    public void updateProduct(UpdateProductDto updateProductDto) {
-        var product = MapperProfile.adapt(updateProductDto);
-        unitOfWorkImpl.getProductDao().update(product);
-        unitOfWorkImpl.getProductDetailDao().update(product.getProductDetail());
+    public void updateProduct(UpdateProductDto updateProductDto, int id) {
+        var product = productConvertor.adapt(updateProductDto);
+        product.setId(id);
+        unitOfWork.getProductDao().update(product);
+        unitOfWork.getProductDetailDao().update(product.getProductDetail());
+        unitOfWork.commit();
     }
 
     @Override
     public void removeProduct(int id) {
-        var isFound = unitOfWorkImpl.getProductDao().isExist(id);
+        var isFound = unitOfWork.getProductDao().isExist(id);
         if (!isFound) {
             new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        unitOfWorkImpl.getProductDao().remove(id);
+        unitOfWork.getProductDao().deactivate(id);
     }
 
     @Override
     public void cancelProduct(int id) {
-        var isFound = unitOfWorkImpl.getProductDao().isExist(id);
+        var isFound = unitOfWork.getProductDao().isExist(id);
         if (!isFound) {
             new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        unitOfWorkImpl.getProductDao().delete(id);
+        unitOfWork.getProductDao().delete(id);
     }
 }
