@@ -1,8 +1,9 @@
 package com.heroku.spacey.dao.product;
 
-import com.heroku.spacey.dao.general.BaseDao;
-import com.heroku.spacey.dao.general.IdMapper;
+import com.heroku.spacey.dao.common.BaseDao;
+import com.heroku.spacey.dao.common.IdMapper;
 import com.heroku.spacey.entity.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
+@Slf4j
 @Repository
 public class ProductDaoImpl extends BaseDao implements ProductDao {
     private final ProductMapper mapper = new ProductMapper();
@@ -22,7 +24,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 
     @Override
     public Product get(int id) {
-        String sql = "SELECT p.*, c.id category_id, c.name category_name, m.id material_id, m.name material_name,\n" +
+        var sql = "SELECT p.*, c.id category_id, c.name category_name, m.id material_id, m.name material_name,\n" +
                 "pd.id pd_id, pd.productid pd_product_id, pd.color pd_color, pd.sizeproduct pd_size, pd.amount pd_amount\n" +
                 "FROM products p\n" +
                 "INNER JOIN material_to_products mtp on p.id = mtp.productid\n" +
@@ -30,8 +32,7 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
                 "INNER JOIN categories c on p.categoryid = c.id\n" +
                 "INNER JOIN product_details pd on p.id = pd.productid\n" +
                 "WHERE p.id = ?";
-        Object[] params = new Object[]{id};
-        var products = getJdbcTemplate().query(sql, mapper, params);
+        var products = Objects.requireNonNull(getJdbcTemplate()).query(sql, mapper, id);
         if (products.isEmpty()) {
             return null;
         }
@@ -40,21 +41,18 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 
     @Override
     public boolean isExist(int id) {
-        String sql = "SELECT p.id \n" +
-                "FROM products p\n" +
-                "WHERE p.id = ?";
-        Object[] params = new Object[]{id};
-        var products = getJdbcTemplate().query(sql, idMapper, params);
+        var sql = "SELECT p.id FROM products p WHERE p.id = ?";
+        var products = Objects.requireNonNull(getJdbcTemplate()).query(sql, idMapper, id);
         return !products.isEmpty();
     }
 
     @Override
     public int insert(Product product) {
-        String sql = "INSERT INTO products(categoryid, name, " +
+        var sql = "INSERT INTO products(categoryid, name, " +
                 "createddate, productsex, price, photo, " +
                 "description, discount, isavailable) " +
                 "VALUES (?, ?, current_timestamp, ?, ?, ?, ?, ?, ?);";
-        try (PreparedStatement statement = getDataSource()
+        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
                 .getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, product.getCategoryId());
             statement.setString(2, product.getName());
@@ -66,23 +64,23 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
             statement.setBoolean(8, product.getIsAvailable());
             return add(statement);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            log.info(e.getMessage());
         }
         return -1;
     }
 
     @Override
     public void addMaterialToProduct(int materialId, int productId) {
-        String sql = "INSERT INTO material_to_products(materialid, productid) VALUES (?, ?)";
+        var sql = "INSERT INTO material_to_products(materialid, productid) VALUES (?, ?)";
         Objects.requireNonNull(getJdbcTemplate()).update(sql, materialId, productId);
     }
 
     @Override
     public void update(Product product) {
-        String sql = "UPDATE products SET name = ?, createddate = current_timestamp, " +
+        var sql = "UPDATE products SET name = ?, createddate = current_timestamp, " +
                 "productsex = ?, price = ?, photo = ?, description = ?, discount = ?, isavailable=? " +
                 "WHERE id = ?";
-        Object[] params = new Object[]{
+        var params = new Object[]{
                 product.getName(), product.getProductSex(), product.getPrice(),
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
                 product.getIsAvailable(), product.getId()
@@ -92,13 +90,13 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM products WHERE id=?";
+        var sql = "DELETE FROM products WHERE id=?";
         Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 
     @Override
     public void remove(int id) {
-        String sql = "UPDATE products SET isavailable = false WHERE id = ?";
+        var sql = "UPDATE products SET isavailable = false WHERE id = ?";
         Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 }

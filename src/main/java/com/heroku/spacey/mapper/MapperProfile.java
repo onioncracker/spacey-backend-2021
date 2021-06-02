@@ -19,7 +19,8 @@ import org.springframework.stereotype.Component;
 public class MapperProfile {
     private static final ModelMapper mapper = new ModelMapper();
 
-    private MapperProfile() {}
+    private MapperProfile() {
+    }
 
     public static Product adapt(AddProductDto source) {
         mapper.typeMap(AddProductDto.class, Product.class);
@@ -65,3 +66,6 @@ public class MapperProfile {
         return mapper.map(source, MaterialDto.class);
     }
 }
+
+
+

@@ -1,7 +1,6 @@
 package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.contracts.ProductService;
-import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ProductController {
     private final ProductService productService;
-
 
     public ProductController(ProductServiceImpl productServiceImpl) {
         this.productService = productServiceImpl;
@@ -46,9 +44,9 @@ public class ProductController {
     public ResponseEntity<String> editProduct(@RequestBody UpdateProductDto updateProductDto) {
         try {
             productService.updateProduct(updateProductDto);
-            return ResponseEntity.ok("successfully");
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.toString());
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,7 +54,7 @@ public class ProductController {
     public ResponseEntity<String> removeProduct(@PathVariable int id) {
         try {
             productService.removeProduct(id);
-            return ResponseEntity.ok("successfully");
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -66,9 +64,9 @@ public class ProductController {
     public ResponseEntity<String> cancelAddingProduct(@PathVariable int id) {
         try {
             productService.cancelProduct(id);
-            return ResponseEntity.ok("successfully");
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.unprocessableEntity().body(e.toString());
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

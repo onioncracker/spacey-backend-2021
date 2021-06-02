@@ -2,6 +2,7 @@ package com.heroku.spacey.dao.product;
 
 import com.heroku.spacey.entity.*;
 import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -26,7 +27,6 @@ public class ProductMapper implements RowMapper<Product> {
 
         var category = categoryMapper.mapRow(resultSet, i);
         var materials = materialMapper.mapRow(resultSet, i);
-
         var productDetails = productDetailsMapper.mapRow(resultSet, i);
 
         product.setMaterials(materials);

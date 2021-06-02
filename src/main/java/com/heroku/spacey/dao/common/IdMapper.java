@@ -1,4 +1,4 @@
-package com.heroku.spacey.dao.general;
+package com.heroku.spacey.dao.common;
 
 import org.springframework.jdbc.core.RowMapper;
 

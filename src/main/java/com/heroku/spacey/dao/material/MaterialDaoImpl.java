@@ -1,8 +1,9 @@
 package com.heroku.spacey.dao.material;
 
-import com.heroku.spacey.dao.general.BaseDao;
-import com.heroku.spacey.dao.general.IdMapper;
+import com.heroku.spacey.dao.common.BaseDao;
+import com.heroku.spacey.dao.common.IdMapper;
 import com.heroku.spacey.entity.Material;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
+@Slf4j
 @Repository
 public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     private final MaterialMapper mapper = new MaterialMapper();
@@ -22,44 +24,40 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
 
     @Override
     public Material getById(int id) {
-        String sql = "SELECT * FROM materials WHERE id = ?";
-        Object[] params = new Object[]{id};
-        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sql, mapper, params);
+        var sql = "SELECT * FROM materials WHERE id = ?";
+        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(sql, mapper, id);
     }
 
     @Override
     public boolean isExist(int id) {
-        String sql = "SELECT m.id \n" +
-                "FROM materials m\n" +
-                "WHERE m.id = ?";
-        Object[] params = new Object[]{id};
-        var materials = getJdbcTemplate().query(sql, idMapper, params);
+        var sql = "SELECT m.id FROM materials m WHERE m.id = ?";
+        var materials = Objects.requireNonNull(getJdbcTemplate()).query(sql, idMapper, id);
         return !materials.isEmpty();
     }
 
     @Override
     public int insert(Material material) {
-        String sql = "INSERT INTO materials(name) VALUES (?)";
-        try (PreparedStatement statement = getDataSource()
+        var sql = "INSERT INTO materials(name) VALUES (?)";
+        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
                 .getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, material.getName());
             return add(statement);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            log.info(e.getMessage());
         }
         return -1;
     }
 
     @Override
     public void update(Material material) {
-        String sql = "UPDATE materials SET name = ? WHERE id = ?";
-        Object[] params = new Object[]{material.getName(), material.getId()};
+        var sql = "UPDATE materials SET name = ? WHERE id = ?";
+        var params = new Object[]{material.getName(), material.getId()};
         Objects.requireNonNull(getJdbcTemplate()).update(sql, params);
     }
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM materials WHERE id=?";
+        var sql = "DELETE FROM materials WHERE id=?";
         Objects.requireNonNull(getJdbcTemplate()).update(sql, id);
     }
 }

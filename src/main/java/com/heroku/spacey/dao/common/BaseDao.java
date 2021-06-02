@@ -1,5 +1,6 @@
-package com.heroku.spacey.dao.general;
+package com.heroku.spacey.dao.common;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import javax.sql.DataSource;
@@ -7,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Slf4j
 public abstract class BaseDao extends JdbcDaoSupport {
 
     public BaseDao(DataSource dataSource) {
@@ -26,8 +28,8 @@ public abstract class BaseDao extends JdbcDaoSupport {
                     throw new SQLException("error!");
                 }
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            log.error(throwable.getMessage());
         }
         return -1;
     }

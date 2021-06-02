@@ -15,7 +15,7 @@ public class MaterialForProductMapper implements RowMapper<List<Material>> {
     public List<Material> mapRow(ResultSet resultSet, int i) throws SQLException {
         Array array = resultSet.getArray("material_name");
         String[] materialNames = (String[]) array.getArray();
-        int[] materialIds =  (int[]) resultSet.getArray("material_id").getArray();
+        int[] materialIds = (int[]) resultSet.getArray("material_id").getArray();
 
         var materials = new ArrayList<Material>();
         for (var j = 0; j < materialIds.length; j++) {

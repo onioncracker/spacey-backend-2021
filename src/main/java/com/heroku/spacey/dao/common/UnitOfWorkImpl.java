@@ -1,29 +1,37 @@
-package com.heroku.spacey.dao;
+package com.heroku.spacey.dao.common;
 
 import com.heroku.spacey.dao.category.CategoryDaoImpl;
 import com.heroku.spacey.dao.material.MaterialDaoImpl;
 import com.heroku.spacey.dao.product.ProductDaoImpl;
 import com.heroku.spacey.dao.productDetail.ProductDetailDaoImpl;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 
 @Component
-public class UnitOfWork {
+public class UnitOfWorkImpl implements UnitOfWork {
+    @Autowired
     private CategoryDaoImpl categoryDao;
     private MaterialDaoImpl materialDao;
     private ProductDaoImpl productDao;
     private ProductDetailDaoImpl detailDao;
     private final DataSource dataSource;
+    private final Connection connection;
 
-    public UnitOfWork(DataSource dataSource) {
+    @SneakyThrows
+    public UnitOfWorkImpl(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.connection = dataSource.getConnection();
+        connection.setAutoCommit(false);
     }
 
     public CategoryDaoImpl getCategoryDao() {
-        if (categoryDao == null) {
-            categoryDao = new CategoryDaoImpl(dataSource);
-        }
+//        if (categoryDao == null) {
+//            categoryDao = new CategoryDaoImpl(dataSource);
+//        }
         return categoryDao;
     }
 
@@ -46,5 +54,11 @@ public class UnitOfWork {
             detailDao = new ProductDetailDaoImpl(dataSource);
         }
         return detailDao;
+    }
+
+    @SneakyThrows
+    @Override
+    public void commit() {
+        connection.commit();
     }
 }

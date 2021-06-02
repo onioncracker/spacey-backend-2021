@@ -2,6 +2,7 @@ package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.contracts.CategoryService;
 import com.heroku.spacey.dto.category.CategoryDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CategoryController {
     private final CategoryService categoryService;
+    private static final String CATEGORY_NOT_FOUND = "category not found by id";
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(@Autowired CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
@@ -19,7 +21,7 @@ public class CategoryController {
         try {
             var category = categoryService.getById(id);
             if (category == null) {
-                return new ResponseEntity("category not found by id", HttpStatus.NOT_FOUND);
+                return new ResponseEntity(CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
             }
             return ResponseEntity.ok(category);
         } catch (Exception e) {
@@ -42,7 +44,7 @@ public class CategoryController {
         try {
             var category = categoryService.getById(id);
             if (category == null) {
-                return new ResponseEntity("category not found by id", HttpStatus.NOT_FOUND);
+                return new ResponseEntity(CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
             }
             categoryService.updateCategory(categoryDto, id);
             return new ResponseEntity(HttpStatus.OK);
@@ -56,7 +58,7 @@ public class CategoryController {
         try {
             var category = categoryService.getById(id);
             if (category == null) {
-                return new ResponseEntity("category not found by id", HttpStatus.NOT_FOUND);
+                return new ResponseEntity(CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
             }
             categoryService.deleteCategory(category.getId());
             return new ResponseEntity(HttpStatus.NO_CONTENT);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class MaterialController {
     private final MaterialService materialService;
+    private static final String MATERIAL_NOT_FOUND = "material not found by id";
 
     public MaterialController(MaterialService materialService) {
         this.materialService = materialService;
@@ -19,7 +20,7 @@ public class MaterialController {
         try {
             var material = materialService.getById(id);
             if (material == null) {
-                return new ResponseEntity("material not found by id", HttpStatus.NOT_FOUND);
+                return new ResponseEntity(MATERIAL_NOT_FOUND, HttpStatus.NOT_FOUND);
             }
             return ResponseEntity.ok(material);
         } catch (Exception e) {
@@ -37,11 +38,15 @@ public class MaterialController {
         }
     }
 
-    @PutMapping("/api/material/edit")
-    public ResponseEntity<String> editMaterial(@RequestBody MaterialDto materialDto) {
+    @PutMapping("/api/material/edit/{id}")
+    public ResponseEntity<String> editMaterial(@RequestBody MaterialDto materialDto, @PathVariable int id) {
         try {
-            materialService.updateMaterial(materialDto);
-            return ResponseEntity.ok("successfully");
+            var material = materialService.getById(id);
+            if (material == null) {
+                return new ResponseEntity(MATERIAL_NOT_FOUND, HttpStatus.NOT_FOUND);
+            }
+            materialService.updateMaterial(materialDto, id);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -50,8 +55,12 @@ public class MaterialController {
     @DeleteMapping("/api/material/delete/{id}")
     public ResponseEntity<String> deleteMaterial(@PathVariable int id) {
         try {
-            materialService.deleteMaterial(id);
-            return ResponseEntity.ok("successfully");
+            var material = materialService.getById(id);
+            if (material == null) {
+                return new ResponseEntity(MATERIAL_NOT_FOUND, HttpStatus.NOT_FOUND);
+            }
+            materialService.deleteMaterial(material.getId());
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

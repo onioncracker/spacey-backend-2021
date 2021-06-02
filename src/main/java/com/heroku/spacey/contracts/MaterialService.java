@@ -7,7 +7,7 @@ public interface MaterialService {
 
     void addMaterial(MaterialDto materialDto);
 
-    void updateMaterial(MaterialDto materialDto);
+    void updateMaterial(MaterialDto materialDto, int id);
 
     void deleteMaterial(int id);
 }
