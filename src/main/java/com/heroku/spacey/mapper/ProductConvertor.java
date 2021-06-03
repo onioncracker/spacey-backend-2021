@@ -16,15 +16,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class ProductConvertor {
-    private static final ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper;
 
-//    public ProductConvertor(@Autowired ModelMapper mapper) {
-//        this.mapper = mapper;
-//    }
+    public ProductConvertor(@Autowired ModelMapper mapper) {
+        this.mapper = mapper;
+    }
 
-    public static Product adapt(AddProductDto source) {
+    public Product adapt(AddProductDto source) {
         mapper.typeMap(AddProductDto.class, Product.class);
         mapper.typeMap(MaterialDto.class, Material.class);
         mapper.typeMap(CategoryDto.class, Category.class);
@@ -32,7 +32,7 @@ public class ProductConvertor {
         return mapper.map(source, Product.class);
     }
 
-    public static Product adapt(UpdateProductDto source) {
+    public Product adapt(UpdateProductDto source) {
         mapper.typeMap(UpdateProductDto.class, Product.class);
         mapper.typeMap(MaterialDto.class, Material.class);
         mapper.typeMap(CategoryDto.class, Category.class);
@@ -40,7 +40,7 @@ public class ProductConvertor {
         return mapper.map(source, Product.class);
     }
 
-    public static ProductDto adapt(Product source) {
+    public ProductDto adapt(Product source) {
         mapper.typeMap(Product.class, ProductDto.class);
         mapper.typeMap(Material.class, MaterialDto.class);
         mapper.typeMap(Category.class, CategoryDto.class);

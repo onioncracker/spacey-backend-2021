@@ -15,9 +15,9 @@ public class ProductServiceImpl implements ProductService {
     private final UnitOfWork unitOfWork;
     private final ProductConvertor productConvertor;
 
-    public ProductServiceImpl(UnitOfWork unitOfWork) {
+    public ProductServiceImpl(UnitOfWork unitOfWork, ProductConvertor productConvertor) {
         this.unitOfWork = unitOfWork;
-        this.productConvertor = new ProductConvertor();
+        this.productConvertor = productConvertor;
     }
 
     @Override
@@ -26,8 +26,7 @@ public class ProductServiceImpl implements ProductService {
         if (product == null) {
             return null;
         }
-        var test = productConvertor.adapt(product);
-        return test;
+        return productConvertor.adapt(product);
     }
 
     @Override

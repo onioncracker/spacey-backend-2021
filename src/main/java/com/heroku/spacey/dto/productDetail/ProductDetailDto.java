@@ -2,8 +2,6 @@ package com.heroku.spacey.dto.productDetail;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 @Data
 public class ProductDetailDto {
     private Integer id;

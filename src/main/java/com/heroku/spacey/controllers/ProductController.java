@@ -19,14 +19,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getCategory(@PathVariable int id) {
+    public ResponseEntity<ProductDto> getProduct(@PathVariable int id) {
         try {
             var product = productService.getById(id);
             if (product == null) {
                 return new ResponseEntity("product not found by id", HttpStatus.NOT_FOUND);
             }
-            var test = new ResponseEntity(product, HttpStatus.OK);
-            return test;
+            return new ResponseEntity(product, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

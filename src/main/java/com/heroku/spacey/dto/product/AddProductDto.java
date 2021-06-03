@@ -6,11 +6,13 @@ import com.heroku.spacey.dto.productDetail.AddProductDetailDto;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 @Data
 public class AddProductDto {
     private String name;
+    private Date createdDate;
     private String productSex;
     private BigDecimal price;
     private Double discount;

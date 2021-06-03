@@ -8,20 +8,20 @@ import java.util.List;
 
 @Data
 public class Product {
-    private int id;
+    private Integer id;
     private String name;
     private Date createdDate;
     private String productSex;
     private BigDecimal price;
     private String photo;
     private String description;
-    private double discount;
+    private Double discount;
     private Boolean isAvailable;
 
     private List<Material> materials;
     private Category productCategory;
-    private int categoryId;
+    private Integer categoryId;
 
     private ProductDetail productDetail;
-    private int productDetailsId;
+    private Integer productDetailsId;
 }
