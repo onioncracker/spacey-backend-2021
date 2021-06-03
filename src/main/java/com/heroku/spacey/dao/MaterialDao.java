@@ -1,4 +1,4 @@
-package com.heroku.spacey.dao.material;
+package com.heroku.spacey.dao;
 
 import com.heroku.spacey.entity.Material;
 

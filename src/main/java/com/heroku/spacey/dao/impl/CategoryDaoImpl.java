@@ -1,23 +1,28 @@
 package com.heroku.spacey.dao.category;
 
-import com.heroku.spacey.dao.common.BaseDao;
+import com.heroku.spacey.dao.CategoryDao;
 import com.heroku.spacey.entity.Category;
+import com.heroku.spacey.mapper.CategoryMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 @Repository
 @PropertySource("classpath:sql/category_queries.properties")
-public class CategoryDaoImpl extends BaseDao implements CategoryDao {
+public class CategoryDaoImpl implements CategoryDao {
     private final CategoryMapper mapper = new CategoryMapper();
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Value("${category_get_by_id}")
     private String getCategoryById;
@@ -28,9 +33,9 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
     @Value("${delete_category}")
     private String deleteCategory;
 
-    public CategoryDaoImpl(DataSource dataSource) {
-        super(dataSource);
-    }
+//    public CategoryDaoImpl(DataSource dataSource) {
+//        super(dataSource);
+//    }
 
     @Override
     public Category getById(int id) {
@@ -43,13 +48,14 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
 
     @Override
     public int insert(Category category) {
-        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
-                .getConnection().prepareStatement(editCategory, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, category.getName());
-            return add(statement);
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
+//        jdbcTemplate.update(editCategory, mapper, category.getName());
+//        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
+//                .getConnection().prepareStatement(editCategory, Statement.RETURN_GENERATED_KEYS)) {
+//            statement.setString(1, category.getName());
+//            return add(statement);
+//        } catch (SQLException e) {
+//            log.error(e.getMessage());
+//        }
         return -1;
     }
 
@@ -61,6 +67,6 @@ public class CategoryDaoImpl extends BaseDao implements CategoryDao {
 
     @Override
     public void delete(int id) {
-        Objects.requireNonNull(getJdbcTemplate()).update(deleteCategory, id);
+        Objects.requireNonNull(jdbcTemplate).update(deleteCategory, id);
     }
 }

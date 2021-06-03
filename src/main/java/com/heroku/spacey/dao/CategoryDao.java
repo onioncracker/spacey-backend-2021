@@ -1,4 +1,4 @@
-package com.heroku.spacey.dao.category;
+package com.heroku.spacey.dao;
 
 import com.heroku.spacey.entity.Category;
 

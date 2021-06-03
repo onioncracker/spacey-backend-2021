@@ -27,7 +27,7 @@ public class MailServiceImpl implements MailService {
     private final SpringTemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
-    private String SPACEY_MAIL;
+    private String spaceyMail;
 
     @Autowired
     public MailServiceImpl(JavaMailSender emailSender, Environment environment, SpringTemplateEngine templateEngine) {
@@ -39,7 +39,7 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
         var message = new SimpleMailMessage();
-        message.setFrom(Objects.requireNonNull(environment.getProperty(SPACEY_MAIL)));
+        message.setFrom(Objects.requireNonNull(environment.getProperty(spaceyMail)));
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
@@ -56,7 +56,7 @@ public class MailServiceImpl implements MailService {
 
         var message = emailSender.createMimeMessage();
         var helper = new MimeMessageHelper(message, true);
-        helper.setFrom(SPACEY_MAIL);
+        helper.setFrom(spaceyMail);
         helper.setTo(to);
         helper.setSubject(subject);
 

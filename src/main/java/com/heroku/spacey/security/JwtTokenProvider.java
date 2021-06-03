@@ -2,8 +2,7 @@ package com.heroku.spacey.security;
 
 import com.heroku.spacey.models.UserModel;
 import io.jsonwebtoken.*;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,22 +16,18 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
     @Value("${jwt.token.validity}")
-    public long TOKEN_VALIDITY;
+    private long tokenValidity;
 
     @Value("${jwt.signing.key}")
-    public String SIGNING_KEY;
+    private String signingKey;
 
     @Value("${jwt.authorities.key}")
-    public String AUTHORITIES_KEY;
-
-    @Autowired
-    private Logger logger;
+    private String authoritiesKey;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -49,7 +44,7 @@ public class JwtTokenProvider {
 
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(SIGNING_KEY)
+                .setSigningKey(signingKey)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -63,25 +58,25 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + tokenValidity * 1000))
+                .signWith(SignatureAlgorithm.HS256, signingKey)
                 .compact();
     }
 
     public Boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
-            logger.error("Invalid JWT signature - {}", ex.getMessage());
+            log.error("Invalid JWT signature - {}", ex.getMessage());
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token - {}", ex.getMessage());
+            log.error("Invalid JWT token - {}", ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token - {}", ex.getMessage());
+            log.error("Expired JWT token - {}", ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token - {}", ex.getMessage());
+            log.error("Unsupported JWT token - {}", ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty - {}", ex.getMessage());
+            log.error("JWT claims string is empty - {}", ex.getMessage());
         }
         return false;
     }
@@ -89,12 +84,12 @@ public class JwtTokenProvider {
     UsernamePasswordAuthenticationToken getAuthenticationToken(final String token,
                                                                final Authentication existingAuth,
                                                                final UserModel userInfo) {
-        final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
+        final JwtParser jwtParser = Jwts.parser().setSigningKey(signingKey);
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
         final Claims claims = claimsJws.getBody();
 
         final Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get(authoritiesKey).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 

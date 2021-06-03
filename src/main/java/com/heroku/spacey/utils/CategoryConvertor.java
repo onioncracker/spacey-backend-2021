@@ -3,16 +3,11 @@ package com.heroku.spacey.mapper;
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.entity.Category;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CategoryConvertor {
-    private final ModelMapper mapper;
-
-    public CategoryConvertor(@Autowired ModelMapper mapper) {
-        this.mapper = mapper;
-    }
+    private final ModelMapper mapper = new ModelMapper();
 
     public Category adapt(CategoryDto source) {
         mapper.typeMap(CategoryDto.class, Category.class);

@@ -13,16 +13,11 @@ import com.heroku.spacey.entity.Material;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductDetail;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductConvertor {
-    private final ModelMapper mapper;
-
-    public ProductConvertor(@Autowired ModelMapper mapper) {
-        this.mapper = mapper;
-    }
+    private final ModelMapper mapper = new ModelMapper();
 
     public Product adapt(AddProductDto source) {
         mapper.typeMap(AddProductDto.class, Product.class);

@@ -1,24 +1,24 @@
 package com.heroku.spacey.services;
 
-import com.heroku.spacey.contracts.MaterialService;
-import com.heroku.spacey.dao.common.UnitOfWork;
+import com.heroku.spacey.dao.MaterialDao;
+import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
 import com.heroku.spacey.mapper.MaterialConvertor;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
-    private final UnitOfWork unitOfWork;
+    private MaterialDao materialDao;
     private final MaterialConvertor materialConvertor;
 
-    public MaterialServiceImpl(UnitOfWork unitOfWork, MaterialConvertor materialConvertor) {
-        this.unitOfWork = unitOfWork;
+    public MaterialServiceImpl(@Autowired MaterialDao materialDao, @Autowired MaterialConvertor materialConvertor) {
+        this.materialDao = materialDao;
         this.materialConvertor = materialConvertor;
     }
 
     @Override
     public MaterialDto getById(int id) {
-        var material = unitOfWork.getMaterialDao().getById(id);
+        var material = materialDao.getById(id);
         if (material == null) {
             return null;
         }
@@ -28,18 +28,18 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public void addMaterial(MaterialDto materialDto) {
         var material = materialConvertor.adapt(materialDto);
-        unitOfWork.getMaterialDao().insert(material);
+        materialDao.insert(material);
     }
 
     @Override
     public void updateMaterial(MaterialDto materialDto, int id) {
         var material = materialConvertor.adapt(materialDto);
         material.setId(id);
-        unitOfWork.getMaterialDao().update(material);
+        materialDao.update(material);
     }
 
     @Override
     public void deleteMaterial(int id) {
-        unitOfWork.getMaterialDao().delete(id);
+        materialDao.delete(id);
     }
 }

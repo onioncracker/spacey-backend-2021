@@ -33,7 +33,11 @@ public class AuthController {
     private final MailServiceImpl mailServiceImpl;
     private final TokenService tokenService;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, MailServiceImpl mailServiceImpl, TokenService tokenService) {
+    public AuthController(UserService userService,
+                          AuthenticationManager authenticationManager,
+                          JwtTokenProvider jwtTokenProvider,
+                          MailServiceImpl mailServiceImpl,
+                          TokenService tokenService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;

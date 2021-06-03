@@ -1,4 +1,4 @@
-package com.heroku.spacey.dao.product;
+package com.heroku.spacey.dao;
 
 import com.heroku.spacey.entity.Product;
 
