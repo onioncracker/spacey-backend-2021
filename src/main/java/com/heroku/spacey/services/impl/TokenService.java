@@ -1,4 +1,4 @@
-package com.heroku.spacey.services;
+package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.dto.auth.UserTokenDto;

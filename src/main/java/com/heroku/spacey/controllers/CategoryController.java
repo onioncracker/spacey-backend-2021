@@ -1,14 +1,23 @@
 package com.heroku.spacey.controllers;
 
-import com.heroku.spacey.contracts.CategoryService;
+import com.heroku.spacey.services.CategoryService;
 import com.heroku.spacey.dto.category.CategoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
+//TODO delete all try-catches
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/v1/category")
 public class CategoryController {
     private final CategoryService categoryService;
     private static final String CATEGORY_NOT_FOUND = "category not found by id";
@@ -54,6 +63,7 @@ public class CategoryController {
         }
     }
 
+    @PreAuthorize("hasAuthority(T(com.heroku.spacey.utils.Role).PRODUCT_MANAGER)")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CategoryDto> deleteCategory(@PathVariable int id) {
         try {

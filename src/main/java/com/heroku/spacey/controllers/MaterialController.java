@@ -1,6 +1,6 @@
 package com.heroku.spacey.controllers;
 
-import com.heroku.spacey.contracts.MaterialService;
+import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

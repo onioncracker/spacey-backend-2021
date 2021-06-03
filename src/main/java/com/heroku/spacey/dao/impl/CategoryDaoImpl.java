@@ -1,4 +1,4 @@
-package com.heroku.spacey.dao.category;
+package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.CategoryDao;
 import com.heroku.spacey.entity.Category;
@@ -39,7 +39,7 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public Category getById(int id) {
-        var categories = Objects.requireNonNull(getJdbcTemplate()).query(getCategoryById, mapper, id);
+        List<Category> categories = Objects.requireNonNull(jdbcTemplate).query(getCategoryById, mapper, id);
         if (categories.isEmpty()) {
             return null;
         }
@@ -61,8 +61,8 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public void update(Category category) {
-        var params = new Object[]{category.getName(), category.getId()};
-        Objects.requireNonNull(getJdbcTemplate()).update(updateCategory, params);
+        Object params = new Object[]{category.getName(), category.getId()};
+        Objects.requireNonNull(jdbcTemplate).update(updateCategory, params);
     }
 
     @Override

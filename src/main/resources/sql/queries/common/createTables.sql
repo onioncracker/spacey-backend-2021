@@ -10,6 +10,7 @@ CREATE TABLE login_infos
     PhoneNumber CHARACTER VARYING(50) NULL
 );
 
+
 CREATE TABLE user_details
 (
     UserId SERIAL PRIMARY KEY,
@@ -30,11 +31,13 @@ CREATE TABLE product_carts
     OverallPrice MONEY
 );
 
+
 CREATE TABLE categories
 (
     Id SERIAL PRIMARY KEY,
     Name CHARACTER VARYING(30)
 );
+
 
 CREATE TABLE products
 (
@@ -50,6 +53,7 @@ CREATE TABLE products
     IsAvailable BOOL
 );
 
+
 CREATE TABLE product_to_carts
 (
     CartId INTEGER REFERENCES product_carts ON DELETE CASCADE,
@@ -59,11 +63,13 @@ CREATE TABLE product_to_carts
     PRIMARY KEY (CartId, ProductId)
 );
 
+
 CREATE TABLE materials
 (
     Id SERIAL PRIMARY KEY,
     Name CHARACTER VARYING(30)
 );
+
 
 CREATE TABLE material_to_products
 (
@@ -71,6 +77,7 @@ CREATE TABLE material_to_products
     ProductId INTEGER REFERENCES products(id) ON DELETE CASCADE,
     PRIMARY KEY(MaterialId, ProductId)
 );
+
 
 CREATE TABLE product_to_compares
 (

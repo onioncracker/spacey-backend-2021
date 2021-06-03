@@ -1,10 +1,10 @@
 package com.heroku.spacey.controllers;
 
-import com.heroku.spacey.contracts.ProductService;
+import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
-import com.heroku.spacey.services.ProductServiceImpl;
+import com.heroku.spacey.services.impl.ProductServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable int id) {
         try {
-            var product = productService.getById(id);
+            ProductDto product = productService.getById(id);
             if (product == null) {
                 return new ResponseEntity("product not found by id", HttpStatus.NOT_FOUND);
             }

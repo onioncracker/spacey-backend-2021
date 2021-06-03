@@ -1,9 +1,10 @@
-package com.heroku.spacey.services;
+package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.MaterialDao;
 import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
-import com.heroku.spacey.mapper.MaterialConvertor;
+import com.heroku.spacey.utils.MaterialConvertor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

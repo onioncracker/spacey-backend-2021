@@ -1,7 +1,9 @@
-package com.heroku.spacey.dao.productDetail;
+package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.common.BaseDao;
+import com.heroku.spacey.dao.ProductDetailDao;
 import com.heroku.spacey.entity.ProductDetail;
+import com.heroku.spacey.mapper.ProductDetailMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

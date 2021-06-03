@@ -1,4 +1,4 @@
-package com.heroku.spacey.services;
+package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.CategoryDao;
 import com.heroku.spacey.dao.MaterialDao;
@@ -8,7 +8,8 @@ import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
-import com.heroku.spacey.mapper.ProductConvertor;
+import com.heroku.spacey.utils.ProductConvertor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

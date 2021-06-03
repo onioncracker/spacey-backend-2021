@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper;
+package com.heroku.spacey.utils;
 
 import com.heroku.spacey.dto.material.MaterialDto;
 import com.heroku.spacey.entity.Material;

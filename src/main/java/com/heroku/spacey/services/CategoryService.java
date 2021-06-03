@@ -1,4 +1,4 @@
-package com.heroku.spacey.contracts;
+package com.heroku.spacey.services;
 
 import com.heroku.spacey.dto.category.CategoryDto;
 
