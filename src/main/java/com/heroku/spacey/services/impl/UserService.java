@@ -1,6 +1,6 @@
-package com.heroku.spacey.services;
+package com.heroku.spacey.services.impl;
 
-import com.heroku.spacey.dto.UserRegisterDto;
+import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.models.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

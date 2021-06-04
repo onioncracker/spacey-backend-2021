@@ -32,7 +32,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http.cors()
                 .and()
                 .csrf()
@@ -41,7 +41,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/register", "/login")
+                .antMatchers(
+                        "/register", "/login", "/recover_password", "/**",
+                        "/v3/api-docs/**", "/v3/api-docs.yaml",
+                        "/swagger-resources/**", "/swagger-ui.html",
+                        "/swagger-ui/**", "/webjars/**", "/api/category/**", "/api/product/**",
+                        "/api/material/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
