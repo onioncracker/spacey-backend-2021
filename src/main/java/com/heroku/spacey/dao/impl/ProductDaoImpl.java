@@ -1,27 +1,26 @@
 package com.heroku.spacey.dao.impl;
 
-import com.heroku.spacey.dao.common.BaseDao;
-import com.heroku.spacey.dao.common.IdMapper;
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.mapper.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
 @Slf4j
 @Repository
 @PropertySource("classpath:sql/product_queries.properties")
-public class ProductDaoImpl extends BaseDao implements ProductDao {
+public class ProductDaoImpl implements ProductDao {
     private final ProductMapper mapper = new ProductMapper();
-    private final IdMapper idMapper = new IdMapper();
+    private final JdbcTemplate jdbcTemplate;
 
     @Value("${product_get_by_id}")
     private String getProductById;
@@ -38,13 +37,14 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
     @Value("${deactivate_product}")
     private String deactivateProduct;
 
-    public ProductDaoImpl(DataSource dataSource) {
-        super(dataSource);
+    public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
+
 
     @Override
     public Product get(int id) {
-        var products = Objects.requireNonNull(getJdbcTemplate()).query(getProductById, mapper, id);
+        var products = Objects.requireNonNull(jdbcTemplate).query(getProductById, mapper, id);
         if (products.isEmpty()) {
             return null;
         }
@@ -53,32 +53,40 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
 
     @Override
     public boolean isExist(int id) {
-        var products = Objects.requireNonNull(getJdbcTemplate()).query(isExistProduct, idMapper, id);
+        var products = Objects.requireNonNull(jdbcTemplate)
+                .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
         return !products.isEmpty();
     }
 
     @Override
     public int insert(Product product) {
-        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
-                .getConnection().prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, product.getCategoryId());
-            statement.setString(2, product.getName());
-            statement.setString(3, product.getProductSex());
-            statement.setBigDecimal(4, product.getPrice());
-            statement.setString(5, product.getPhoto());
-            statement.setString(6, product.getDescription());
-            statement.setDouble(7, product.getDiscount());
-            statement.setBoolean(8, product.getIsAvailable());
-            return add(statement);
-        } catch (SQLException e) {
-            log.info(e.getMessage());
+        int returnId;
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, product.getCategoryId());
+            ps.setString(2, product.getName());
+            ps.setString(3, product.getProductSex());
+            ps.setBigDecimal(4, product.getPrice());
+            ps.setString(5, product.getPhoto());
+            ps.setString(6, product.getDescription());
+            ps.setDouble(7, product.getDiscount());
+            ps.setBoolean(8, product.getIsAvailable());
+            ps.setBoolean(9, product.getIsOnAuction());
+            return ps;
+        }, holder);
+
+        if (holder.getKeys().size() > 1) {
+            returnId = (int) holder.getKeys().get("productId");
+        } else {
+            returnId = holder.getKey().intValue();
         }
-        return -1;
+        return returnId;
     }
 
     @Override
     public void addMaterialToProduct(int materialId, int productId) {
-        Objects.requireNonNull(getJdbcTemplate()).update(materialToProduct, materialId, productId);
+        Objects.requireNonNull(jdbcTemplate).update(materialToProduct, materialId, productId);
     }
 
     @Override
@@ -88,16 +96,16 @@ public class ProductDaoImpl extends BaseDao implements ProductDao {
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
                 product.getIsAvailable(), product.getId()
         };
-        Objects.requireNonNull(getJdbcTemplate()).update(updateProduct, params);
+        Objects.requireNonNull(jdbcTemplate).update(updateProduct, params);
     }
 
     @Override
     public void delete(int id) {
-        Objects.requireNonNull(getJdbcTemplate()).update(deleteProduct, id);
+        Objects.requireNonNull(jdbcTemplate).update(deleteProduct, id);
     }
 
     @Override
     public void deactivate(int id) {
-        Objects.requireNonNull(getJdbcTemplate()).update(deactivateProduct, id);
+        Objects.requireNonNull(jdbcTemplate).update(deactivateProduct, id);
     }
 }

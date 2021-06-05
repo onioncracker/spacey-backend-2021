@@ -1,25 +1,26 @@
 package com.heroku.spacey.dao.impl;
 
-import com.heroku.spacey.dao.common.BaseDao;
 import com.heroku.spacey.dao.MaterialDao;
 import com.heroku.spacey.entity.Material;
 import com.heroku.spacey.mapper.MaterialMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
 @Slf4j
 @Repository
 @PropertySource("classpath:sql/material_queries.properties")
-public class MaterialDaoImpl extends BaseDao implements MaterialDao {
+public class MaterialDaoImpl implements MaterialDao {
     private final MaterialMapper mapper = new MaterialMapper();
+    private final JdbcTemplate jdbcTemplate;
 
     @Value("${material_get_by_id}")
     private String getMaterialById;
@@ -30,35 +31,41 @@ public class MaterialDaoImpl extends BaseDao implements MaterialDao {
     @Value("${delete_material}")
     private String deleteMaterial;
 
-    public MaterialDaoImpl(DataSource dataSource) {
-        super(dataSource);
+    public MaterialDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Material getById(int id) {
-        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(getMaterialById, mapper, id);
+        return Objects.requireNonNull(jdbcTemplate).queryForObject(getMaterialById, mapper, id);
     }
 
     @Override
     public int insert(Material material) {
-        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
-                .getConnection().prepareStatement(editMaterial, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, material.getName());
-            return add(statement);
-        } catch (SQLException e) {
-            log.info(e.getMessage());
+        int returnId;
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(editMaterial, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, material.getName());
+            return ps;
+        }, holder);
+
+        if (holder.getKeys().size() > 1) {
+            returnId = (int) holder.getKeys().get("materialId");
+        } else {
+            returnId = holder.getKey().intValue();
         }
-        return -1;
+        return returnId;
     }
 
     @Override
     public void update(Material material) {
-        var params = new Object[]{material.getName(), material.getId()};
-        Objects.requireNonNull(getJdbcTemplate()).update(updateMaterial, params);
+        Object[] params = new Object[]{material.getName(), material.getId()};
+        Objects.requireNonNull(jdbcTemplate).update(updateMaterial, params);
     }
 
     @Override
     public void delete(int id) {
-        Objects.requireNonNull(getJdbcTemplate()).update(deleteMaterial, id);
+        Objects.requireNonNull(jdbcTemplate).update(deleteMaterial, id);
     }
 }

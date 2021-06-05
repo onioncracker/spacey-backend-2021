@@ -17,6 +17,7 @@ public class Product {
     private String description;
     private Double discount;
     private Boolean isAvailable;
+    private Boolean isOnAuction;
 
     private List<Material> materials;
     private Category productCategory;

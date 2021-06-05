@@ -1,7 +1,5 @@
 package com.heroku.spacey.services.impl;
 
-import com.heroku.spacey.dao.CategoryDao;
-import com.heroku.spacey.dao.MaterialDao;
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.dao.ProductDetailDao;
 import com.heroku.spacey.dto.product.AddProductDto;
@@ -18,24 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
-    private CategoryDao categoryDao;
-    private MaterialDao materialDao;
     private ProductDetailDao productDetailDao;
     private final ProductConvertor productConvertor;
 
     public ProductServiceImpl(@Autowired ProductDao productDao,
-                              @Autowired CategoryDao categoryDao,
-                              @Autowired MaterialDao materialDao,
                               @Autowired ProductConvertor productConvertor,
                               @Autowired ProductDetailDao productDetailDao) {
         this.productDao = productDao;
-        this.categoryDao = categoryDao;
-        this.materialDao = materialDao;
         this.productConvertor = productConvertor;
         this.productDetailDao = productDetailDao;
     }
 
     @Override
+    @Transactional
     public ProductDto getById(int id) {
         var product = productDao.get(id);
         if (product == null) {
@@ -44,8 +37,8 @@ public class ProductServiceImpl implements ProductService {
         return productConvertor.adapt(product);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void addProduct(AddProductDto addProductDto) {
         var product = productConvertor.adapt(addProductDto);
         var categoryId = addProductDto.getCategory().getId();
@@ -62,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void updateProduct(UpdateProductDto updateProductDto, int id) {
         var product = productConvertor.adapt(updateProductDto);
         product.setId(id);
@@ -70,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void removeProduct(int id) {
         var isFound = productDao.isExist(id);
         if (!isFound) {
@@ -79,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void cancelProduct(int id) {
         var isFound = productDao.isExist(id);
         if (!isFound) {
