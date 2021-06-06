@@ -1,25 +1,26 @@
 package com.heroku.spacey.dao.impl;
 
-import com.heroku.spacey.dao.common.BaseDao;
 import com.heroku.spacey.dao.ProductDetailDao;
 import com.heroku.spacey.entity.ProductDetail;
 import com.heroku.spacey.mapper.ProductDetailMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 
 @Slf4j
 @Repository
 @PropertySource("classpath:sql/product_detail_queries.properties")
-public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
+public class ProductDetailDaoImpl implements ProductDetailDao {
     private final ProductDetailMapper mapper = new ProductDetailMapper();
+    private final JdbcTemplate jdbcTemplate;
 
     @Value("${product_detail_get_by_id}")
     private String getProductDetailById;
@@ -30,28 +31,35 @@ public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
     @Value("${delete_product_detail}")
     private String deleteProductDetail;
 
-    public ProductDetailDaoImpl(DataSource dataSource) {
-        super(dataSource);
+    public ProductDetailDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
+
 
     @Override
     public ProductDetail getById(int id) {
-        return Objects.requireNonNull(getJdbcTemplate()).queryForObject(getProductDetailById, mapper, id);
+        return Objects.requireNonNull(jdbcTemplate).queryForObject(getProductDetailById, mapper, id);
     }
 
     @Override
     public int insert(ProductDetail productDetail) {
-        try (PreparedStatement statement = Objects.requireNonNull(getDataSource())
-                .getConnection().prepareStatement(editProductDetail, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, productDetail.getProductId());
-            statement.setString(2, productDetail.getColor());
-            statement.setString(3, productDetail.getSizeProduct());
-            statement.setInt(4, productDetail.getAmount());
-            return add(statement);
-        } catch (SQLException e) {
-            log.info(e.getMessage());
+        int returnId;
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(editProductDetail, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, productDetail.getProductId());
+            ps.setString(2, productDetail.getColor());
+            ps.setString(3, productDetail.getSizeProduct());
+            ps.setInt(4, productDetail.getAmount());
+            return ps;
+        }, holder);
+
+        if (holder.getKeys().size() > 1) {
+            returnId = (int) holder.getKeys().get("detailsId");
+        } else {
+            returnId = holder.getKey().intValue();
         }
-        return -1;
+        return returnId;
     }
 
     @Override
@@ -60,11 +68,11 @@ public class ProductDetailDaoImpl extends BaseDao implements ProductDetailDao {
                 productDetail.getColor(), productDetail.getSizeProduct(),
                 productDetail.getAmount(), productDetail.getId()
         };
-        Objects.requireNonNull(getJdbcTemplate()).update(updateProductDetail, params);
+        Objects.requireNonNull(jdbcTemplate).update(updateProductDetail, params);
     }
 
     @Override
     public void delete(int id) {
-        Objects.requireNonNull(getJdbcTemplate()).update(deleteProductDetail, id);
+        Objects.requireNonNull(jdbcTemplate).update(deleteProductDetail, id);
     }
 }

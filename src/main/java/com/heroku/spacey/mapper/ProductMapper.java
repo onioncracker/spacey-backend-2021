@@ -10,9 +10,9 @@ public class ProductMapper implements RowMapper<Product> {
     @Override
     public Product mapRow(ResultSet resultSet, int i) throws SQLException {
         var product = new Product();
-        product.setId(resultSet.getInt("id"));
+        product.setId(resultSet.getInt("productid"));
         product.setCategoryId(resultSet.getInt("categoryid"));
-        product.setName(resultSet.getString("name"));
+        product.setName(resultSet.getString("productname"));
         product.setCreatedDate(resultSet.getDate("createddate"));
         product.setProductSex(resultSet.getString("productsex"));
         product.setPrice(resultSet.getBigDecimal("price"));
@@ -20,6 +20,7 @@ public class ProductMapper implements RowMapper<Product> {
         product.setDescription(resultSet.getString("description"));
         product.setDiscount(resultSet.getDouble("discount"));
         product.setIsAvailable(resultSet.getBoolean("isavailable"));
+        product.setIsOnAuction(resultSet.getBoolean("isonauction"));
 
         var categoryMapper = new CategoryForProductMapper();
         var materialMapper = new MaterialForProductMapper();

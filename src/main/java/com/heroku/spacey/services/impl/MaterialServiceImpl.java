@@ -6,18 +6,21 @@ import com.heroku.spacey.dto.material.MaterialDto;
 import com.heroku.spacey.utils.MaterialConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
     private MaterialDao materialDao;
     private final MaterialConvertor materialConvertor;
 
-    public MaterialServiceImpl(@Autowired MaterialDao materialDao, @Autowired MaterialConvertor materialConvertor) {
+    public MaterialServiceImpl(@Autowired MaterialDao materialDao,
+                               @Autowired MaterialConvertor materialConvertor) {
         this.materialDao = materialDao;
         this.materialConvertor = materialConvertor;
     }
 
     @Override
+    @Transactional
     public MaterialDto getById(int id) {
         var material = materialDao.getById(id);
         if (material == null) {
@@ -27,12 +30,14 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
+    @Transactional
     public void addMaterial(MaterialDto materialDto) {
         var material = materialConvertor.adapt(materialDto);
         materialDao.insert(material);
     }
 
     @Override
+    @Transactional
     public void updateMaterial(MaterialDto materialDto, int id) {
         var material = materialConvertor.adapt(materialDto);
         material.setId(id);
@@ -40,6 +45,7 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
+    @Transactional
     public void deleteMaterial(int id) {
         materialDao.delete(id);
     }

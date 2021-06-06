@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
-//TODO delete all try-catches
+// todo: do controller advice instead try-catch
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
