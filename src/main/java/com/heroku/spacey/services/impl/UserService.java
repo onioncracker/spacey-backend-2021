@@ -17,15 +17,20 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        // this is for testing untill db is configured
         UserModel userModel = new UserModel("user", passwordEncoder.encode("password"));
         userModel.setGrantedAuthorities("ROLE_USER");
-        return userModel;
+
+        return userModel;        // TODO here implement returning user object from database
     }
 
-    public UserDetails create(UserRegisterDto registerDto) {
+    public UserDetails create(UserRegisterDto registerDto){
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
         UserModel userDetails = new UserModel(registerDto.getEmail(), encodedPassword);
-        userDetails.setGrantedAuthorities("ROLE_USER");
+        userDetails.setGrantedAuthorities("ROLE_USER");  // TODO change role setting
+
+        // TODO here also implement creation of user in database
         return userDetails;
     }
 }
