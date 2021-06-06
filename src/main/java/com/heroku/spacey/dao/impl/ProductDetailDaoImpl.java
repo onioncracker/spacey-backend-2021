@@ -35,6 +35,7 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     @Override
     public ProductDetail getById(Long id) {
         return Objects.requireNonNull(jdbcTemplate).queryForObject(getProductDetailById, mapper, id);
