@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 public class ProductDto {
-    private Integer id;
+    private Long id;
     private String name;
     private Date createdDate;
     private String productSex;

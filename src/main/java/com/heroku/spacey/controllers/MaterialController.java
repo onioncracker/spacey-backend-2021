@@ -14,7 +14,7 @@ public class MaterialController {
     private final MaterialService materialService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<MaterialDto> getMaterial(@PathVariable int id) {
+    public ResponseEntity<MaterialDto> getMaterial(@PathVariable Long id) {
         MaterialDto material = materialService.getById(id);
         return new ResponseEntity<>(material, HttpStatus.OK);
     }
@@ -27,14 +27,14 @@ public class MaterialController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<MaterialDto> editMaterial(@RequestBody MaterialDto materialDto,
-                                                    @PathVariable int id) {
+                                                    @PathVariable Long id) {
         MaterialDto material = materialService.getById(id);
         materialService.updateMaterial(materialDto, material.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<MaterialDto> deleteMaterial(@PathVariable int id) {
+    public ResponseEntity<MaterialDto> deleteMaterial(@PathVariable Long id) {
         MaterialDto material = materialService.getById(id);
         materialService.deleteMaterial(material.getId());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

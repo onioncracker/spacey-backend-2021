@@ -10,7 +10,7 @@ public class MaterialMapper implements RowMapper<Material> {
     @Override
     public Material mapRow(ResultSet resultSet, int i) throws SQLException {
         Material material = new Material();
-        material.setId(resultSet.getInt("materialid"));
+        material.setId(resultSet.getLong("materialid"));
         material.setName(resultSet.getString("namematerial"));
         return material;
     }

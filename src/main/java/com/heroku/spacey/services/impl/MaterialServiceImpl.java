@@ -22,7 +22,7 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public MaterialDto getById(int id) {
+    public MaterialDto getById(Long id) {
         Material material = materialDao.getById(id);
         if (material == null) {
             throw new NotFoundException("Material not found");
@@ -39,7 +39,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public void updateMaterial(MaterialDto materialDto, int id) {
+    public void updateMaterial(MaterialDto materialDto, Long id) {
         Material material = materialConvertor.adapt(materialDto);
         material.setId(id);
         materialDao.update(material);
@@ -47,7 +47,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public void deleteMaterial(int id) {
+    public void deleteMaterial(Long id) {
         materialDao.delete(id);
     }
 }

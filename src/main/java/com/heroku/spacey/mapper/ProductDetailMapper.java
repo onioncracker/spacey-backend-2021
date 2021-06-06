@@ -10,11 +10,11 @@ public class ProductDetailMapper implements RowMapper<ProductDetail> {
     @Override
     public ProductDetail mapRow(ResultSet resultSet, int i) throws SQLException {
         ProductDetail productDetails = new ProductDetail();
-        productDetails.setId(resultSet.getInt("detailsid"));
-        productDetails.setProductId(resultSet.getInt("productid"));
+        productDetails.setId(resultSet.getLong("detailsid"));
+        productDetails.setProductId(resultSet.getLong("productid"));
         productDetails.setColor(resultSet.getString("color"));
         productDetails.setSizeProduct(resultSet.getString("sizeproduct"));
-        productDetails.setAmount(resultSet.getInt("amount"));
+        productDetails.setAmount(resultSet.getLong("amount"));
         return productDetails;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class Product {
-    private Integer id;
+    private Long id;
     private String name;
     private Date createdDate;
     private String productSex;
@@ -21,8 +21,8 @@ public class Product {
 
     private List<Material> materials;
     private Category productCategory;
-    private Integer categoryId;
+    private Long categoryId;
 
     private ProductDetail productDetail;
-    private Integer productDetailsId;
+    private Long productDetailsId;
 }

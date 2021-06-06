@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class MaterialToProduct {
-    private Integer materialId;
-    private Integer productId;
+    private Long materialId;
+    private Long productId;
 }
