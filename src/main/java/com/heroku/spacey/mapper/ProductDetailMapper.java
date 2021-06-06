@@ -10,7 +10,8 @@ public class ProductDetailMapper implements RowMapper<ProductDetail> {
     @Override
     public ProductDetail mapRow(ResultSet resultSet, int i) throws SQLException {
         var productDetails = new ProductDetail();
-        productDetails.setId(resultSet.getInt("id"));
+        productDetails.setId(resultSet.getInt("detailsid"));
+        productDetails.setProductId(resultSet.getInt("productid"));
         productDetails.setColor(resultSet.getString("color"));
         productDetails.setSizeProduct(resultSet.getString("sizeproduct"));
         productDetails.setAmount(resultSet.getInt("amount"));

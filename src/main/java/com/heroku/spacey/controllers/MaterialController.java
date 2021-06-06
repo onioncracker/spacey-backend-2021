@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/material")
+@RequestMapping("/api/v1/material")
 public class MaterialController {
     private final MaterialService materialService;
     private static final String MATERIAL_NOT_FOUND = "material not found by id";

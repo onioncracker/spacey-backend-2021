@@ -6,6 +6,7 @@ import com.heroku.spacey.services.CategoryService;
 import com.heroku.spacey.utils.CategoryConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -19,6 +20,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto getById(int id) {
         var category = categoryDao.getById(id);
         if (category == null) {
@@ -28,12 +30,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void addCategory(CategoryDto categoryDto) {
         var category = categoryConvertor.adapt(categoryDto);
         categoryDao.insert(category);
     }
 
     @Override
+    @Transactional
     public void updateCategory(CategoryDto categoryDto, int id) {
         var category = categoryConvertor.adapt(categoryDto);
         category.setId(id);
@@ -41,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(int id) {
         categoryDao.delete(id);
     }
