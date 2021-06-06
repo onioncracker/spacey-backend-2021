@@ -16,6 +16,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
+    // default values
+    private static final int DEFAULT_PAGE_NUM = 0;
+    private static final int DEFAULT_PAGE_SIZE = 20;
 
     private final EmployeeDao employeeDao;
 
@@ -25,9 +28,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Map<String, String> filters = new HashMap<>();
 
-        // default values
-        int pageNum = 0;
-        int pageSize = 20;
+        int pageNum = DEFAULT_PAGE_NUM;
+        int pageSize = DEFAULT_PAGE_SIZE;
 
         if (isValid(role)) {
             filters.put("role", role);
@@ -78,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.delete(loginId);
     }
 
-    private boolean isValid(String var) {
-        return var != null && !var.isEmpty();
+    private boolean isValid(String value) {
+        return value != null && !value.isEmpty();
     }
 }

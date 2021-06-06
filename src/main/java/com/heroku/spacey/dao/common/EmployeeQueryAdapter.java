@@ -22,7 +22,7 @@ public class EmployeeQueryAdapter {
         return this;
     }
 
-    public EmployeeQueryAdapter addFilter(Map<String, String> filters) {
+    public EmployeeQueryAdapter addFilters(Map<String, String> filters) {
         if (filters == null || filters.isEmpty()) {
             return this;
         }

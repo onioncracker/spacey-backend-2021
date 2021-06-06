@@ -3,6 +3,7 @@ package com.heroku.spacey.dao.impl;
 import com.heroku.spacey.dao.EmployeeDao;
 import com.heroku.spacey.dao.common.EmployeeQueryAdapter;
 import com.heroku.spacey.dto.employee.EmployeeDto;
+import com.heroku.spacey.mapper.EmployeeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -10,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -24,23 +24,23 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private final EmployeeQueryAdapter employeeQueryAdapter;
 
     @Value("${select_employees}")
-    private String selectEmployees;
+    private String sqlSelectEmployees;
     @Value("${select_employee_by_id}")
-    private String selectEmployeeById;
+    private String sqlSelectEmployeeById;
     @Value("${insert_employee}")
-    private String insertEmployee;
+    private String sqlInsertEmployee;
     @Value("${update_employee}")
-    private String updateEmployee;
+    private String sqlUpdateEmployee;
     @Value("${delete_employee}")
-    private String deleteEmployee;
+    private String sqlDeleteEmployee;
 
 
     @Override
     public List<EmployeeDto> getAll(Map<String, String> filters, int page, int pageSize) {
 
         employeeQueryAdapter
-                .createSelect(selectEmployees)
-                .addFilter(filters)
+                .createSelect(sqlSelectEmployees)
+                .addFilters(filters)
                 .setPage(page, pageSize);
 
         RowMapper<EmployeeDto> rowMapper = (rs, i) -> {
@@ -63,24 +63,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public EmployeeDto getById(int loginId) {
 
-        EmployeeDto employeeDto = new EmployeeDto();
         ResultSetExtractor<EmployeeDto> rse = resultSet -> {
-            if (!resultSet.next()) {
-                throw new NotFoundException("Haven't found employee with such ID.");
-            } else {
-                employeeDto.setLoginId(resultSet.getInt("loginid"));
-                employeeDto.setFirstName(resultSet.getString("firstname"));
-                employeeDto.setLastName(resultSet.getString("lastname"));
-                employeeDto.setEmail(resultSet.getString("email"));
-                employeeDto.setPhoneNumber(resultSet.getString("phonenumber"));
-                employeeDto.setUserRole(resultSet.getString("userrole"));
-                employeeDto.setStatus(resultSet.getString("status"));
-            }
+            EmployeeDto employeeDto = new EmployeeDto();
+            EmployeeMapper.mapEmployee(resultSet, employeeDto);
 
             return employeeDto;
         };
 
-        return jdbcTemplate.query(selectEmployeeById, rse, loginId);
+        return jdbcTemplate.query(sqlSelectEmployeeById, rse, loginId);
     }
 
     @Override
@@ -93,7 +83,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String status = employeeDto.getStatus();
         String phonenumber = employeeDto.getPhoneNumber();
 
-        jdbcTemplate.update(insertEmployee, email, userrole, firstname, lastname, status, phonenumber);
+        Object[] parameters = new Object[] {email, userrole, firstname, lastname, status, phonenumber};
+
+        jdbcTemplate.update(sqlInsertEmployee, parameters);
     }
 
     @Override
@@ -107,12 +99,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
         String status = employeeDto.getStatus();
         String phonenumber = employeeDto.getPhoneNumber();
 
-        return jdbcTemplate.update(updateEmployee, email, userrole, firstname, lastname, status, phonenumber, loginid);
+        Object[] parameters = new Object[] {email, userrole, firstname, lastname, status, phonenumber, loginid};
+
+        return jdbcTemplate.update(sqlUpdateEmployee, parameters);
     }
 
     @Override
     public int delete(int loginId) {
 
-        return jdbcTemplate.update(deleteEmployee, loginId);
+        return jdbcTemplate.update(sqlDeleteEmployee, loginId);
     }
 }

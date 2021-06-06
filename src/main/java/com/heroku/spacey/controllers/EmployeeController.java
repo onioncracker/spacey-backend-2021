@@ -22,7 +22,7 @@ public class EmployeeController {
     public ResponseEntity<List<EmployeeDto>> getAll(
             @RequestParam(required = false) String page,
             @RequestParam(required = false) String role,
-            @RequestParam(required = false) String status) {
+            @RequestParam(required = false) String status) throws SQLException {
 
         try {
             List<EmployeeDto> employees = employeeService.getEmployees(page, role, status, null);
@@ -35,16 +35,10 @@ public class EmployeeController {
     }
 
     @GetMapping("/{loginid}")
-    public ResponseEntity<EmployeeDto> get(@PathVariable int loginid) {
-        try {
-            EmployeeDto employeeDto = employeeService.getEmployeeById(loginid);
+    public ResponseEntity<EmployeeDto> get(@PathVariable int loginid) throws NotFoundException, SQLException {
+        EmployeeDto employeeDto = employeeService.getEmployeeById(loginid);
 
-            return ResponseEntity.ok(employeeDto);
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (SQLException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(employeeDto);
     }
 
     @GetMapping("/search/{prompt}")
@@ -52,69 +46,50 @@ public class EmployeeController {
             @PathVariable String prompt,
             @RequestParam(required = false) String page,
             @RequestParam(required = false) String role,
-            @RequestParam(required = false) String status) {
+            @RequestParam(required = false) String status) throws SQLException {
 
-        try {
-            List<EmployeeDto> employees;
+        List<EmployeeDto> employees;
 
-            if (prompt.length() >= 2) {
-                employees = employeeService.getEmployees(page, role, status, prompt);
+        if (prompt.length() >= 2) {
+            employees = employeeService.getEmployees(page, role, status, prompt);
 
-                if (employees != null) {
-                    return ResponseEntity.ok(employees);
-                } else {
-                    return ResponseEntity.notFound().build();
-                }
+            if (employees != null) {
+                return ResponseEntity.ok(employees);
             } else {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.notFound().build();
             }
-
-        } catch (SQLException e) {
-            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<String> create(@RequestBody EmployeeDto employeeDto) throws SQLException {
 
-        try {
-            employeeService.createEmployee(employeeDto);
+        employeeService.createEmployee(employeeDto);
 
-            return ResponseEntity.ok("New employee has been created.");
-
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        return ResponseEntity.ok("New employee has been created.");
     }
 
     @PutMapping("/{loginid}")
-    public ResponseEntity<String> update(@PathVariable int loginid, @RequestBody EmployeeDto employeeDto) {
-        try {
-            employeeDto.setLoginId(loginid);
+    public ResponseEntity<String> update(@PathVariable int loginid, @RequestBody EmployeeDto employeeDto)
+            throws SQLException {
 
-            if (employeeService.updateEmployee(employeeDto) == 0) {
-                return ResponseEntity.notFound().build();
-            }
+        employeeDto.setLoginId(loginid);
 
-            return ResponseEntity.ok("Employee info has been updated");
-
-        } catch (SQLException e) {
-            return ResponseEntity.badRequest().build();
+        if (employeeService.updateEmployee(employeeDto) == 0) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok("Employee info has been updated");
     }
 
     @DeleteMapping("/{loginid}")
-    public ResponseEntity<String> delete(@PathVariable int loginid) {
-        try {
-            if (employeeService.deleteEmployee(loginid) == 0) {
-                return ResponseEntity.notFound().build();
-            }
+    public ResponseEntity<String> delete(@PathVariable int loginid) throws SQLException {
 
-            return ResponseEntity.ok("Employee has been deleted.");
-
-        } catch (SQLException e) {
-            return ResponseEntity.badRequest().build();
+        if (employeeService.deleteEmployee(loginid) == 0) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok("Employee has been deleted.");
     }
 }
