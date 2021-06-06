@@ -16,7 +16,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable int id) {
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
@@ -29,21 +29,21 @@ public class ProductController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<ProductDto> editProduct(@RequestBody UpdateProductDto updateProductDto,
-                                                  @PathVariable int id) {
+                                                  @PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.updateProduct(updateProductDto, product.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/remove/{id}")
-    public ResponseEntity<ProductDto> removeProduct(@PathVariable int id) {
+    public ResponseEntity<ProductDto> removeProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.removeProduct(product.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/cancel/{id}")
-    public ResponseEntity<ProductDto> cancelAddingProduct(@PathVariable int id) {
+    public ResponseEntity<ProductDto> cancelAddingProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.cancelProduct(product.getId());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

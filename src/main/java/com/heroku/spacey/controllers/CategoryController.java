@@ -22,7 +22,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable int id) {
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id) {
         CategoryDto category = categoryService.getById(id);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
@@ -35,7 +35,7 @@ public class CategoryController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<CategoryDto> editCategory(@RequestBody CategoryDto categoryDto,
-                                                    @PathVariable int id) {
+                                                    @PathVariable Long id) {
         CategoryDto category = categoryService.getById(id);
         categoryService.updateCategory(categoryDto, category.getId());
         return new ResponseEntity<>(HttpStatus.OK);
@@ -43,7 +43,7 @@ public class CategoryController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority(T(com.heroku.spacey.utils.Role).PRODUCT_MANAGER)")
-    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable int id) {
+    public ResponseEntity<CategoryDto> deleteCategory(@PathVariable Long id) {
         CategoryDto category = categoryService.getById(id);
         categoryService.deleteCategory(category.getId());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

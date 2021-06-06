@@ -36,19 +36,19 @@ public class MaterialDaoImpl implements MaterialDao {
     }
 
     @Override
-    public Material getById(int id) {
+    public Material getById(Long id) {
         return Objects.requireNonNull(jdbcTemplate).queryForObject(getMaterialById, mapper, id);
     }
 
     @Override
-    public int insert(Material material) {
+    public Long insert(Material material) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editMaterial, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, material.getName());
             return ps;
         }, holder);
-        return (int) Objects.requireNonNull(holder.getKeys()).get("materialId");
+        return (Long) Objects.requireNonNull(holder.getKeys()).get("materialId");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MaterialDaoImpl implements MaterialDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deleteMaterial, id);
     }
 }

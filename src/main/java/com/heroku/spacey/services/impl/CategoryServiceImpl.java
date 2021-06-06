@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getById(int id) {
+    public CategoryDto getById(Long id) {
         Category category = categoryDao.getById(id);
         if (category == null) {
             throw new NotFoundException("Category not found");
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void updateCategory(CategoryDto categoryDto, int id) {
+    public void updateCategory(CategoryDto categoryDto, Long id) {
         Category category = categoryConvertor.adapt(categoryDto);
         category.setId(id);
         categoryDao.update(category);
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategory(int id) {
+    public void deleteCategory(Long id) {
         categoryDao.delete(id);
     }
 }

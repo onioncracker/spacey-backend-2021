@@ -36,22 +36,22 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
     }
 
     @Override
-    public ProductDetail getById(int id) {
+    public ProductDetail getById(Long id) {
         return Objects.requireNonNull(jdbcTemplate).queryForObject(getProductDetailById, mapper, id);
     }
 
     @Override
-    public int insert(ProductDetail productDetail) {
+    public Long insert(ProductDetail productDetail) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editProductDetail, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, productDetail.getProductId());
+            ps.setLong(1, productDetail.getProductId());
             ps.setString(2, productDetail.getColor());
             ps.setString(3, productDetail.getSizeProduct());
-            ps.setInt(4, productDetail.getAmount());
+            ps.setLong(4, productDetail.getAmount());
             return ps;
         }, holder);
-        return (int) Objects.requireNonNull(holder.getKeys()).get("detailsId");
+        return (Long) Objects.requireNonNull(holder.getKeys()).get("detailsId");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deleteProductDetail, id);
     }
 }
