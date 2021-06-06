@@ -1,12 +1,14 @@
 package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.MaterialDao;
+import com.heroku.spacey.entity.Material;
 import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
 import com.heroku.spacey.utils.MaterialConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
@@ -20,11 +22,10 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    @Transactional
     public MaterialDto getById(int id) {
-        var material = materialDao.getById(id);
+        Material material = materialDao.getById(id);
         if (material == null) {
-            return null;
+            throw new NotFoundException("Material not found");
         }
         return materialConvertor.adapt(material);
     }
@@ -32,14 +33,14 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public void addMaterial(MaterialDto materialDto) {
-        var material = materialConvertor.adapt(materialDto);
+        Material material = materialConvertor.adapt(materialDto);
         materialDao.insert(material);
     }
 
     @Override
     @Transactional
     public void updateMaterial(MaterialDto materialDto, int id) {
-        var material = materialConvertor.adapt(materialDto);
+        Material material = materialConvertor.adapt(materialDto);
         material.setId(id);
         materialDao.update(material);
     }

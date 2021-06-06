@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -44,7 +45,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Product get(int id) {
-        var products = Objects.requireNonNull(jdbcTemplate).query(getProductById, mapper, id);
+        List<Product> products = Objects.requireNonNull(jdbcTemplate).query(getProductById, mapper, id);
         if (products.isEmpty()) {
             return null;
         }
@@ -53,14 +54,13 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public boolean isExist(int id) {
-        var products = Objects.requireNonNull(jdbcTemplate)
+        List<Integer> products = Objects.requireNonNull(jdbcTemplate)
                 .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
         return !products.isEmpty();
     }
 
     @Override
     public int insert(Product product) {
-        int returnId;
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS);
@@ -75,13 +75,7 @@ public class ProductDaoImpl implements ProductDao {
             ps.setBoolean(9, product.getIsOnAuction());
             return ps;
         }, holder);
-
-        if (holder.getKeys().size() > 1) {
-            returnId = (int) holder.getKeys().get("productId");
-        } else {
-            returnId = holder.getKey().intValue();
-        }
-        return returnId;
+        return (int) Objects.requireNonNull(holder.getKeys()).get("productId");
     }
 
     @Override
@@ -91,7 +85,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public void update(Product product) {
-        var params = new Object[]{
+        Object[] params = new Object[]{
                 product.getName(), product.getProductSex(), product.getPrice(),
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
                 product.getIsAvailable(), product.getId()

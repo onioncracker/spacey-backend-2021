@@ -5,11 +5,12 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ProductMapper implements RowMapper<Product> {
     @Override
     public Product mapRow(ResultSet resultSet, int i) throws SQLException {
-        var product = new Product();
+        Product product = new Product();
         product.setId(resultSet.getInt("productid"));
         product.setCategoryId(resultSet.getInt("categoryid"));
         product.setName(resultSet.getString("productname"));
@@ -22,13 +23,13 @@ public class ProductMapper implements RowMapper<Product> {
         product.setIsAvailable(resultSet.getBoolean("isavailable"));
         product.setIsOnAuction(resultSet.getBoolean("isonauction"));
 
-        var categoryMapper = new CategoryForProductMapper();
-        var materialMapper = new MaterialForProductMapper();
-        var productDetailsMapper = new ProductDetailsForProductMapper();
+        CategoryForProductMapper categoryMapper = new CategoryForProductMapper();
+        MaterialForProductMapper materialMapper = new MaterialForProductMapper();
+        ProductDetailsForProductMapper productDetailsMapper = new ProductDetailsForProductMapper();
 
-        var category = categoryMapper.mapRow(resultSet, i);
-        var productDetails = productDetailsMapper.mapRow(resultSet, i);
-        var materials = materialMapper.mapRow(resultSet, i);
+        Category category = categoryMapper.mapRow(resultSet, i);
+        ProductDetail productDetails = productDetailsMapper.mapRow(resultSet, i);
+        List<Material> materials = materialMapper.mapRow(resultSet, i);
 
         product.setMaterials(materials);
         product.setProductCategory(category);

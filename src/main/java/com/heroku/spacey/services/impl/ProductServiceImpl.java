@@ -3,6 +3,7 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.dao.ProductDetailDao;
 import com.heroku.spacey.dto.product.AddProductDto;
+import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -28,11 +30,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public ProductDto getById(int id) {
-        var product = productDao.get(id);
+        Product product = productDao.get(id);
         if (product == null) {
-            return null;
+            throw new NotFoundException("Product not found");
         }
         return productConvertor.adapt(product);
     }
@@ -40,11 +41,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void addProduct(AddProductDto addProductDto) {
-        var product = productConvertor.adapt(addProductDto);
-        var categoryId = addProductDto.getCategory().getId();
+        Product product = productConvertor.adapt(addProductDto);
+        Integer categoryId = addProductDto.getCategory().getId();
         product.setCategoryId(categoryId);
 
-        var productId = productDao.insert(product);
+        int productId = productDao.insert(product);
         product.getProductDetail().setProductId(productId);
         productDetailDao.insert(product.getProductDetail());
 
@@ -57,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateProduct(UpdateProductDto updateProductDto, int id) {
-        var product = productConvertor.adapt(updateProductDto);
+        Product product = productConvertor.adapt(updateProductDto);
         product.setId(id);
         productDao.update(product);
         productDetailDao.update(product.getProductDetail());
@@ -66,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(int id) {
-        var isFound = productDao.isExist(id);
+        boolean isFound = productDao.isExist(id);
         if (!isFound) {
             new ResponseEntity(HttpStatus.NOT_FOUND);
         }
@@ -76,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void cancelProduct(int id) {
-        var isFound = productDao.isExist(id);
+        boolean isFound = productDao.isExist(id);
         if (!isFound) {
             new ResponseEntity(HttpStatus.NOT_FOUND);
         }

@@ -35,7 +35,6 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     @Override
     public ProductDetail getById(int id) {
         return Objects.requireNonNull(jdbcTemplate).queryForObject(getProductDetailById, mapper, id);
@@ -43,7 +42,6 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
 
     @Override
     public int insert(ProductDetail productDetail) {
-        int returnId;
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editProductDetail, Statement.RETURN_GENERATED_KEYS);
@@ -53,18 +51,12 @@ public class ProductDetailDaoImpl implements ProductDetailDao {
             ps.setInt(4, productDetail.getAmount());
             return ps;
         }, holder);
-
-        if (holder.getKeys().size() > 1) {
-            returnId = (int) holder.getKeys().get("detailsId");
-        } else {
-            returnId = holder.getKey().intValue();
-        }
-        return returnId;
+        return (int) Objects.requireNonNull(holder.getKeys()).get("detailsId");
     }
 
     @Override
     public void update(ProductDetail productDetail) {
-        var params = new Object[]{
+        Object[] params = new Object[]{
                 productDetail.getColor(), productDetail.getSizeProduct(),
                 productDetail.getAmount(), productDetail.getId()
         };

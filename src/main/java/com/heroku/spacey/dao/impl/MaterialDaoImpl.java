@@ -42,20 +42,13 @@ public class MaterialDaoImpl implements MaterialDao {
 
     @Override
     public int insert(Material material) {
-        int returnId;
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editMaterial, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, material.getName());
             return ps;
         }, holder);
-
-        if (holder.getKeys().size() > 1) {
-            returnId = (int) holder.getKeys().get("materialId");
-        } else {
-            returnId = holder.getKey().intValue();
-        }
-        return returnId;
+        return (int) Objects.requireNonNull(holder.getKeys()).get("materialId");
     }
 
     @Override

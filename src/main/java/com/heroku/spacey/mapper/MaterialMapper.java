@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class MaterialMapper implements RowMapper<Material> {
     @Override
     public Material mapRow(ResultSet resultSet, int i) throws SQLException {
-        var material = new Material();
+        Material material = new Material();
         material.setId(resultSet.getInt("materialid"));
         material.setName(resultSet.getString("namematerial"));
         return material;

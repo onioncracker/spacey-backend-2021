@@ -4,70 +4,48 @@ import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
-import com.heroku.spacey.services.impl.ProductServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/product")
 public class ProductController {
     private final ProductService productService;
 
-    public ProductController(ProductServiceImpl productServiceImpl) {
-        this.productService = productServiceImpl;
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable int id) {
-        try {
-            ProductDto product = productService.getById(id);
-            if (product == null) {
-                return new ResponseEntity("product not found by id", HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity(product, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ProductDto product = productService.getById(id);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody AddProductDto addProductDto) {
-        try {
-            productService.addProduct(addProductDto);
-            return new ResponseEntity("added product successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> addProduct(@RequestBody AddProductDto addProductDto) {
+        productService.addProduct(addProductDto);
+        return new ResponseEntity<>("Add product successfully", HttpStatus.CREATED);
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<ProductDto> editProduct(@RequestBody UpdateProductDto updateProductDto, @PathVariable int id) {
-        try {
-            productService.updateProduct(updateProductDto, id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ProductDto> editProduct(@RequestBody UpdateProductDto updateProductDto,
+                                                  @PathVariable int id) {
+        ProductDto product = productService.getById(id);
+        productService.updateProduct(updateProductDto, product.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/remove/{id}")
     public ResponseEntity<ProductDto> removeProduct(@PathVariable int id) {
-        try {
-            productService.removeProduct(id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ProductDto product = productService.getById(id);
+        productService.removeProduct(product.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/cancel/{id}")
     public ResponseEntity<ProductDto> cancelAddingProduct(@PathVariable int id) {
-        try {
-            productService.cancelProduct(id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        ProductDto product = productService.getById(id);
+        productService.cancelProduct(product.getId());
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

@@ -47,20 +47,13 @@ public class CategoryDaoImpl implements CategoryDao {
 
     @Override
     public int insert(Category category) {
-        int returnId;
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editCategory, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, category.getName());
             return ps;
         }, holder);
-
-        if (holder.getKeys().size() > 1) {
-            returnId = (int) holder.getKeys().get("categoryId");
-        } else {
-            returnId = holder.getKey().intValue();
-        }
-        return returnId;
+        return (int) Objects.requireNonNull(holder.getKeys()).get("categoryId");
     }
 
     @Override
