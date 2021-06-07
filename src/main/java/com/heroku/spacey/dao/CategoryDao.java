@@ -3,11 +3,11 @@ package com.heroku.spacey.dao;
 import com.heroku.spacey.entity.Category;
 
 public interface CategoryDao {
-    Category getById(int id);
+    Category getById(Long id);
 
-    int insert(Category category);
+    Long insert(Category category);
 
     void update(Category category);
 
-    void delete(int id);
+    void delete(Long id);
 }
