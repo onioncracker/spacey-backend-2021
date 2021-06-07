@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/product")
 public class ProductController {
     private final ProductService productService;
 
@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody AddProductDto addProductDto) {
+    public ResponseEntity addProduct(@RequestBody AddProductDto addProductDto) {
         try {
             productService.addProduct(addProductDto);
             return new ResponseEntity("added product successfully", HttpStatus.CREATED);

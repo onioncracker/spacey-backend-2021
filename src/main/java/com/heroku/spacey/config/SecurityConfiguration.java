@@ -1,6 +1,6 @@
 package com.heroku.spacey.config;
 
-import com.heroku.spacey.security.JwtAuthenticationFilter;
+import com.heroku.spacey.utils.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/v3/api-docs/**", "/v3/api-docs.yaml",
                         "/swagger-resources/**", "/swagger-ui.html",
                         "/swagger-ui/**", "/webjars/**", "/api/category/**", "/api/product/**",
-                        "/api/material/**")
+                        "/api/material/**", "/api/product/add")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

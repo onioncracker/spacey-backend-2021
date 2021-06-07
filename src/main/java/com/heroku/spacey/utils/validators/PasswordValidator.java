@@ -1,4 +1,6 @@
-package com.heroku.spacey.utils;
+package com.heroku.spacey.utils.validators;
+
+import com.heroku.spacey.utils.validators.PasswordConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,6 +1,6 @@
-package com.heroku.spacey.security;
+package com.heroku.spacey.utils.security;
 
-import com.heroku.spacey.models.UserModel;
+import com.heroku.spacey.entity.LoginInfo;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +54,7 @@ public class JwtTokenProvider {
         return expiration.before(new Date());
     }
 
-    public String generateToken(UserModel user) {
+    public String generateToken(LoginInfo user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -83,7 +83,7 @@ public class JwtTokenProvider {
 
     UsernamePasswordAuthenticationToken getAuthenticationToken(final String token,
                                                                final Authentication existingAuth,
-                                                               final UserModel userInfo) {
+                                                               final LoginInfo loginInfo) {
         final JwtParser jwtParser = Jwts.parser().setSigningKey(signingKey);
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
         final Claims claims = claimsJws.getBody();
@@ -93,6 +93,6 @@ public class JwtTokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(userInfo, "", authorities);
+        return new UsernamePasswordAuthenticationToken(loginInfo, "", authorities);
     }
 }

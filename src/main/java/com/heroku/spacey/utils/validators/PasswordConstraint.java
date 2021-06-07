@@ -1,4 +1,4 @@
-package com.heroku.spacey.utils;
+package com.heroku.spacey.utils.validators;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

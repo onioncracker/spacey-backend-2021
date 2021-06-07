@@ -1,6 +1,7 @@
-package com.heroku.spacey.security;
+package com.heroku.spacey.utils.security;
 
-import com.heroku.spacey.services.impl.UserService;
+import com.heroku.spacey.services.IUserService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,13 +22,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     private static final String TOKEN_PREFIX = "Bearer ";
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             String authToken = header.replace(TOKEN_PREFIX, "");
@@ -46,15 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-//        try{
-//            String userId = jwtTokenProvider.getUserIdFromToken(authToken);
-//        } catch (ExpiredJwtException e){
-//            logger.warn("Token has expired", e);
-//        } catch (SignatureException e){
-//            logger.error("Authentication failed");
-//        } catch (Exception e){
-//            logger.error("Error", e);
-//        }
 
         filterChain.doFilter(request, response);
     }

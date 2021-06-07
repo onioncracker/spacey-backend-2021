@@ -4,26 +4,15 @@ import com.heroku.spacey.utils.validators.EmailConstraint;
 import com.heroku.spacey.utils.validators.PasswordConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterDto {
+public class LoginDto {
 
     @EmailConstraint
     private String email;
     @PasswordConstraint
     private String password;
-
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
 }
