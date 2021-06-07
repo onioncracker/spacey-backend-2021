@@ -46,11 +46,8 @@ public class UserServiceImpl implements IUserService {
         return loginInfo;
     }
 
-    public boolean userExists(String email){
+    public boolean userExists(String email) {
         LoginInfo loginInfo = loginInfoDao.getLoginInfoByEmail(email);
-        if (loginInfo == null) {
-            return false;
-        }
-        return true;
+        return loginInfo != null;
     }
 }
