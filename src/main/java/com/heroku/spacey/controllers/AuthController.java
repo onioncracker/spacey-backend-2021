@@ -50,18 +50,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        try {
-            Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-            LoginInfo user = (LoginInfo) authenticate.getPrincipal();
-            return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.generateToken(user))
-                .body("successfully logged in");
-        } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.toString());
-        } catch (UsernameNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email not found");
-        }
+        Authentication authenticate = authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+        LoginInfo user = (LoginInfo) authenticate.getPrincipal();
+        return ResponseEntity.ok()
+            .header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.generateToken(user))
+            .body("successfully logged in");
     }
 
     @PostMapping("/recover_password")
