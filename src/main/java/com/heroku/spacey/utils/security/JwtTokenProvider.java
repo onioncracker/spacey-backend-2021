@@ -49,11 +49,6 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
     public String generateToken(LoginInfo user) {
         return Jwts.builder()
                 .setSubject(user.getUsername())
@@ -82,7 +77,6 @@ public class JwtTokenProvider {
     }
 
     UsernamePasswordAuthenticationToken getAuthenticationToken(final String token,
-                                                               final Authentication existingAuth,
                                                                final LoginInfo loginInfo) {
         final JwtParser jwtParser = Jwts.parser().setSigningKey(signingKey);
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);

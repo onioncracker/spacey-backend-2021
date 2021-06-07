@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+    public ResponseEntity<String> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         String message = "http://localhost:8080/confirm_register?token=";
         userService.registerUser(registerDto);
         mailServiceImpl.sendSimpleMessageWithTemplate(registerDto.getEmail(), CONFIRM_REGISTRATION_TOPIC, message + "");
@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
         try {
             Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));

@@ -39,12 +39,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.warn("user not found", e);
             }
 
-            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtTokenProvider.validateToken(authToken)) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
-                            null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null
+                && jwtTokenProvider.validateToken(authToken)) {
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
+                    null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 
