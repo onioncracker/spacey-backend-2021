@@ -18,12 +18,4 @@ public class UserRegisterDto {
     private String lastName;
     private String phoneNumber;
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
 }
