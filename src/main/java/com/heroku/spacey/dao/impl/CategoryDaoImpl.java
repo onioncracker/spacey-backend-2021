@@ -37,7 +37,7 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public Category getById(int id) {
+    public Category getById(Long id) {
         List<Category> categories = Objects.requireNonNull(jdbcTemplate).query(getCategoryById, mapper, id);
         if (categories.isEmpty()) {
             return null;
@@ -46,21 +46,14 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public int insert(Category category) {
-        int returnId;
+    public Long insert(Category category) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editCategory, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, category.getName());
             return ps;
         }, holder);
-
-        if (holder.getKeys().size() > 1) {
-            returnId = (int) holder.getKeys().get("categoryId");
-        } else {
-            returnId = holder.getKey().intValue();
-        }
-        return returnId;
+        return (Long) Objects.requireNonNull(holder.getKeys()).get("categoryId");
     }
 
     @Override
@@ -70,7 +63,7 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deleteCategory, id);
     }
 }

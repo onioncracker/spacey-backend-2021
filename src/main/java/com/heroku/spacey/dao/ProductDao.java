@@ -3,17 +3,17 @@ package com.heroku.spacey.dao;
 import com.heroku.spacey.entity.Product;
 
 public interface ProductDao {
-    Product get(int id);
+    Product get(Long id);
 
-    boolean isExist(int id);
+    boolean isExist(Long id);
 
-    int insert(Product product);
+    Long insert(Product product);
 
     void update(Product product);
 
-    void delete(int id);
+    void delete(Long id);
 
-    void deactivate(int id);
+    void deactivate(Long id);
 
-    void addMaterialToProduct(int materialId, int productId);
+    void addMaterialToProduct(Long materialId, Long productId);
 }

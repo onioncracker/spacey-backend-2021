@@ -3,11 +3,11 @@ package com.heroku.spacey.dao;
 import com.heroku.spacey.entity.Material;
 
 public interface MaterialDao {
-    Material getById(int id);
+    Material getById(Long id);
 
-    int insert(Material material);
+    Long insert(Material material);
 
     void update(Material material);
 
-    void delete(int id);
+    void delete(Long id);
 }

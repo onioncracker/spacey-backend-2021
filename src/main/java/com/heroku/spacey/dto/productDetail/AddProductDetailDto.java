@@ -6,5 +6,5 @@ import lombok.Data;
 public class AddProductDetailDto {
     private String sizeProduct;
     private String color;
-    private Integer amount;
+    private Long amount;
 }

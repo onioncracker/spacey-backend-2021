@@ -2,11 +2,13 @@ package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.CategoryDao;
 import com.heroku.spacey.dto.category.CategoryDto;
+import com.heroku.spacey.entity.Category;
 import com.heroku.spacey.services.CategoryService;
 import com.heroku.spacey.utils.CategoryConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -20,11 +22,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
-    public CategoryDto getById(int id) {
-        var category = categoryDao.getById(id);
+    public CategoryDto getById(Long id) {
+        Category category = categoryDao.getById(id);
         if (category == null) {
-            return null;
+            throw new NotFoundException("Category not found");
         }
         return categoryConvertor.adapt(category);
     }
@@ -32,21 +33,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void addCategory(CategoryDto categoryDto) {
-        var category = categoryConvertor.adapt(categoryDto);
+        Category category = categoryConvertor.adapt(categoryDto);
         categoryDao.insert(category);
     }
 
     @Override
     @Transactional
-    public void updateCategory(CategoryDto categoryDto, int id) {
-        var category = categoryConvertor.adapt(categoryDto);
+    public void updateCategory(CategoryDto categoryDto, Long id) {
+        Category category = categoryConvertor.adapt(categoryDto);
         category.setId(id);
         categoryDao.update(category);
     }
 
     @Override
     @Transactional
-    public void deleteCategory(int id) {
+    public void deleteCategory(Long id) {
         categoryDao.delete(id);
     }
 }

@@ -12,10 +12,10 @@ public class MaterialForProductMapper implements RowMapper<List<Material>> {
 
     @Override
     public List<Material> mapRow(ResultSet resultSet, int i) throws SQLException {
-        var materials = new ArrayList<Material>();
+        ArrayList<Material> materials = new ArrayList<>();
         do {
             var material = new Material();
-            material.setId(resultSet.getInt("material_id"));
+            material.setId(resultSet.getLong("material_id"));
             material.setName(resultSet.getString("material_name"));
             materials.add(material);
         }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -43,8 +44,8 @@ public class ProductDaoImpl implements ProductDao {
 
 
     @Override
-    public Product get(int id) {
-        var products = Objects.requireNonNull(jdbcTemplate).query(getProductById, mapper, id);
+    public Product get(Long id) {
+        List<Product> products = Objects.requireNonNull(jdbcTemplate).query(getProductById, mapper, id);
         if (products.isEmpty()) {
             return null;
         }
@@ -52,19 +53,18 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public boolean isExist(int id) {
-        var products = Objects.requireNonNull(jdbcTemplate)
+    public boolean isExist(Long id) {
+        List<Integer> products = Objects.requireNonNull(jdbcTemplate)
                 .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
         return !products.isEmpty();
     }
 
     @Override
-    public int insert(Product product) {
-        int returnId;
+    public Long insert(Product product) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, product.getCategoryId());
+            ps.setLong(1, product.getCategoryId());
             ps.setString(2, product.getName());
             ps.setString(3, product.getProductSex());
             ps.setBigDecimal(4, product.getPrice());
@@ -75,23 +75,17 @@ public class ProductDaoImpl implements ProductDao {
             ps.setBoolean(9, product.getIsOnAuction());
             return ps;
         }, holder);
-
-        if (holder.getKeys().size() > 1) {
-            returnId = (int) holder.getKeys().get("productId");
-        } else {
-            returnId = holder.getKey().intValue();
-        }
-        return returnId;
+        return (Long) Objects.requireNonNull(holder.getKeys()).get("productId");
     }
 
     @Override
-    public void addMaterialToProduct(int materialId, int productId) {
+    public void addMaterialToProduct(Long materialId, Long productId) {
         Objects.requireNonNull(jdbcTemplate).update(materialToProduct, materialId, productId);
     }
 
     @Override
     public void update(Product product) {
-        var params = new Object[]{
+        Object[] params = new Object[]{
                 product.getName(), product.getProductSex(), product.getPrice(),
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
                 product.getIsAvailable(), product.getId()
@@ -100,12 +94,12 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deleteProduct, id);
     }
 
     @Override
-    public void deactivate(int id) {
+    public void deactivate(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deactivateProduct, id);
     }
 }
