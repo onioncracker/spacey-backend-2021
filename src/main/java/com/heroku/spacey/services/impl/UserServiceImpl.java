@@ -45,4 +45,12 @@ public class UserServiceImpl implements IUserService {
         loginInfoDao.insert(loginInfo);
         return loginInfo;
     }
+
+    public boolean userExists(String email){
+        LoginInfo loginInfo = loginInfoDao.getLoginInfoByEmail(email);
+        if (loginInfo == null) {
+            return false;
+        }
+        return true;
+    }
 }

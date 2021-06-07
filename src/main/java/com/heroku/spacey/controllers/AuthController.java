@@ -9,6 +9,7 @@ import com.heroku.spacey.services.impl.MailServiceImpl;
 import com.heroku.spacey.services.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +41,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         String message = "http://localhost:8080/confirm_register?token=";
+        if (userService.userExists(registerDto.getEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user with such email already exists");
+        }
         userService.registerUser(registerDto);
         mailServiceImpl.sendSimpleMessageWithTemplate(registerDto.getEmail(), CONFIRM_REGISTRATION_TOPIC, message + "");
         return ResponseEntity.ok("user registered successfully");

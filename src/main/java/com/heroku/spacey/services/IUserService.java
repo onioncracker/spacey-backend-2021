@@ -9,4 +9,5 @@ public interface IUserService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
     UserDetails registerUser(UserRegisterDto userRegisterDto);
+    boolean userExists(String email);
 }
