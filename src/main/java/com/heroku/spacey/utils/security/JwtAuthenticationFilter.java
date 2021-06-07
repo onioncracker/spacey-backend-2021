@@ -1,6 +1,7 @@
-package com.heroku.spacey.security;
+package com.heroku.spacey.utils.security;
 
-import com.heroku.spacey.services.impl.UserService;
+import com.heroku.spacey.services.IUserService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,13 +22,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     private static final String TOKEN_PREFIX = "Bearer ";
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             String authToken = header.replace(TOKEN_PREFIX, "");
@@ -38,14 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.warn("user not found", e);
             }
 
-            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtTokenProvider.validateToken(authToken)) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
-                            null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null
+                && jwtTokenProvider.validateToken(authToken)) {
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,
+                    null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }

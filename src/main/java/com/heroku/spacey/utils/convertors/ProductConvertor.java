@@ -1,4 +1,4 @@
-package com.heroku.spacey.utils;
+package com.heroku.spacey.utils.convertors;
 
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.dto.material.MaterialDto;

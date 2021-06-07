@@ -1,4 +1,4 @@
-package com.heroku.spacey.models;
+package com.heroku.spacey.dto.auth;
 
 import lombok.Data;
 

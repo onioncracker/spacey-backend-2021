@@ -4,7 +4,7 @@ import com.heroku.spacey.dao.CategoryDao;
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.entity.Category;
 import com.heroku.spacey.services.CategoryService;
-import com.heroku.spacey.utils.CategoryConvertor;
+import com.heroku.spacey.utils.convertors.CategoryConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

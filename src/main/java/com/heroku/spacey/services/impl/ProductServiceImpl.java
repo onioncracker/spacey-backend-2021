@@ -7,7 +7,7 @@ import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
-import com.heroku.spacey.utils.ProductConvertor;
+import com.heroku.spacey.utils.convertors.ProductConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

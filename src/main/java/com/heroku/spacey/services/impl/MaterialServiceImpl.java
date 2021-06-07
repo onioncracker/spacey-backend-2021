@@ -4,7 +4,7 @@ import com.heroku.spacey.dao.MaterialDao;
 import com.heroku.spacey.entity.Material;
 import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
-import com.heroku.spacey.utils.MaterialConvertor;
+import com.heroku.spacey.utils.convertors.MaterialConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

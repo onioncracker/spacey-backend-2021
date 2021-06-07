@@ -2,6 +2,7 @@ package com.heroku.spacey.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,5 +47,15 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorMessage> badCredentialsException(BadCredentialsException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+            HttpStatus.UNAUTHORIZED.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false));
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 }
