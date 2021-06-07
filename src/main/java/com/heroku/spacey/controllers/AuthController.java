@@ -43,26 +43,23 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         String message = "http://localhost:8080/confirm_register?token=";
-            userService.registerUser(registerDto);
-            mailServiceImpl.sendSimpleMessageWithTemplate(registerDto.getEmail(), CONFIRM_REGISTRATION_TOPIC, message + ""); // TODO for Dima change message
-            return ResponseEntity.ok("user registered successfully");
-//        } catch (Exception e) {
-//            return ResponseEntity.unprocessableEntity().body(e.toString());
-//        }
+        userService.registerUser(registerDto);
+        mailServiceImpl.sendSimpleMessageWithTemplate(registerDto.getEmail(), CONFIRM_REGISTRATION_TOPIC, message + "");
+        return ResponseEntity.ok("user registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDto loginDto) {
         try {
             Authentication authenticate = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
             LoginInfo user = (LoginInfo) authenticate.getPrincipal();
             return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.generateToken(user))
-                    .body("successfully logged in");
+                .header(HttpHeaders.AUTHORIZATION, jwtTokenProvider.generateToken(user))
+                .body("successfully logged in");
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.toString());
-        }catch (UsernameNotFoundException ex) {
+        } catch (UsernameNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email not found");
         }
     }

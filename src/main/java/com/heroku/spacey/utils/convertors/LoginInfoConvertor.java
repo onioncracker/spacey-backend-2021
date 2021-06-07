@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class LoginInfoConvertor {
     private final ModelMapper mapper = new ModelMapper();
 
-    public LoginInfo adapt(UserRegisterDto userRegisterDto){
+    public LoginInfo adapt(UserRegisterDto userRegisterDto) {
         mapper.typeMap(UserRegisterDto.class, LoginInfo.class);
         return mapper.map(userRegisterDto, LoginInfo.class);
     }

@@ -7,7 +7,6 @@ import com.heroku.spacey.services.IUserService;
 import com.heroku.spacey.utils.Role;
 import com.heroku.spacey.utils.convertors.LoginInfoConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,14 +29,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public LoginInfo loadUserByUsername(String email) throws UsernameNotFoundException {
         LoginInfo loginInfo = loginInfoDao.getLoginInfoByEmail(email);
-        if(loginInfo == null)
+        if (loginInfo == null) {
             throw new UsernameNotFoundException("404 user not found");
+        }
         return loginInfo;
 
     }
 
 
-    public LoginInfo registerUser(UserRegisterDto registerDto){
+    public LoginInfo registerUser(UserRegisterDto registerDto) {
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
         LoginInfo loginInfo = loginInfoConvertor.adapt(registerDto);
         loginInfo.setPassword(encodedPassword);

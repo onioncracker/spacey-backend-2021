@@ -1,7 +1,5 @@
 package com.heroku.spacey.utils.validators;
 
-import com.heroku.spacey.utils.validators.EmailConstraint;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -10,6 +8,6 @@ public class EmailCustomValidator implements ConstraintValidator<EmailConstraint
     @Override
     public boolean isValid(String email, ConstraintValidatorContext cxt) {
         return email != null && email.matches("^[\\w-.]+@([\\w-]+.)+[\\w-]{2,4}$")
-                && (email.length() > 7);
+            && (email.length() > 7);
     }
 }
