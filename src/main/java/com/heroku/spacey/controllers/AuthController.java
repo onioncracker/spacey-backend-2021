@@ -23,25 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 public class AuthController {
-    private static final String CONFIRM_REGISTRATION_TOPIC = "Confirm your account spacey.com";
     private final IUserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final MailServiceImpl mailServiceImpl;
 
     public AuthController(UserServiceImpl userService,
                           AuthenticationManager authenticationManager,
-                          JwtTokenProvider jwtTokenProvider,
-                          MailServiceImpl mailServiceImpl) {
+                          JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.mailServiceImpl = mailServiceImpl;
     }
 
     @PostMapping("/register")
     public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
-        String message = "http://localhost:8080/confirm_register?token=";
         if (userService.userExists(registerDto.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user with such email already exists");
         }
@@ -56,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<UserTokenDto> login(@RequestBody LoginDto loginDto) {
         Authentication authenticate = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         LoginInfo user = (LoginInfo) authenticate.getPrincipal();
