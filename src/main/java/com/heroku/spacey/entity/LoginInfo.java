@@ -11,7 +11,7 @@ import java.util.Collections;
 
 @Data
 public class LoginInfo implements UserDetails, Serializable {
-    private Long loginId;
+    private int loginId;
     private String email;
     private String firstName;
     private String lastName;

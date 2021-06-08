@@ -45,8 +45,8 @@ public class LoginInfoDaoImpl implements LoginInfoDao {
     }
 
     @Override
-    public long insert(LoginInfo loginInfo) {
-        long returnId;
+    public int insert(LoginInfo loginInfo) {
+        int returnId;
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insertLoginInfo, Statement.RETURN_GENERATED_KEYS);
@@ -60,9 +60,9 @@ public class LoginInfoDaoImpl implements LoginInfoDao {
         }, holder);
 
         if (Objects.requireNonNull(holder.getKeys()).size() > 1) {
-            returnId = (long) holder.getKeys().get("loginId");
+            returnId = (int) holder.getKeys().get("loginId");
         } else {
-            returnId = Objects.requireNonNull(holder.getKey()).longValue();
+            returnId = Objects.requireNonNull(holder.getKey()).intValue();
         }
         return returnId;
     }
