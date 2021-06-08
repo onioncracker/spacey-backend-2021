@@ -6,7 +6,6 @@ import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.LoginInfo;
 import com.heroku.spacey.utils.security.JwtTokenProvider;
 import com.heroku.spacey.services.IUserService;
-import com.heroku.spacey.services.impl.MailServiceImpl;
 import com.heroku.spacey.services.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
