@@ -10,7 +10,7 @@ public class LoginInfoMapper implements RowMapper<LoginInfo> {
     @Override
     public LoginInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
         LoginInfo loginInfo = new LoginInfo();
-        loginInfo.setLoginId(rs.getLong("loginid"));
+        loginInfo.setLoginId(rs.getInt("loginid"));
         loginInfo.setEmail(rs.getString("email"));
         loginInfo.setPassword(rs.getString("pass"));
         loginInfo.setFirstName(rs.getString("firstname"));
