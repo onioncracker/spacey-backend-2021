@@ -10,4 +10,5 @@ public interface IUserService extends UserDetailsService {
     UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
     UserDetails registerUser(UserRegisterDto userRegisterDto);
     boolean userExists(String email);
+    String generateAuthenticationToken(String email, String password);
 }
