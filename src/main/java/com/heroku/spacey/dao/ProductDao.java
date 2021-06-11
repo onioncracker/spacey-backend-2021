@@ -2,7 +2,11 @@ package com.heroku.spacey.dao;
 
 import com.heroku.spacey.entity.Product;
 
+import java.util.List;
+
 public interface ProductDao {
+    List<Product> getAllProducts();
+
     Product get(Long id);
 
     boolean isExist(Long id);
@@ -16,4 +20,6 @@ public interface ProductDao {
     void deactivate(Long id);
 
     void addMaterialToProduct(Long materialId, Long productId);
+
+    void addSizeToProduct(Long sizeId, Long productId);
 }

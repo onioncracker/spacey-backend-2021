@@ -3,7 +3,7 @@ package com.heroku.spacey.dao.impl;
 import com.heroku.spacey.dao.ProductCompareDao;
 import com.heroku.spacey.dto.product.ProductCompareDto;
 import com.heroku.spacey.dto.product.ProductItemDto;
-import com.heroku.spacey.mapper.ProductItemMapper;
+import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

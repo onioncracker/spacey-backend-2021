@@ -1,6 +1,7 @@
 package com.heroku.spacey.dto.product;
 
 import com.heroku.spacey.dto.category.CategoryDto;
+import com.heroku.spacey.dto.color.ColorDto;
 import com.heroku.spacey.dto.material.MaterialDto;
 import lombok.Data;
 
@@ -22,5 +23,7 @@ public class ProductDto {
     private Boolean isAvailable;
     private Boolean isOnAuction;
     private CategoryDto category;
+    private ColorDto color;
     private List<MaterialDto> materials;
+    private List<ColorDto> colors;
 }

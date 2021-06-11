@@ -12,7 +12,6 @@ public class SizeMapper implements RowMapper<Size> {
         Size size = new Size();
         size.setId(resultSet.getLong("sizeid"));
         size.setName(resultSet.getString("sizename"));
-        size.setQuantity(resultSet.getLong("quantity"));
         return size;
     }
 }

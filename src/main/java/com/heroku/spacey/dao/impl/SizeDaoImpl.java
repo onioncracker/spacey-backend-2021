@@ -1,7 +1,6 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.SizeDao;
-import com.heroku.spacey.entity.Category;
 import com.heroku.spacey.entity.Size;
 import com.heroku.spacey.mapper.SizeMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,11 @@ public class SizeDaoImpl implements SizeDao {
 
     @Override
     public Size getById(Long id) {
-        return Objects.requireNonNull(jdbcTemplate).queryForObject(getSizeById, mapper, id);
+        List<Size> sizes = Objects.requireNonNull(jdbcTemplate).query(getSizeById, mapper, id);
+        if (sizes.isEmpty()) {
+            return null;
+        }
+        return sizes.get(0);
     }
 
     @Override
@@ -59,7 +62,6 @@ public class SizeDaoImpl implements SizeDao {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editSize, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, size.getName());
-            ps.setLong(2, size.getQuantity());
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("sizeId");
@@ -67,7 +69,7 @@ public class SizeDaoImpl implements SizeDao {
 
     @Override
     public void update(Size size) {
-        Object[] params = new Object[]{size.getName(), size.getId(), size.getQuantity()};
+        Object[] params = new Object[]{size.getName(), size.getId()};
         Objects.requireNonNull(jdbcTemplate).update(updateSize, params);
     }
 

@@ -74,8 +74,7 @@ CREATE TABLE products
 CREATE TABLE sizes
 (
     SizeId BIGSERIAL PRIMARY KEY,
-    SizeName CHARACTER VARYING (20),
-    Quantity INTEGER
+    SizeName CHARACTER VARYING (20)
 );
 
 

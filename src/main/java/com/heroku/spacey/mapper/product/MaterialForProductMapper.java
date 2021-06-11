@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper;
+package com.heroku.spacey.mapper.product;
 
 import com.heroku.spacey.entity.Material;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,7 +14,7 @@ public class MaterialForProductMapper implements RowMapper<List<Material>> {
     public List<Material> mapRow(ResultSet resultSet, int i) throws SQLException {
         ArrayList<Material> materials = new ArrayList<>();
         do {
-            var material = new Material();
+            Material material = new Material();
             material.setId(resultSet.getLong("material_id"));
             material.setName(resultSet.getString("material_name"));
             materials.add(material);

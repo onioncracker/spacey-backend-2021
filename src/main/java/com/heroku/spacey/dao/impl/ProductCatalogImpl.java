@@ -4,7 +4,7 @@ import com.heroku.spacey.dao.ProductCatalogDao;
 import com.heroku.spacey.dao.common.ProductCatalogQueryAdapter;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
-import com.heroku.spacey.mapper.ProductItemMapper;
+import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

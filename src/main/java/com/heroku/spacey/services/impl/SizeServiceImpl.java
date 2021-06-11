@@ -4,10 +4,11 @@ import com.heroku.spacey.dao.SizeDao;
 import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.entity.Size;
 import com.heroku.spacey.services.SizeService;
-import com.heroku.spacey.utils.convertors.BaseConvertor;
+import com.heroku.spacey.utils.convertors.CommonConvertor;
 import com.heroku.spacey.utils.convertors.SizeConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
@@ -15,21 +16,21 @@ import java.util.List;
 @Service
 public class SizeServiceImpl implements SizeService {
     private SizeDao sizeDao;
-    private final BaseConvertor baseConvertor;
+    private final CommonConvertor commonConvertor;
     private final SizeConvertor sizeConvertor;
 
     public SizeServiceImpl(@Autowired SizeDao sizeDao,
-                           @Autowired BaseConvertor baseConvertor,
+                           @Autowired CommonConvertor commonConvertor,
                            @Autowired SizeConvertor sizeConvertor) {
         this.sizeDao = sizeDao;
-        this.baseConvertor = baseConvertor;
+        this.commonConvertor = commonConvertor;
         this.sizeConvertor = sizeConvertor;
     }
 
     @Override
     public List<SizeDto> getAllSizes() {
         List<Size> sizes = sizeDao.getAllSizes();
-        return baseConvertor.mapList(sizes, SizeDto.class);
+        return commonConvertor.mapList(sizes, SizeDto.class);
     }
 
     @Override
@@ -42,12 +43,14 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
+    @Transactional
     public void addSize(SizeDto sizeDto) {
         Size size = sizeConvertor.adapt(sizeDto);
         sizeDao.insert(size);
     }
 
     @Override
+    @Transactional
     public void updateSize(SizeDto sizeDto, Long id) {
         Size size = sizeConvertor.adapt(sizeDto);
         size.setId(id);
@@ -55,6 +58,7 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
+    @Transactional
     public void deleteSize(Long id) {
         sizeDao.delete(id);
     }

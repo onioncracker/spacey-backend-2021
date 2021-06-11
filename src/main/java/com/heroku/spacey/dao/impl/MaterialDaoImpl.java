@@ -49,7 +49,11 @@ public class MaterialDaoImpl implements MaterialDao {
 
     @Override
     public Material getById(Long id) {
-        return Objects.requireNonNull(jdbcTemplate).queryForObject(getMaterialById, mapper, id);
+        List<Material> materials = Objects.requireNonNull(jdbcTemplate).query(getMaterialById, mapper, id);
+        if (materials.isEmpty()) {
+            return null;
+        }
+        return materials.get(0);
     }
 
     @Override

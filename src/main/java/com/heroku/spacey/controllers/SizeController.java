@@ -17,7 +17,7 @@ public class SizeController {
     private final SizeService sizeService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryDto>> getAllSizes() {
+    public ResponseEntity<List<SizeDto>> getAllSizes() {
         List<SizeDto> sizes = sizeService.getAllSizes();
         return new ResponseEntity<>(sizes, HttpStatus.OK);
     }

@@ -8,6 +8,5 @@ import java.util.List;
 public class Size {
     private Long id;
     private String name;
-    private Long quantity;
     private List<Product> products;
 }
