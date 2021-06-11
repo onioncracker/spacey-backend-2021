@@ -5,7 +5,6 @@ import com.heroku.spacey.dto.material.MaterialDto;
 import java.math.BigDecimal;
 import java.sql.Date;
 
-import com.heroku.spacey.dto.productDetail.UpdateProductDetailDto;
 import lombok.Data;
 
 @Data
@@ -18,7 +17,6 @@ public class UpdateProductDto {
     private String photo;
     private String description;
     private Boolean isAvailable;
-    private UpdateProductDetailDto productDetails;
     private CategoryDto category;
     private MaterialDto material;
 }

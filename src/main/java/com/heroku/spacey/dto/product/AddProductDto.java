@@ -2,7 +2,6 @@ package com.heroku.spacey.dto.product;
 
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.dto.material.MaterialDto;
-import com.heroku.spacey.dto.productDetail.AddProductDetailDto;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -18,7 +17,6 @@ public class AddProductDto {
     private String description;
     private Boolean isAvailable;
     private Boolean isOnAuction;
-    private AddProductDetailDto productDetails;
     private CategoryDto category;
     private List<MaterialDto> materials;
 }

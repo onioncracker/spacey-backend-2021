@@ -15,11 +15,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
 public class CategoryController {
     private final CategoryService categoryService;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id) {

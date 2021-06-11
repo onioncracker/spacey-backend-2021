@@ -25,15 +25,12 @@ public class ProductMapper implements RowMapper<Product> {
 
         CategoryForProductMapper categoryMapper = new CategoryForProductMapper();
         MaterialForProductMapper materialMapper = new MaterialForProductMapper();
-        ProductDetailsForProductMapper productDetailsMapper = new ProductDetailsForProductMapper();
 
         Category category = categoryMapper.mapRow(resultSet, i);
-        ProductDetail productDetails = productDetailsMapper.mapRow(resultSet, i);
         List<Material> materials = materialMapper.mapRow(resultSet, i);
 
         product.setMaterials(materials);
         product.setProductCategory(category);
-        product.setProductDetail(productDetails);
         return product;
     }
 }

@@ -1,7 +1,6 @@
 package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.ProductDao;
-import com.heroku.spacey.dao.ProductDetailDao;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.services.ProductService;
@@ -18,15 +17,12 @@ import org.webjars.NotFoundException;
 @Service
 public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
-    private ProductDetailDao productDetailDao;
     private final ProductConvertor productConvertor;
 
     public ProductServiceImpl(@Autowired ProductDao productDao,
-                              @Autowired ProductConvertor productConvertor,
-                              @Autowired ProductDetailDao productDetailDao) {
+                              @Autowired ProductConvertor productConvertor) {
         this.productDao = productDao;
         this.productConvertor = productConvertor;
-        this.productDetailDao = productDetailDao;
     }
 
     @Override
@@ -46,8 +42,6 @@ public class ProductServiceImpl implements ProductService {
         product.setCategoryId(categoryId);
 
         Long productId = productDao.insert(product);
-        product.getProductDetail().setProductId(productId);
-        productDetailDao.insert(product.getProductDetail());
 
         for (var i = 0; i < addProductDto.getMaterials().size(); i++) {
             var materialId = addProductDto.getMaterials().get(i).getId();
@@ -61,7 +55,6 @@ public class ProductServiceImpl implements ProductService {
         Product product = productConvertor.adapt(updateProductDto);
         product.setId(id);
         productDao.update(product);
-        productDetailDao.update(product.getProductDetail());
     }
 
     @Override

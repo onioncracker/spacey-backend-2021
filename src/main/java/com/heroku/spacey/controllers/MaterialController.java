@@ -7,11 +7,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/material")
 public class MaterialController {
     private final MaterialService materialService;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<MaterialDto>> getAllMaterials() {
+        List<MaterialDto> materials = materialService.getAllMaterials();
+        return new ResponseEntity<>(materials, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<MaterialDto> getMaterial(@PathVariable Long id) {

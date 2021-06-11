@@ -1,4 +1,5 @@
-SELECT * FROM product_details;
+SELECT * FROM sizes;
+SELECT * FROM colors;
 SELECT * FROM products;
 SELECT * FROM categories;
 SELECT * FROM materials;
