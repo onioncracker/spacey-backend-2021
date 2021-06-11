@@ -19,27 +19,33 @@ import java.util.Map;
 public class ProductCatalogServiceImpl implements ProductCatalogService {
 
     private final ProductCatalogDao catalog;
+    private final Integer PAGE_NUM = 0;
+    private final Integer PAGE_SIZE = 8;
 
-    public ProductItemDto getProduct(int id) throws SQLException {
+    public ProductItemDto getProduct(Long id) throws SQLException {
         return catalog.getProductById(id);
     }
 
 
-    public List<ProductPageDto> getAllProduct(String page,
+    public List<ProductPageDto> getAllProduct(Integer pageNum,
+                                              Integer pageSize,
+                                              String sex,
                                               String price,
                                               String categories,
                                               String colors,
-                                              String size,
                                               String order) throws SQLException {
 
         Map<String, String> filters = new HashMap<>();
-        int pageSize = 10;
-        int pageNum = 0;
-        Integer[] pageParams = null;
         String[] categoriesParams = null;
         Integer[] priceParams = null;
-        String[] sizesParams = null;
         String[] colorsParams = null;
+
+        if(pageNum == null){
+            pageNum = PAGE_NUM;
+        }
+        if (pageSize == null) {
+            pageSize = PAGE_SIZE;
+        }
 
         if (isParamValid(categories)) {
             categoriesParams = categories.split(",");
@@ -55,21 +61,11 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
             colorsParams = colors.split(",");
         }
 
-        if (isParamValid(size)) {
-            sizesParams = size.split(",");
-        }
-
-        if (isParamValid(page)) {
-            pageParams = parseStringToIntArr(page);
-            validatePages(pageParams);
-            pageNum = pageParams[0];
-            pageSize = pageParams[1];
-        }
         return catalog.getAllProduct(
                 categoriesParams,
                 priceParams,
+                sex,
                 colorsParams,
-                sizesParams,
                 pageNum,
                 pageSize,
                 order);
@@ -98,11 +94,6 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
 
     }
 
-    private void validatePages(Integer[] page) {
-        if (page.length != 2) {
-            throw new IllegalArgumentException("Pages param format is not valid");
-        }
-    }
 
     private Integer[] parseStringToIntArr(String params) {
         return Arrays.stream(params.split("-"))

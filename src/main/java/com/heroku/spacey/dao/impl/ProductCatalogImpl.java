@@ -4,6 +4,7 @@ import com.heroku.spacey.dao.ProductCatalogDao;
 import com.heroku.spacey.dao.common.ProductCatalogQueryAdapter;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
+import com.heroku.spacey.dto.product.SizeDto;
 import com.heroku.spacey.mapper.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.webjars.NotFoundException;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,24 +32,22 @@ public class ProductCatalogImpl implements ProductCatalogDao {
     private String sqlGetAll;
     @Value("${get_product_by_id}")
     private String sqlGetById;
+    @Value("${get_categories_by_id}")
+    private String sqlGetCategoriesById;
+    @Value("${get_sizes_by_id}")
+    private String sqlGetSizesById;
 
 
     @Override
-    public ProductItemDto getProductById(int id) throws SQLException {
+    public ProductItemDto getProductById(Long id) throws SQLException {
         ProductItemDto productItemDto = new ProductItemDto();
         ResultSetExtractor<ProductItemDto> rse = rs -> {
-            ArrayList<String> materials = productItemDto.getMaterial();
             if (!rs.next()) {
                 throw new NotFoundException("Item not found");
             }
-            while (rs.next()) {
-                if (materials == null) {
-                    materials = new ArrayList<>();
-                }
-                ProductItemMapper.productItemMapper(rs, productItemDto);
-                materials.add(rs.getString("namematerial"));
-            }
-            productItemDto.setMaterial(materials);
+            ProductItemMapper.productItemMapper(rs, productItemDto);
+            productItemDto.setMaterials((ArrayList<String>) getMaterials(id));
+            productItemDto.setSizes((ArrayList<SizeDto>) getSizes(id));
             return productItemDto;
         };
 
@@ -57,15 +57,15 @@ public class ProductCatalogImpl implements ProductCatalogDao {
     @Override
     public List<ProductPageDto> getAllProduct(String[] categories,
                                               Integer[] prices,
+                                              String sex,
                                               String[] colors,
-                                              String[] sizes,
-                                              int pageNum,
-                                              int pageSize,
+                                              Integer pageNum,
+                                              Integer pageSize,
                                               String order) throws SQLException {
 
         productCatalogQueryAdapter
                 .createSelect(sqlGetAll)
-                .addFilters(categories, prices, colors, sizes)
+                .addFilters(categories, sex, prices, colors)
                 .addOrdering(order)
                 .setPage(pageNum, pageSize);
 
@@ -79,5 +79,22 @@ public class ProductCatalogImpl implements ProductCatalogDao {
         };
 
         return jdbcTemplate.query(productCatalogQueryAdapter.build(), rowMapper, productCatalogQueryAdapter.getParams().toArray());
+    }
+
+    private List<String> getMaterials(Long id) {
+        RowMapper<String> rowMapper = ((resultSet, i) ->
+                resultSet.getString("namematerial"));
+        return jdbcTemplate.query(sqlGetCategoriesById, rowMapper, id);
+    }
+
+    private List<SizeDto> getSizes(Long id) {
+        RowMapper<SizeDto> rowMapper = ((resultSet, i) ->
+        {
+            SizeDto sizeDto = new SizeDto();
+            sizeDto.setSize(resultSet.getString("sizename"));
+            sizeDto.setQuantity(resultSet.getInt("quantity"));
+            return sizeDto;
+        });
+        return jdbcTemplate.query(sqlGetSizesById, rowMapper, id);
     }
 }

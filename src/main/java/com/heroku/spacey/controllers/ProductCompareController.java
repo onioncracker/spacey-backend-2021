@@ -26,7 +26,7 @@ public class ProductCompareController {
     }
 
     @GetMapping("products/compared-products/{id}")
-    public ResponseEntity<List<ProductItemDto>> getAllComparingProduct(@PathVariable(name = "id") int userId) throws SQLException {
+    public ResponseEntity<List<ProductItemDto>> getAllComparingProduct(@PathVariable(name = "id") Long userId) throws SQLException {
         return new ResponseEntity<>(productCompareService.getAllComparingProduct(userId), HttpStatus.OK);
 
     }

@@ -23,25 +23,27 @@ public class ProductCatalogController {
 
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductItemDto> getProduct(@PathVariable int id) throws SQLException {
+    public ResponseEntity<ProductItemDto> getProduct(@PathVariable Long id) throws SQLException {
         return new ResponseEntity<>(productCatalogServiceImpl.getProduct(id), HttpStatus.OK);
     }
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductPageDto>> getProducts(
-            @RequestParam(required = false) String page,
+            @RequestParam(required = false) Integer pageNum,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String sex,
             @RequestParam(required = false) String price,
             @RequestParam(required = false) String categories,
             @RequestParam(required = false) String colors,
-            @RequestParam(required = false) String size,
             @RequestParam(required = false) String order) throws SQLException {
 
         List<ProductPageDto> products = productCatalogServiceImpl.getAllProduct(
-                page,
+                pageNum,
+                pageSize,
+                sex,
                 price,
                 categories,
                 colors,
-                size,
                 order
         );
         return new ResponseEntity<>(products, HttpStatus.OK);
