@@ -4,8 +4,7 @@ import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
 import com.heroku.spacey.services.ProductCatalogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,27 +16,28 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@PropertySource("classpath:const.properties")
 public class ProductCatalogController {
 
     private final ProductCatalogService productCatalogServiceImpl;
 
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductItemDto> getProduct(@PathVariable Long id) throws SQLException {
-        return new ResponseEntity<>(productCatalogServiceImpl.getProduct(id), HttpStatus.OK);
+    public ProductItemDto getProduct(@PathVariable Long id) throws SQLException {
+        return productCatalogServiceImpl.getProduct(id);
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductPageDto>> getProducts(
-            @RequestParam(required = false) Integer pageNum,
-            @RequestParam(required = false) Integer pageSize,
+    public List<ProductPageDto> getProducts(
+            @RequestParam(defaultValue = "${default_page_num}") Integer pageNum,
+            @RequestParam(defaultValue = "${default_page_size}") Integer pageSize,
             @RequestParam(required = false) String sex,
             @RequestParam(required = false) String price,
             @RequestParam(required = false) String categories,
             @RequestParam(required = false) String colors,
             @RequestParam(required = false) String order) throws SQLException {
 
-        List<ProductPageDto> products = productCatalogServiceImpl.getAllProduct(
+        return productCatalogServiceImpl.getAllProduct(
                 pageNum,
                 pageSize,
                 sex,
@@ -46,7 +46,6 @@ public class ProductCatalogController {
                 colors,
                 order
         );
-        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
 }

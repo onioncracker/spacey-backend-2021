@@ -5,6 +5,7 @@ import com.heroku.spacey.dto.product.ProductCompareDto;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.SizeDto;
 import com.heroku.spacey.mapper.ProductItemMapper;
+import com.heroku.spacey.mapper.SizeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ProductCompareImpl implements ProductCompareDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SizeMapper sizeMapper;
 
     @Value("${get_all_compared_products}")
     private String sqlGetAllProducts;
@@ -77,14 +79,8 @@ public class ProductCompareImpl implements ProductCompareDao {
         return jdbcTemplate.query(sqlGetMaterialByProductId, rw, productId);
     }
 
-    public List<SizeDto> getSizesByProductId (Long id) {
-        RowMapper<SizeDto> rowMapper = ((resultSet, i) -> {
-            SizeDto sizeDto = new SizeDto();
-            sizeDto.setSize(resultSet.getString("sizename"));
-            sizeDto.setQuantity(resultSet.getInt("quantity"));
-            return sizeDto;
-        });
-        return jdbcTemplate.query(sqlGetSizesByProductId, rowMapper, id);
+    public List<SizeDto> getSizesByProductId(Long id) {
+        return jdbcTemplate.query(sqlGetSizesByProductId, sizeMapper, id);
     }
 
 }

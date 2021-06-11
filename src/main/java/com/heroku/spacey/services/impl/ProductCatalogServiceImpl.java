@@ -1,26 +1,22 @@
 package com.heroku.spacey.services.impl;
 
-
+import com.amazonaws.services.pinpoint.model.BadRequestException;
 import com.heroku.spacey.dao.ProductCatalogDao;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
 import com.heroku.spacey.services.ProductCatalogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.util.StringUtils;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class ProductCatalogServiceImpl implements ProductCatalogService {
 
     private final ProductCatalogDao catalog;
-    private final Integer PAGE_NUM = 0;
-    private final Integer PAGE_SIZE = 8;
 
     public ProductItemDto getProduct(Long id) throws SQLException {
         return catalog.getProductById(id);
@@ -35,29 +31,20 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
                                               String colors,
                                               String order) throws SQLException {
 
-        Map<String, String> filters = new HashMap<>();
         String[] categoriesParams = null;
         Integer[] priceParams = null;
         String[] colorsParams = null;
 
-        if(pageNum == null){
-            pageNum = PAGE_NUM;
-        }
-        if (pageSize == null) {
-            pageSize = PAGE_SIZE;
-        }
-
-        if (isParamValid(categories)) {
+        if (StringUtils.hasText(categories)) {
             categoriesParams = categories.split(",");
         }
 
-        if (isParamValid(price)) {
+        if (StringUtils.hasText(price)) {
             priceParams = parseStringToIntArr(price);
             validatePrice(priceParams);
-
         }
 
-        if (isParamValid(colors)) {
+        if (StringUtils.hasText(colors)) {
             colorsParams = colors.split(",");
         }
 
@@ -72,28 +59,17 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
 
     }
 
-    private boolean isParamValid(String var) {
-        if (var == null) {
-            return false;
-        }
-
-        if (var.isEmpty()) {
-            throw new IllegalArgumentException("Invalid query params");
-        }
-        return true;
-    }
 
     private void validatePrice(Integer[] price) {
         if (price.length != 2) {
-            throw new IllegalArgumentException("Invalid price param, more or less arguments");
+            throw new BadRequestException("Invalid price param, more or less arguments");
         }
 
         if (price[0] > price[1]) {
-            throw new IllegalArgumentException("Minimal price gather than maximal price");
+            throw new BadRequestException("Minimal price gather than maximal price");
         }
 
     }
-
 
     private Integer[] parseStringToIntArr(String params) {
         return Arrays.stream(params.split("-"))

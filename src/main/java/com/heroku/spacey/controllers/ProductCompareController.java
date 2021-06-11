@@ -6,7 +6,6 @@ import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.services.ProductCompareService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -26,8 +25,8 @@ public class ProductCompareController {
     }
 
     @GetMapping("products/compared-products/{id}")
-    public ResponseEntity<List<ProductItemDto>> getAllComparingProduct(@PathVariable(name = "id") Long userId) throws SQLException {
-        return new ResponseEntity<>(productCompareService.getAllComparingProduct(userId), HttpStatus.OK);
+    public List<ProductItemDto> getAllComparingProduct(@PathVariable(name = "id") Long userId) throws SQLException {
+        return productCompareService.getAllComparingProduct(userId);
 
     }
 

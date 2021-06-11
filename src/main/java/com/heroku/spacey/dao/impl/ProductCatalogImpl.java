@@ -6,6 +6,7 @@ import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
 import com.heroku.spacey.dto.product.SizeDto;
 import com.heroku.spacey.mapper.ProductItemMapper;
+import com.heroku.spacey.mapper.SizeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -14,8 +15,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.webjars.NotFoundException;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class ProductCatalogImpl implements ProductCatalogDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductCatalogQueryAdapter productCatalogQueryAdapter;
+    private final SizeMapper sizeMapper;
 
     @Value("${get_all_products}")
     private String sqlGetAll;
@@ -82,19 +82,12 @@ public class ProductCatalogImpl implements ProductCatalogDao {
     }
 
     private List<String> getMaterials(Long id) {
-        RowMapper<String> rowMapper = ((resultSet, i) ->
-                resultSet.getString("namematerial"));
+        RowMapper<String> rowMapper = (resultSet, i) ->
+                resultSet.getString("namematerial");
         return jdbcTemplate.query(sqlGetCategoriesById, rowMapper, id);
     }
 
     private List<SizeDto> getSizes(Long id) {
-        RowMapper<SizeDto> rowMapper = ((resultSet, i) ->
-        {
-            SizeDto sizeDto = new SizeDto();
-            sizeDto.setSize(resultSet.getString("sizename"));
-            sizeDto.setQuantity(resultSet.getInt("quantity"));
-            return sizeDto;
-        });
-        return jdbcTemplate.query(sqlGetSizesById, rowMapper, id);
+        return jdbcTemplate.query(sqlGetSizesById, sizeMapper, id);
     }
 }
