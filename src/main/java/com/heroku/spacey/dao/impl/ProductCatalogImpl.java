@@ -32,8 +32,8 @@ public class ProductCatalogImpl implements ProductCatalogDao {
     private String sqlGetAll;
     @Value("${get_product_by_id}")
     private String sqlGetById;
-    @Value("${get_categories_by_id}")
-    private String sqlGetCategoriesById;
+    @Value("${get_materials_by_id}")
+    private String sqlGetMaterialsById;
     @Value("${get_sizes_by_id}")
     private String sqlGetSizesById;
 
@@ -84,7 +84,7 @@ public class ProductCatalogImpl implements ProductCatalogDao {
     private List<String> getMaterials(Long id) {
         RowMapper<String> rowMapper = (resultSet, i) ->
                 resultSet.getString("namematerial");
-        return jdbcTemplate.query(sqlGetCategoriesById, rowMapper, id);
+        return jdbcTemplate.query(sqlGetMaterialsById, rowMapper, id);
     }
 
     private List<SizeDto> getSizes(Long id) {
