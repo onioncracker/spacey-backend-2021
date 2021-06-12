@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.webjars.NotFoundException;
-
 import java.util.Date;
 
 
@@ -25,17 +24,6 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                new Date(),
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -57,5 +45,16 @@ public class ControllerExceptionHandler {
             ex.getMessage(),
             request.getDescription(false));
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

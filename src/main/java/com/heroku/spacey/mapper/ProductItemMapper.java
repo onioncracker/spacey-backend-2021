@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class ProductItemMapper {
     public static void productItemMapper(ResultSet rs, ProductItemDto productItemDto) throws SQLException {
-        productItemDto.setId(rs.getInt("productid"));
+        productItemDto.setId(rs.getLong("productid"));
         productItemDto.setName(rs.getString("productname"));
         productItemDto.setSex(rs.getString("productsex"));
         productItemDto.setPrice(rs.getInt("price"));
@@ -16,7 +16,6 @@ public class ProductItemMapper {
         productItemDto.setDiscount(rs.getInt("discount"));
         productItemDto.setAvailability(rs.getBoolean("isavailable"));
         productItemDto.setColor(rs.getString("color"));
-        productItemDto.setSize(rs.getString("sizeproduct"));
         productItemDto.setAmount(rs.getInt("amount"));
         productItemDto.setCategory(rs.getString("namecategory"));
     }

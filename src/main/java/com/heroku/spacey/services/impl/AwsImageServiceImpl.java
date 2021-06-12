@@ -51,9 +51,6 @@ public class AwsImageServiceImpl implements AwsImageService {
 
     @Override
     public URL save(MultipartFile image) throws NullPointerException, IOException {
-        if (image == null) {
-            throw new NullPointerException("Empty image");
-        }
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + image.getName());
         image.transferTo(convFile);
         s3client.putObject(bucketName, image.getOriginalFilename(), convFile);
@@ -62,11 +59,7 @@ public class AwsImageServiceImpl implements AwsImageService {
 
     @Override
     public URL getUrl(String fileName) {
-        URL url = s3client.getUrl(bucketName, fileName);
-        if (url == null) {
-            throw new NullPointerException("Empty url from s3Storage");
-        }
-        return url;
+        return s3client.getUrl(bucketName, fileName);
     }
 
     @Override

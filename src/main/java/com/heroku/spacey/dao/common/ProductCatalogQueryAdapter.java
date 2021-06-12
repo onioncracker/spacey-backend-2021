@@ -21,7 +21,7 @@ public class ProductCatalogQueryAdapter {
     }
 
 
-    public ProductCatalogQueryAdapter addFilters(String[] categories, Integer[] price, String[] colors, String[] sizes) {
+    public ProductCatalogQueryAdapter addFilters(String[] categories, String sex, Integer[] price, String[] colors) {
         boolean whereFlag = false;
         List<String> filtersParts = new ArrayList<>();
 
@@ -40,14 +40,16 @@ public class ProductCatalogQueryAdapter {
         if (colors != null) {
             whereFlag = true;
             params.addAll(Arrays.asList(colors));
-            filtersParts.add(generateInStatement("d.color", colors));
+            filtersParts.add(generateInStatement("c.color", colors));
         }
 
-        if (sizes != null) {
+
+        if (sex != null) {
             whereFlag = true;
-            params.addAll(Arrays.asList(sizes));
-            filtersParts.add(generateInStatement("d.sizeproduct", sizes));
+            params.add(sex);
+            filtersParts.add(" productsex = ? ");
         }
+
         if (whereFlag) {
             query.append(" WHERE ");
         }
