@@ -82,6 +82,7 @@ CREATE TABLE size_to_products
 (
     SizeID INTEGER REFERENCES sizes ON DELETE CASCADE,
     ProductId INTEGER REFERENCES products ON DELETE CASCADE,
+    Quantity INTEGER,
     PRIMARY KEY(SizeID, ProductId)
 );
 

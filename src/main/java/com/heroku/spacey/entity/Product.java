@@ -4,13 +4,13 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class Product {
     private Long id;
-    private List<Material> materials;
-    private List<Size> sizes;
+    private Set<Material> materials;
+    private Set<Size> sizes;
 
     private Category productCategory;
     private Long categoryId;

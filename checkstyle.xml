@@ -74,7 +74,7 @@
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
         <module name="UnnecessaryParentheses"/>
-        <module name="VariableDeclarationUsageDistance"/>
+<!--        <module name="VariableDeclarationUsageDistance"/>-->
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
@@ -127,7 +127,7 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <module name="AnonInnerLength"/>
-        <module name="ExecutableStatementCount"/>
+<!--        <module name="ExecutableStatementCount"/>-->
         <module name="MethodCount"/>
 <!--        <module name="LineLength"/>-->
         <module name="OuterTypeNumber"/>

@@ -2,6 +2,7 @@ package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.dto.product.AddProductDto;
+import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.ProductDto;
@@ -63,8 +64,8 @@ public class ProductServiceImpl implements ProductService {
         }
 
         for (int i = 0; i < addProductDto.getSizes().size(); i++) {
-            Long sizeId = addProductDto.getSizes().get(i).getId();
-            productDao.addSizeToProduct(sizeId, productId);
+            SizeDto size = addProductDto.getSizes().get(i);
+            productDao.addSizeToProduct(size.getId(), productId, size.getQuantity());
         }
     }
 

@@ -5,8 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProductMapper implements RowMapper<Product> {
     @Override
@@ -25,17 +25,13 @@ public class ProductMapper implements RowMapper<Product> {
         product.setDiscount(resultSet.getDouble("discount"));
         product.setIsAvailable(resultSet.getBoolean("isavailable"));
         product.setIsOnAuction(resultSet.getBoolean("isonauction"));
-
         CategoryForProductMapper categoryMapper = new CategoryForProductMapper();
-        MaterialForProductMapper materialMapper = new MaterialForProductMapper();
         ColorForProductMapper colorMapper = new ColorForProductMapper();
-        SizeForProductMapper sizeMapper = new SizeForProductMapper();
-
         Category category = categoryMapper.mapRow(resultSet, i);
         Color color = colorMapper.mapRow(resultSet, i);
 
-        ArrayList<Material> materials = new ArrayList<>();
-        ArrayList<Size> sizes = new ArrayList<>();
+        Set<Material> materials = new HashSet<>();
+        Set<Size> sizes = new HashSet<>();
         do {
             Size size = new Size();
             Material material = new Material();
@@ -43,17 +39,13 @@ public class ProductMapper implements RowMapper<Product> {
             material.setId(resultSet.getLong("material_id"));
             size.setName(resultSet.getString("size_name"));
             material.setName(resultSet.getString("material_name"));
+            size.setQuantity(resultSet.getLong("size_quantity"));
             sizes.add(size);
             materials.add(material);
         }
         while (resultSet.next());
-
-//        List<Material> materials = materialMapper.mapRow(resultSet, i);
         product.setMaterials(materials);
-
-//        List<Size> sizes = sizeMapper.mapRow(resultSet, i);
         product.setSizes(sizes);
-
         product.setProductCategory(category);
         product.setProductColor(color);
         return product;

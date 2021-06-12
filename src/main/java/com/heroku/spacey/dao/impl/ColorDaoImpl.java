@@ -1,7 +1,6 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ColorDao;
-import com.heroku.spacey.entity.Category;
 import com.heroku.spacey.entity.Color;
 import com.heroku.spacey.mapper.ColorMapper;
 import lombok.extern.slf4j.Slf4j;

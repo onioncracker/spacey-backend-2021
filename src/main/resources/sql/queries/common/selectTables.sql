@@ -6,8 +6,8 @@ SELECT * FROM materials;
 SELECT * FROM material_to_products;
 SELECT * FROM size_to_products;
 
-INSERT INTO categories VALUES (1, 'shoes');
-INSERT INTO colors VALUES (1, 'red');
+INSERT INTO categories VALUES (3, 'shirts');
+INSERT INTO colors VALUES (4, 'yellow');
 
 INSERT INTO materials VALUES (1, 'cotton');
 INSERT INTO materials VALUES (2, 'silicone');

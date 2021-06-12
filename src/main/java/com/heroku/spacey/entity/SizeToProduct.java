@@ -6,4 +6,5 @@ import lombok.Data;
 public class SizeToProduct {
     private Long sizeId;
     private Long productId;
+    private Long quantity;
 }

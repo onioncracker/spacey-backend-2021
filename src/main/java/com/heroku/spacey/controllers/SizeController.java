@@ -1,6 +1,5 @@
 package com.heroku.spacey.controllers;
 
-import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.services.SizeService;
 import lombok.RequiredArgsConstructor;

@@ -2,6 +2,7 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.entity.Product;
+import com.heroku.spacey.mapper.product.MaterialForProductMapper;
 import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -21,10 +23,15 @@ import java.util.Objects;
 @PropertySource("classpath:sql/product_queries.properties")
 public class ProductDaoImpl implements ProductDao {
     private final ProductMapper mapper = new ProductMapper();
+    private final MaterialForProductMapper mtpMapper = new MaterialForProductMapper();
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${get_all_products}")
     private String getAllProducts;
+    @Value("${get_all_materials}")
+    private String getAllMaterials;
+    @Value("${get_all_sizes}")
+    private String getAllSizes;
     @Value("${product_get_by_id}")
     private String getProductById;
     @Value("${product_is_exist}")
@@ -64,6 +71,11 @@ public class ProductDaoImpl implements ProductDao {
         return products.get(0);
     }
 
+    public void saveImage(Long id, URL url) {
+        String test = "UPDATE products SET photo = ? WHERE productId = ?";
+        Objects.requireNonNull(jdbcTemplate).update(test, url, id);
+    }
+
     @Override
     public boolean isExist(Long id) {
         List<Integer> products = Objects.requireNonNull(jdbcTemplate)
@@ -99,16 +111,16 @@ public class ProductDaoImpl implements ProductDao {
 
 
     @Override
-    public void addSizeToProduct(Long sizeId, Long productId) {
-        Objects.requireNonNull(jdbcTemplate).update(sizeToProduct, sizeId, productId);
+    public void addSizeToProduct(Long sizeId, Long productId, Long quantity) {
+        Objects.requireNonNull(jdbcTemplate).update(sizeToProduct, sizeId, productId, quantity);
     }
 
     @Override
     public void update(Product product) {
         Object[] params = new Object[]{
-                product.getName(), product.getProductSex(), product.getPrice(),
+                product.getAmount(), product.getName(), product.getProductSex(), product.getPrice(),
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
-                product.getIsAvailable(), product.getId()
+                product.getIsAvailable(), product.getIsOnAuction(), product.getId()
         };
         Objects.requireNonNull(jdbcTemplate).update(updateProduct, params);
     }

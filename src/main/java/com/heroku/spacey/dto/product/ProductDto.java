@@ -3,6 +3,7 @@ package com.heroku.spacey.dto.product;
 import com.heroku.spacey.dto.category.CategoryDto;
 import com.heroku.spacey.dto.color.ColorDto;
 import com.heroku.spacey.dto.material.MaterialDto;
+import com.heroku.spacey.dto.size.SizeDto;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -25,5 +26,5 @@ public class ProductDto {
     private CategoryDto category;
     private ColorDto color;
     private List<MaterialDto> materials;
-    private List<ColorDto> colors;
+    private List<SizeDto> sizes;
 }

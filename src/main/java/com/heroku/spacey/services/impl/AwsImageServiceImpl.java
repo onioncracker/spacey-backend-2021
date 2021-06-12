@@ -6,7 +6,9 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.services.AwsImageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -27,13 +29,16 @@ public class AwsImageServiceImpl implements AwsImageService {
     private final String secretKey;
     private final String bucketName;
     private final AmazonS3 s3client;
+    private final ProductDao product;
 
     public AwsImageServiceImpl(@Value("${aws.service.access-key}") String accessKey,
                                @Value("${aws.service.secret-key}") String secretKey,
-                               @Value("${aws.service.bucket-name}") String bucketName) {
+                               @Value("${aws.service.bucket-name}") String bucketName,
+                               @Autowired ProductDao product) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.bucketName = bucketName;
+        this.product = product;
 
 
         AWSCredentials credentials = new BasicAWSCredentials(
@@ -50,14 +55,15 @@ public class AwsImageServiceImpl implements AwsImageService {
 
 
     @Override
-    public URL save(MultipartFile image) throws NullPointerException, IOException {
+    public void save(MultipartFile image, Long productId) throws NullPointerException, IOException {
         if (image == null) {
             throw new NullPointerException("Empty image");
         }
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + image.getName());
         image.transferTo(convFile);
         s3client.putObject(bucketName, image.getOriginalFilename(), convFile);
-        return getUrl(image.getOriginalFilename());
+        var url = getUrl(image.getOriginalFilename());
+        product.saveImage(productId, url);
     }
 
     @Override
