@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +24,8 @@ public class CategoryDaoImpl implements CategoryDao {
     private final CategoryMapper mapper = new CategoryMapper();
     private final JdbcTemplate jdbcTemplate;
 
+    @Value("${get_all_categories}")
+    private String getAllCategories;
     @Value("${category_get_by_id}")
     private String getCategoryById;
     @Value("${insert_category}")
@@ -34,6 +37,15 @@ public class CategoryDaoImpl implements CategoryDao {
 
     public CategoryDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public List<Category> getAllCategories() {
+        List<Category> categories = Objects.requireNonNull(jdbcTemplate).query(getAllCategories, mapper);
+        if (categories.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return categories;
     }
 
     @Override

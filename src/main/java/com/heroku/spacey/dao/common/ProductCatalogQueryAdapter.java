@@ -1,6 +1,5 @@
 package com.heroku.spacey.dao.common;
 
-
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

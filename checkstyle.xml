@@ -38,30 +38,24 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-<!--        <module name="ArrayTrailingComma"/>-->
         <module name="AvoidInlineConditionals"/>
         <module name="CovariantEquals"/>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
-<!--        <module name="EqualsAvoidNull"/>-->
-<!--        <module name="DeclarationOrder"/>-->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="ExplicitInitialization"/>
         <module name="FallThrough"/>
-<!--        <module name="FinalLocalVariable"/>-->
-<!--        <module name="HiddenField"/>-->
-<!--        <module name="IllegalCatch"/>-->
+        <module name="IllegalCatch"/>
         <module name="IllegalThrows"/>
         <module name="IllegalInstantiation"/>
         <module name="IllegalToken"/>
         <module name="IllegalType"/>
         <module name="InnerAssignment"/>
         <module name="InnerAssignment"/>
-        <!--        <module name="MagicNumber"/>-->
         <module name="MissingSwitchDefault"/>
         <module name="MultipleVariableDeclarations"/>
-<!--        <module name="NestedIfDepth"/>-->
+        <module name="NestedIfDepth"/>
         <module name="NestedForDepth"/>
         <module name="NestedTryDepth"/>
         <module name="NoFinalizer"/>
@@ -74,7 +68,6 @@
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
         <module name="UnnecessaryParentheses"/>
-        <module name="VariableDeclarationUsageDistance"/>
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
@@ -97,10 +90,8 @@
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
-<!--        <module name="AvoidStarImport"/>-->
         <module name="AvoidStaticImport"/>
-<!--        <module name="CustomImportOrder"/>-->
-<!--        <module name="ImportOrder"/>-->
+        <module name="CustomImportOrder"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports">
@@ -127,9 +118,7 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <module name="AnonInnerLength"/>
-        <module name="ExecutableStatementCount"/>
         <module name="MethodCount"/>
-<!--        <module name="LineLength"/>-->
         <module name="OuterTypeNumber"/>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
@@ -138,14 +127,12 @@
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->
         <module name="EmptyForInitializerPad"/>
         <module name="EmptyForIteratorPad"/>
-<!--        <module name="EmptyLineSeparator"/>-->
         <module name="GenericWhitespace"/>
         <module name="MethodParamPad"/>
         <module name="NoLineWrap"/>
         <module name="NoWhitespaceAfter"/>
         <module name="NoWhitespaceBefore"/>
         <module name="OperatorWrap"/>
-<!--        <module name="SeparatorWrap"/>-->
         <module name="SingleSpaceSeparator"/>
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>

@@ -4,21 +4,33 @@ import com.heroku.spacey.dao.MaterialDao;
 import com.heroku.spacey.entity.Material;
 import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
+import com.heroku.spacey.utils.convertors.CommonConvertor;
 import com.heroku.spacey.utils.convertors.MaterialConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.List;
+
 @Service
 public class MaterialServiceImpl implements MaterialService {
     private MaterialDao materialDao;
+    private final CommonConvertor commonConvertor;
     private final MaterialConvertor materialConvertor;
 
     public MaterialServiceImpl(@Autowired MaterialDao materialDao,
+                               @Autowired CommonConvertor commonConvertor,
                                @Autowired MaterialConvertor materialConvertor) {
         this.materialDao = materialDao;
+        this.commonConvertor = commonConvertor;
         this.materialConvertor = materialConvertor;
+    }
+
+    @Override
+    public List<MaterialDto> getAllMaterials() {
+        List<Material> materials = materialDao.getAllMaterials();
+        return commonConvertor.mapList(materials, MaterialDto.class);
     }
 
     @Override

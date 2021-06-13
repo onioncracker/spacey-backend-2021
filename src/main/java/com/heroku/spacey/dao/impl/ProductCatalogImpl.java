@@ -5,8 +5,8 @@ import com.heroku.spacey.dao.common.ProductCatalogQueryAdapter;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
 import com.heroku.spacey.dto.product.SizeDto;
-import com.heroku.spacey.mapper.ProductItemMapper;
-import com.heroku.spacey.mapper.SizeMapper;
+import com.heroku.spacey.mapper.SizeQuantityMapper;
+import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -26,7 +26,7 @@ public class ProductCatalogImpl implements ProductCatalogDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductCatalogQueryAdapter productCatalogQueryAdapter;
-    private final SizeMapper sizeMapper;
+    private final SizeQuantityMapper sizeQuantityMapper;
 
     @Value("${get_all_products}")
     private String sqlGetAll;
@@ -88,6 +88,6 @@ public class ProductCatalogImpl implements ProductCatalogDao {
     }
 
     private List<SizeDto> getSizes(Long id) {
-        return jdbcTemplate.query(sqlGetSizesById, sizeMapper, id);
+        return jdbcTemplate.query(sqlGetSizesById, sizeQuantityMapper, id);
     }
 }
