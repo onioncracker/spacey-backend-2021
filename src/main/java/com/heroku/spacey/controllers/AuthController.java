@@ -5,7 +5,7 @@ import com.heroku.spacey.dto.user.LoginDto;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.LoginInfo;
 import com.heroku.spacey.utils.security.JwtTokenProvider;
-import com.heroku.spacey.services.IUserService;
+import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 public class AuthController {
-    private final IUserService userService;
+    private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 

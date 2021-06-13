@@ -3,7 +3,7 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.LoginInfoDao;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.LoginInfo;
-import com.heroku.spacey.services.IUserService;
+import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.utils.Role;
 import com.heroku.spacey.utils.convertors.LoginInfoConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private LoginInfoDao loginInfoDao;

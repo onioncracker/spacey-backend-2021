@@ -25,6 +25,7 @@ public class ProductMapper implements RowMapper<Product> {
         product.setDiscount(resultSet.getDouble("discount"));
         product.setIsAvailable(resultSet.getBoolean("isavailable"));
         product.setIsOnAuction(resultSet.getBoolean("isonauction"));
+
         CategoryForProductMapper categoryMapper = new CategoryForProductMapper();
         ColorForProductMapper colorMapper = new ColorForProductMapper();
         Category category = categoryMapper.mapRow(resultSet, i);
@@ -44,6 +45,7 @@ public class ProductMapper implements RowMapper<Product> {
             materials.add(material);
         }
         while (resultSet.next());
+
         product.setMaterials(materials);
         product.setSizes(sizes);
         product.setProductCategory(category);

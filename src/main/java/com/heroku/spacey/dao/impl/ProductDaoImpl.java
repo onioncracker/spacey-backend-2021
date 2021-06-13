@@ -2,7 +2,6 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.entity.Product;
-import com.heroku.spacey.mapper.product.MaterialForProductMapper;
 import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +22,6 @@ import java.util.Objects;
 @PropertySource("classpath:sql/product_queries.properties")
 public class ProductDaoImpl implements ProductDao {
     private final ProductMapper mapper = new ProductMapper();
-    private final MaterialForProductMapper mtpMapper = new MaterialForProductMapper();
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${get_all_products}")

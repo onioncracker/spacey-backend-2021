@@ -1,10 +1,10 @@
 package com.heroku.spacey.controllers;
 
+import com.heroku.spacey.dto.size.AddSizeDto;
 import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.services.SizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +26,8 @@ public class SizeController {
     }
 
     @PostMapping("/add")
-    public HttpStatus addSize(@RequestBody SizeDto sizeDto) {
-        sizeService.addSize(sizeDto);
+    public HttpStatus addSize(@RequestBody AddSizeDto addSizeDto) {
+        sizeService.addSize(addSizeDto);
         return HttpStatus.CREATED;
     }
 

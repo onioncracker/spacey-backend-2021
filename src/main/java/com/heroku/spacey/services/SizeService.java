@@ -1,5 +1,6 @@
 package com.heroku.spacey.services;
 
+import com.heroku.spacey.dto.size.AddSizeDto;
 import com.heroku.spacey.dto.size.SizeDto;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface SizeService {
 
     SizeDto getById(Long id);
 
-    void addSize(SizeDto sizeDto);
+    void addSize(AddSizeDto addSizeDto);
 
     void updateSize(SizeDto sizeDto, Long id);
 

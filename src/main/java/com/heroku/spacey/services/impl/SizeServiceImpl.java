@@ -1,6 +1,7 @@
 package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.SizeDao;
+import com.heroku.spacey.dto.size.AddSizeDto;
 import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.entity.Size;
 import com.heroku.spacey.services.SizeService;
@@ -44,8 +45,8 @@ public class SizeServiceImpl implements SizeService {
 
     @Override
     @Transactional
-    public void addSize(SizeDto sizeDto) {
-        Size size = sizeConvertor.adapt(sizeDto);
+    public void addSize(AddSizeDto addSizeDto) {
+        Size size = sizeConvertor.adapt(addSizeDto);
         sizeDao.insert(size);
     }
 
