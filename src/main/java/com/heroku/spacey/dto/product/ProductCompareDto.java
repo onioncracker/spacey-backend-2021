@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ProductCompareDto {
-    private int userId;
-    private int productId;
+    private Long userId;
+    private Long productId;
 }

@@ -68,11 +68,7 @@ public class AwsImageServiceImpl implements AwsImageService {
 
     @Override
     public URL getUrl(String fileName) {
-        URL url = s3client.getUrl(bucketName, fileName);
-        if (url == null) {
-            throw new NullPointerException("Empty url from s3Storage");
-        }
-        return url;
+        return s3client.getUrl(bucketName, fileName);
     }
 
     @Override
