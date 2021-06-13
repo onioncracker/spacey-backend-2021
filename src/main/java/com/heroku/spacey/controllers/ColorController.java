@@ -4,7 +4,6 @@ import com.heroku.spacey.dto.color.ColorDto;
 import com.heroku.spacey.services.ColorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,35 +15,33 @@ public class ColorController {
     private final ColorService colorService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ColorDto>> getAllColors() {
-        List<ColorDto> colors = colorService.getAllColors();
-        return new ResponseEntity<>(colors, HttpStatus.OK);
+    public List<ColorDto> getAllColors() {
+        return colorService.getAllColors();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ColorDto> getColor(@PathVariable Long id) {
-        ColorDto color = colorService.getById(id);
-        return new ResponseEntity<>(color, HttpStatus.OK);
+    public ColorDto getColor(@PathVariable Long id) {
+        return colorService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addColor(@RequestBody ColorDto colorDto) {
+    public HttpStatus addColor(@RequestBody ColorDto colorDto) {
         colorService.addColor(colorDto);
-        return new ResponseEntity<>("Add color successfully", HttpStatus.CREATED);
+        return HttpStatus.CREATED;
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<ColorDto> editColor(@RequestBody ColorDto colorDto,
-                                              @PathVariable Long id) {
+    public HttpStatus editColor(@RequestBody ColorDto colorDto,
+                                @PathVariable Long id) {
         ColorDto color = colorService.getById(id);
         colorService.updateColor(colorDto, color.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ColorDto> deleteColor(@PathVariable Long id) {
+    public HttpStatus deleteColor(@PathVariable Long id) {
         ColorDto color = colorService.getById(id);
         colorService.deleteColor(color.getId());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return HttpStatus.ACCEPTED;
     }
 }

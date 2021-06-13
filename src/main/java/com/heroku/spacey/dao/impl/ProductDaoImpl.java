@@ -28,10 +28,6 @@ public class ProductDaoImpl implements ProductDao {
 
     @Value("${get_all_products}")
     private String getAllProducts;
-    @Value("${get_all_materials}")
-    private String getAllMaterials;
-    @Value("${get_all_sizes}")
-    private String getAllSizes;
     @Value("${product_get_by_id}")
     private String getProductById;
     @Value("${product_is_exist}")

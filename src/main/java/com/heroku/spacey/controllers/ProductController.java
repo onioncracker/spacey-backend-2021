@@ -18,42 +18,40 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> products = productService.getAllProducts();
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public List<ProductDto> getAllProducts() {
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
-        ProductDto product = productService.getById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    public ProductDto getProduct(@PathVariable Long id) {
+        return productService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addProduct(@RequestBody AddProductDto addProductDto) {
+    public HttpStatus addProduct(@RequestBody AddProductDto addProductDto) {
         productService.addProduct(addProductDto);
-        return new ResponseEntity<>("Add product successfully", HttpStatus.CREATED);
+        return HttpStatus.CREATED;
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<ProductDto> editProduct(@RequestBody UpdateProductDto updateProductDto,
-                                                  @PathVariable Long id) {
+    public HttpStatus editProduct(@RequestBody UpdateProductDto updateProductDto,
+                                  @PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.updateProduct(updateProductDto, product.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
     }
 
     @PutMapping("/remove/{id}")
-    public ResponseEntity<ProductDto> removeProduct(@PathVariable Long id) {
+    public HttpStatus removeProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.removeProduct(product.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/cancel/{id}")
-    public ResponseEntity<ProductDto> cancelAddingProduct(@PathVariable Long id) {
+    public HttpStatus cancelAddingProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.cancelProduct(product.getId());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return HttpStatus.ACCEPTED;
     }
 }

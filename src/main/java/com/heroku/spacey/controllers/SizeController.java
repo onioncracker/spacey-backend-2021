@@ -16,35 +16,33 @@ public class SizeController {
     private final SizeService sizeService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<SizeDto>> getAllSizes() {
-        List<SizeDto> sizes = sizeService.getAllSizes();
-        return new ResponseEntity<>(sizes, HttpStatus.OK);
+    public List<SizeDto> getAllSizes() {
+        return sizeService.getAllSizes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SizeDto> getSize(@PathVariable Long id) {
-        SizeDto size = sizeService.getById(id);
-        return new ResponseEntity<>(size, HttpStatus.OK);
+    public SizeDto getSize(@PathVariable Long id) {
+        return sizeService.getById(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addSize(@RequestBody SizeDto sizeDto) {
+    public HttpStatus addSize(@RequestBody SizeDto sizeDto) {
         sizeService.addSize(sizeDto);
-        return new ResponseEntity<>("Add size successfully", HttpStatus.CREATED);
+        return HttpStatus.CREATED;
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<SizeDto> editSize(@RequestBody SizeDto sizeDto,
-                                            @PathVariable Long id) {
+    public HttpStatus editSize(@RequestBody SizeDto sizeDto,
+                               @PathVariable Long id) {
         SizeDto size = sizeService.getById(id);
         sizeService.updateSize(sizeDto, size.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<SizeDto> deleteSize(@PathVariable Long id) {
+    public HttpStatus deleteSize(@PathVariable Long id) {
         SizeDto size = sizeService.getById(id);
         sizeService.deleteSize(size.getId());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return HttpStatus.ACCEPTED;
     }
 }
