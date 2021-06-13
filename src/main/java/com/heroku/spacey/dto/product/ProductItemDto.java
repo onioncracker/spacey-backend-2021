@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 @Data
 public class ProductItemDto {
-    private int id;
+    private Long id;
     private String name;
     private String sex;
     private int price;
@@ -15,8 +15,8 @@ public class ProductItemDto {
     private int discount;
     private boolean availability;
     private String color;
-    private String size;
+    private ArrayList<SizeDto> sizes;
     private int amount;
     private String category;
-    private ArrayList<String> material;
+    private ArrayList<String> materials;
 }

@@ -7,12 +7,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ProductCatalogService {
-    List<ProductPageDto> getAllProduct(String page,
+    List<ProductPageDto> getAllProduct(Integer pageNum,
+                                       Integer pageSize,
+                                       String sex,
                                        String price,
                                        String categories,
                                        String colors,
-                                       String size,
                                        String order) throws SQLException;
 
-    ProductItemDto getProduct(int id) throws SQLException;
+    ProductItemDto getProduct(Long id) throws SQLException;
 }

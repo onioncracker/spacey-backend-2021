@@ -11,9 +11,9 @@ public interface ProductCompareDao {
 
     void deleteCompare(ProductCompareDto compareDto) throws SQLException;
 
-    List<ProductItemDto> getAllProduct(int userId) throws SQLException;
+    List<ProductItemDto> getAllProduct(Long userId) throws SQLException;
 
-    int getCountComparingProduct(int userId) throws SQLException;
+    int getCountComparingProduct(Long userId) throws SQLException;
 
-    List<String> getMaterialByProductId(int productId) throws SQLException;
+    List<String> getMaterialByProductId(Long productId) throws SQLException;
 }

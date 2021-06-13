@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ProductCompareService {
     void addProductToCompare(ProductCompareDto compareDto) throws SQLException;
-    List<ProductItemDto> getAllComparingProduct(int userId) throws SQLException;
+    List<ProductItemDto> getAllComparingProduct(Long userId) throws SQLException;
     void deleteProductCompare(ProductCompareDto compareDto) throws SQLException;
 }
