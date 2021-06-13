@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ public class SizeDaoImpl implements SizeDao {
     public List<Size> getAllSizes() {
         List<Size> sizes = Objects.requireNonNull(jdbcTemplate).query(getAllSizes, mapper);
         if (sizes.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         return sizes;
     }

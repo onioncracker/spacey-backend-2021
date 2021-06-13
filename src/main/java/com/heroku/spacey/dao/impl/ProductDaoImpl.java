@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,7 +52,7 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> getAllProducts() {
         List<Product> products = Objects.requireNonNull(jdbcTemplate).query(getAllProducts, mapper);
         if (products.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         return products;
     }

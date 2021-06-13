@@ -10,14 +10,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Data
-public class LoginInfo implements UserDetails, Serializable {
-    private int loginId;
+public class User implements UserDetails, Serializable {
+    private int userId;
     private String email;
     private String firstName;
     private String lastName;
     private String userRole;
+    private long roleId;
+    private long statusId;
     private String phoneNumber;
-    private String status;
     private String password;
 
     @Override

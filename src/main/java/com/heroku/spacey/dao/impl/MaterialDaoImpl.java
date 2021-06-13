@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ public class MaterialDaoImpl implements MaterialDao {
     public List<Material> getAllMaterials() {
         List<Material> materials = Objects.requireNonNull(jdbcTemplate).query(getAllMaterials, mapper);
         if (materials.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         return materials;
     }

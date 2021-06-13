@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ public class ColorDaoImpl implements ColorDao {
     public List<Color> getAllColors() {
         List<Color> colors = Objects.requireNonNull(jdbcTemplate).query(getAllColors, mapper);
         if (colors.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         return colors;
     }
