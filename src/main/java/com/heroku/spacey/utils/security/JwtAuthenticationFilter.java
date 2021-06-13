@@ -1,6 +1,6 @@
 package com.heroku.spacey.utils.security;
 
-import com.heroku.spacey.services.IUserService;
+import com.heroku.spacey.services.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     private static final String TOKEN_PREFIX = "Bearer ";
 

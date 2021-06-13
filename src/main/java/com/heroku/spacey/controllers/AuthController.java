@@ -3,7 +3,7 @@ package com.heroku.spacey.controllers;
 import com.heroku.spacey.dto.auth.UserTokenDto;
 import com.heroku.spacey.dto.user.LoginDto;
 import com.heroku.spacey.dto.user.UserRegisterDto;
-import com.heroku.spacey.services.IUserService;
+import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class AuthController {
-    private final IUserService userService;
+    private final UserService userService;
 
     public AuthController(UserServiceImpl userService) {
         this.userService = userService;

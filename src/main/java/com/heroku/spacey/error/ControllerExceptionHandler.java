@@ -27,6 +27,17 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserNotActivatedException.class)
+    public ResponseEntity<ErrorMessage> userNotActivatedException(UserNotActivatedException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+            HttpStatus.FORBIDDEN.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalExceptionHandler(Exception ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(

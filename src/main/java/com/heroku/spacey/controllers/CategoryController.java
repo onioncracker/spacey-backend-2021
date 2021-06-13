@@ -42,7 +42,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority(T(com.heroku.spacey.utils.Role).PRODUCT_MANAGER)")
+    @PreAuthorize("hasAuthority(T(com.heroku.spacey.utils.Roles).PRODUCT_MANAGER)")
     public ResponseEntity<CategoryDto> deleteCategory(@PathVariable Long id) {
         CategoryDto category = categoryService.getById(id);
         categoryService.deleteCategory(category.getId());
