@@ -4,7 +4,6 @@ import com.heroku.spacey.dao.ProductCompareDao;
 import com.heroku.spacey.dto.product.ProductCompareDto;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.SizeDto;
-import com.heroku.spacey.mapper.SizeMapper;
 import com.heroku.spacey.mapper.SizeQuantityMapper;
 import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
