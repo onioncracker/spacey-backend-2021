@@ -5,12 +5,16 @@ import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.dao.ProductToCartDao;
 import com.heroku.spacey.entity.Cart;
 import com.heroku.spacey.entity.Product;
+import com.heroku.spacey.entity.ProductToCart;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.services.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -32,16 +36,47 @@ public class CartServiceImpl implements CartService {
     public void addProductToCart(Long productId, int amount) {
         User user = (User) SecurityContextHolder.getContext()
             .getAuthentication().getPrincipal();
-        Cart cart = getCart(user.getUserId());
         Product product = productDao.get(productId);
         double sum = amount * product.getPrice();
-        productToCartDao.insert(cart.getCartId(), productId, amount, sum);
+
+        Cart cart = getCart(user.getUserId());
+        ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId);
+        if (productToCart == null) {
+            productToCartDao.insert(cart.getCartId(), productId, amount, sum);
+            log.info("ProductToCart created");
+        } else {
+            productToCart.setAmount(productToCart.getAmount() + amount);
+            productToCart.setSum(productToCart.getSum() + sum);
+            productToCartDao.update(productToCart);
+            log.info("ProductToCart updated");
+        }
+
         cartDao.updatePrice(cart.getCartId(), cart.getOverallPrice() + sum);
     }
 
     @Override
     public void deleteProductFromCart(Long productId, int amount) {
-        // TODO implement delete
+        User user = (User) SecurityContextHolder.getContext()
+            .getAuthentication().getPrincipal();
+        Cart cart = getCart(user.getUserId());
+        Product product = productDao.get(productId);
+        double sum = amount * product.getPrice();
+
+        ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId);
+        if (productToCart == null) {
+            throw new NotFoundException("product to cart doesnt exist");
+        }
+
+        if (productToCart.getAmount() == amount) {
+            productToCartDao.delete(productToCart);
+            log.info("product to cart deleted");
+        } else {
+            productToCart.setAmount(productToCart.getAmount() - amount);
+            productToCart.setSum(productToCart.getSum() - sum);
+            productToCartDao.update(productToCart);
+            log.info("ProductToCart updated");
+        }
+        cartDao.updatePrice(cart.getCartId(), cart.getOverallPrice() - sum);
     }
 
     @Override
@@ -51,5 +86,17 @@ public class CartServiceImpl implements CartService {
             cartId = cartDao.createCart(userId);
         }
         return cartDao.getCart(cartId);
+    }
+
+    @Override
+    public void cleanCart() {
+        User user = (User) SecurityContextHolder.getContext()
+            .getAuthentication().getPrincipal();
+        Cart cart = getCart(user.getUserId());
+        List<ProductToCart> list = productToCartDao.getAllInCart(cart.getCartId());
+        for (ProductToCart productToCart: list) {
+            productToCartDao.delete(productToCart);
+        }
+        cartDao.updatePrice(cart.getCartId(), 0);
     }
 }

@@ -3,7 +3,7 @@ package com.heroku.spacey.controllers;
 import com.heroku.spacey.dto.cart.EditCartDto;
 import com.heroku.spacey.services.CartService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,15 +19,24 @@ public class CartController {
     }
 
     @Secured("ROLE_USER")
-    @PutMapping("/add")
-    public ResponseEntity addProduct(@RequestBody EditCartDto editCartDto) {
+    @PutMapping("/add-product")
+    public HttpStatus addProduct(@RequestBody EditCartDto editCartDto) {
         cartService.addProductToCart(editCartDto.getProductId(), editCartDto.getAmount());
-        return ResponseEntity.ok().build();
+        return HttpStatus.OK;
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity deleteProduct(@RequestBody EditCartDto editCartDto) {
-        return null;
+    @Secured("ROLE_USER")
+    @DeleteMapping("/delete-product")
+    public HttpStatus deleteProduct(@RequestBody EditCartDto editCartDto) {
+        cartService.deleteProductFromCart(editCartDto.getProductId(), editCartDto.getAmount());
+        return HttpStatus.OK;
+    }
+
+    @Secured("ROLE_USER")
+    @DeleteMapping("/clear")
+    public HttpStatus clearCart() {
+        cartService.cleanCart();
+        return HttpStatus.OK;
     }
 
 }

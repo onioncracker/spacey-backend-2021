@@ -2,7 +2,6 @@ package com.heroku.spacey.entity;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Set;
 
