@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper;
+package com.heroku.spacey.mapper.product;
 
 import com.heroku.spacey.entity.Category;
 import org.springframework.jdbc.core.RowMapper;

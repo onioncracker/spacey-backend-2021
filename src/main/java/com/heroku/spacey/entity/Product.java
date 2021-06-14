@@ -4,11 +4,21 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class Product {
     private Long id;
+    private Set<Material> materials;
+    private Set<Size> sizes;
+
+    private Category productCategory;
+    private Long categoryId;
+
+    private Color productColor;
+    private Long colorId;
+
+    private Long amount;
     private String name;
     private Date createdDate;
     private String productSex;
@@ -18,11 +28,4 @@ public class Product {
     private Double discount;
     private Boolean isAvailable;
     private Boolean isOnAuction;
-
-    private List<Material> materials;
-    private Category productCategory;
-    private Long categoryId;
-
-    private ProductDetail productDetail;
-    private Long productDetailsId;
 }

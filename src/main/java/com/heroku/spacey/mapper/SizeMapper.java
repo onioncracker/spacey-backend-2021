@@ -1,19 +1,17 @@
 package com.heroku.spacey.mapper;
 
-import com.heroku.spacey.dto.product.SizeDto;
+import com.heroku.spacey.entity.Size;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-@Component
-public class SizeMapper implements RowMapper<SizeDto> {
 
+public class SizeMapper implements RowMapper<Size> {
     @Override
-    public SizeDto mapRow(ResultSet resultSet, int i) throws SQLException {
-        SizeDto sizeDto = new SizeDto();
-        sizeDto.setSize(resultSet.getString("sizename"));
-        sizeDto.setQuantity(resultSet.getInt("quantity"));
-        return sizeDto;
+    public Size mapRow(ResultSet resultSet, int i) throws SQLException {
+        Size size = new Size();
+        size.setId(resultSet.getLong("sizeid"));
+        size.setName(resultSet.getString("sizename"));
+        return size;
     }
 }

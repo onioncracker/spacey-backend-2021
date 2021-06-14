@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -22,6 +24,8 @@ public class MaterialDaoImpl implements MaterialDao {
     private final MaterialMapper mapper = new MaterialMapper();
     private final JdbcTemplate jdbcTemplate;
 
+    @Value("${get_all_materials}")
+    private String getAllMaterials;
     @Value("${material_get_by_id}")
     private String getMaterialById;
     @Value("${insert_material}")
@@ -36,8 +40,21 @@ public class MaterialDaoImpl implements MaterialDao {
     }
 
     @Override
+    public List<Material> getAllMaterials() {
+        List<Material> materials = Objects.requireNonNull(jdbcTemplate).query(getAllMaterials, mapper);
+        if (materials.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return materials;
+    }
+
+    @Override
     public Material getById(Long id) {
-        return Objects.requireNonNull(jdbcTemplate).queryForObject(getMaterialById, mapper, id);
+        List<Material> materials = Objects.requireNonNull(jdbcTemplate).query(getMaterialById, mapper, id);
+        if (materials.isEmpty()) {
+            return null;
+        }
+        return materials.get(0);
     }
 
     @Override

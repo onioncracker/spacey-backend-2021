@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 
 public interface AwsImageService {
-    URL save(MultipartFile img) throws IOException;
+    void save(MultipartFile img, Long productId) throws IOException;
 
     URL getUrl(String fileName);
 
