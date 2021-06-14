@@ -12,7 +12,7 @@ public class Product {
     private String name;
     private Date createdDate;
     private String productSex;
-    private BigDecimal price;
+    private Double price;
     private String photo;
     private String description;
     private Double discount;

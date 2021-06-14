@@ -11,7 +11,7 @@ import java.util.Collections;
 
 @Data
 public class User implements UserDetails, Serializable {
-    private int userId;
+    private Long userId;
     private String email;
     private String firstName;
     private String lastName;
