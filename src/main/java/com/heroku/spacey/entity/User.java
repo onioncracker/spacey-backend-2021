@@ -12,6 +12,7 @@ import java.util.Collections;
 @Data
 public class User implements UserDetails, Serializable {
     private int userId;
+    private Long tokenId;
     private String email;
     private String firstName;
     private String lastName;
@@ -20,6 +21,7 @@ public class User implements UserDetails, Serializable {
     private long statusId;
     private String phoneNumber;
     private String password;
+    private boolean isEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,11 +45,6 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }

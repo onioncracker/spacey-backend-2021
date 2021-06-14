@@ -5,3 +5,5 @@ SELECT * FROM categories;
 SELECT * FROM materials;
 SELECT * FROM material_to_products;
 SELECT * FROM size_to_products;
+SELECT * FROM users;
+SELECT * FROM verification_token;

@@ -1,6 +1,6 @@
 package com.heroku.spacey.services.impl;
 
-import com.heroku.spacey.services.MailService;
+import com.heroku.spacey.services.EmailService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @PropertySource("classpath:application.properties")
-public class MailServiceImpl implements MailService {
+public class EmailServiceImpl implements EmailService {
     private final JavaMailSender emailSender;
     private final Environment environment;
     private final SpringTemplateEngine templateEngine;
@@ -30,7 +30,7 @@ public class MailServiceImpl implements MailService {
     private String spaceyMail;
 
     @Autowired
-    public MailServiceImpl(JavaMailSender emailSender, Environment environment, SpringTemplateEngine templateEngine) {
+    public EmailServiceImpl(JavaMailSender emailSender, Environment environment, SpringTemplateEngine templateEngine) {
         this.emailSender = emailSender;
         this.environment = environment;
         this.templateEngine = templateEngine;
