@@ -12,9 +12,9 @@ public interface EmployeeService {
 
     EmployeeDto getEmployeeById(int loginId) throws NotFoundException, SQLException;
 
-    void createEmployee(EmployeeDto employeeDto) throws SQLException;
+    void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException;
 
-    int updateEmployee(EmployeeDto employeeDto) throws SQLException;
+    int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException;
 
     int deleteEmployee(int loginId) throws SQLException;
 }
