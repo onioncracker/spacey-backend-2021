@@ -1,8 +1,5 @@
 package com.heroku.spacey.dao;
-
 import com.heroku.spacey.entity.Product;
-
-import java.net.URL;
 import java.util.List;
 
 public interface ProductDao {
@@ -12,7 +9,7 @@ public interface ProductDao {
 
     boolean isExist(Long id);
 
-    void saveImage(Long id, URL url);
+    void saveImage(Long id, String url);
 
     Long insert(Product product);
 

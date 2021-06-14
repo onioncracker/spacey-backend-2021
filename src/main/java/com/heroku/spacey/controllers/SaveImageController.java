@@ -10,20 +10,15 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/images")
 public class SaveImageController {
 
     private final AwsImageService imageService;
 
-    @PostMapping("/image/{id}")
-    public HttpStatus addPhoto(@RequestPart(name = "image") MultipartFile img, Long id) throws IOException {
+    @PostMapping("/{id}")
+    public HttpStatus addPhoto(@RequestPart(name = "image") MultipartFile img, @PathVariable Long id) throws IOException {
         imageService.save(img, id);
         return HttpStatus.OK;
-    }
-
-    @DeleteMapping("/image/{image}")
-    public HttpStatus deletePhoto(@PathVariable String image) {
-        imageService.delete(image);
-        return HttpStatus.ACCEPTED;
     }
 
 }
