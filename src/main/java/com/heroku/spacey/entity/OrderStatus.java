@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class OrderStatus {
-    Long orderStatusId;
-    String status;
+    private Long orderStatusId;
+    private String status;
 }

@@ -52,8 +52,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.getAll(filters, pageNum, pageSize);
     }
 
-    public EmployeeDto getEmployeeById(int loginId) throws NotFoundException, SQLException {
-        return employeeDao.getById(loginId);
+    public EmployeeDto getEmployeeById(Long userId) throws NotFoundException, SQLException {
+        return employeeDao.getById(userId);
     }
 
     public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
@@ -68,12 +68,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.update(employeeDto);
     }
 
-    public int deleteEmployee(int loginId) throws SQLException {
-        if (employeeDao.delete(loginId) == 0) {
+    public int deleteEmployee(Long userId) throws SQLException {
+        if (employeeDao.delete(userId) == 0) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }
 
-        return employeeDao.delete(loginId);
+        return employeeDao.delete(userId);
     }
 
     private boolean isValid(String value) {

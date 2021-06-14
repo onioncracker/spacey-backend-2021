@@ -11,13 +11,15 @@ public class EmployeeMapper {
         if (!resultSet.next()) {
             throw new NotFoundException("Haven't found employee with such ID.");
         } else {
-            employeeDto.setLoginId(resultSet.getInt("loginid"));
+            employeeDto.setUserId(resultSet.getLong("userid"));
             employeeDto.setFirstName(resultSet.getString("firstname"));
             employeeDto.setLastName(resultSet.getString("lastname"));
             employeeDto.setEmail(resultSet.getString("email"));
             employeeDto.setPhoneNumber(resultSet.getString("phonenumber"));
-            employeeDto.setUserRole(resultSet.getString("userrole"));
-            employeeDto.setStatus(resultSet.getString("status"));
+            employeeDto.setRoleId(resultSet.getLong("roleid"));
+            employeeDto.setRoleName(resultSet.getString("rolename"));
+            employeeDto.setStatusId(resultSet.getLong("statusid"));
+            employeeDto.setStatusName(resultSet.getString("statusname"));
         }
     }
 }

@@ -32,10 +32,10 @@ public class EmployeeController {
         return employeeService.getEmployees(page, role, status, null);
     }
 
-    @GetMapping("/{loginid}")
-    public EmployeeDto getEmployeeById(@PathVariable int loginid) throws NotFoundException, SQLException {
+    @GetMapping("/{userId}")
+    public EmployeeDto getEmployeeById(@PathVariable Long userId) throws NotFoundException, SQLException {
 
-        return employeeService.getEmployeeById(loginid);
+        return employeeService.getEmployeeById(userId);
     }
 
     @GetMapping("/search/{prompt}")
@@ -57,20 +57,20 @@ public class EmployeeController {
         return "New employee has been created.";
     }
 
-    @PutMapping("/{loginid}")
-    public String editEmployee(@PathVariable int loginid, @RequestBody @Validated EmployeeDto employeeDto)
+    @PutMapping("/{userId}")
+    public String editEmployee(@PathVariable Long userId, @RequestBody @Validated EmployeeDto employeeDto)
             throws SQLException {
 
-        employeeDto.setLoginId(loginid);
+        employeeDto.setUserId(userId);
         employeeService.updateEmployee(employeeDto);
 
         return "Employee info has been updated";
     }
 
-    @DeleteMapping("/{loginid}")
-    public String deleteEmployee(@PathVariable int loginid) throws SQLException {
+    @DeleteMapping("/{userId}")
+    public String deleteEmployee(@PathVariable Long userId) throws SQLException {
 
-        employeeService.deleteEmployee(loginid);
+        employeeService.deleteEmployee(userId);
 
         return "Employee has been deleted.";
     }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface EmployeeDao {
 
-    EmployeeDto getById(int loginId) throws SQLException;
+    EmployeeDto getById(Long userId) throws SQLException;
 
     List<EmployeeDto> getAll(Map<String, String> filters, int pageNum, int pageSize)
             throws SQLException;
@@ -17,5 +17,5 @@ public interface EmployeeDao {
 
     int update(EmployeeDto employeeDto) throws SQLException;
 
-    int delete(int loginId) throws SQLException;
+    int delete(Long userId) throws SQLException;
 }

@@ -60,10 +60,10 @@ public class EmployeeQueryAdapter {
             if (filter.getKey().equals("search")) {
                 String searchPrompt = filter.getValue();
 
-                String filterPart = "(LOWER(login_info.firstname) LIKE LOWER('%"
+                String filterPart = "(LOWER(users.firstname) LIKE LOWER('%"
                         + searchPrompt
                         + "%') "
-                        + "OR LOWER(login_info.lastname) LIKE LOWER('%"
+                        + "OR LOWER(users.lastname) LIKE LOWER('%"
                         + searchPrompt
                         + "%')) ";
 

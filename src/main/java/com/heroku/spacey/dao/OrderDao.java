@@ -1,7 +1,6 @@
 package com.heroku.spacey.dao;
 
 import com.heroku.spacey.entity.Order;
-import com.heroku.spacey.entity.Product;
 
 public interface OrderDao {
 
