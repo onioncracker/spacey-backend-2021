@@ -40,7 +40,7 @@ public class OrderDaoImpl implements OrderDao {
         String commentOrder = order.getCommentOrder();
 
         Object[] parameters = new Object[] {orderStatusId, userId, ordererFirstName, ordererLastName, phoneNumber,
-                city, street, house, apartment, dateTime, overallPrice, commentOrder};
+                                            city, street, house, apartment, dateTime, overallPrice, commentOrder};
 
         jdbcTemplate.update(sqlInsertOrder, parameters);
     }
