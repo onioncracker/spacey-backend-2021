@@ -3,6 +3,7 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.CartDao;
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.dao.ProductToCartDao;
+import com.heroku.spacey.dto.product.ProductForCartDto;
 import com.heroku.spacey.entity.Cart;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductToCart;
@@ -34,12 +35,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addProductToCart(Long productId, int amount) {
-        User user = (User) SecurityContextHolder.getContext()
-            .getAuthentication().getPrincipal();
         Product product = productDao.get(productId);
+        Cart cart = getCartForCurrentUser();
         double sum = amount * product.getPrice();
 
-        Cart cart = getCart(user.getUserId());
         ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId);
         if (productToCart == null) {
             productToCartDao.insert(cart.getCartId(), productId, amount, sum);
@@ -56,9 +55,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void deleteProductFromCart(Long productId, int amount) {
-        User user = (User) SecurityContextHolder.getContext()
-            .getAuthentication().getPrincipal();
-        Cart cart = getCart(user.getUserId());
+        Cart cart = getCartForCurrentUser();
         Product product = productDao.get(productId);
         double sum = amount * product.getPrice();
 
@@ -80,23 +77,29 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart getCart(Long userId) {
-        Long cartId = cartDao.getCartIdByUserId(userId);
+    public Cart getCartForCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext()
+            .getAuthentication().getPrincipal();
+        Long cartId = cartDao.getCartIdByUserId(user.getUserId());
         if (cartId == null) {
-            cartId = cartDao.createCart(userId);
+            cartId = cartDao.createCart(user.getUserId());
         }
         return cartDao.getCart(cartId);
     }
 
     @Override
     public void cleanCart() {
-        User user = (User) SecurityContextHolder.getContext()
-            .getAuthentication().getPrincipal();
-        Cart cart = getCart(user.getUserId());
+        Cart cart = getCartForCurrentUser();
         List<ProductToCart> list = productToCartDao.getAllInCart(cart.getCartId());
         for (ProductToCart productToCart: list) {
             productToCartDao.delete(productToCart);
         }
         cartDao.updatePrice(cart.getCartId(), 0);
+    }
+
+    @Override
+    public List<ProductForCartDto> getAllProductsInCart() {
+        Cart cart = getCartForCurrentUser();
+        return productToCartDao.getAllProducts(cart.getCartId());
     }
 }

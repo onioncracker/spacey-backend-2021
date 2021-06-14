@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper;
+package com.heroku.spacey.mapper.cart;
 
 import com.heroku.spacey.entity.ProductToCart;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,4 +16,5 @@ public class ProductToCartMapper implements RowMapper<ProductToCart> {
         res.setSum(resultSet.getDouble("sum"));
         return res;
     }
+
 }

@@ -1,11 +1,14 @@
 package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.dto.cart.EditCartDto;
+import com.heroku.spacey.dto.product.ProductForCartDto;
 import com.heroku.spacey.services.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -37,6 +40,12 @@ public class CartController {
     public HttpStatus clearCart() {
         cartService.cleanCart();
         return HttpStatus.OK;
+    }
+
+    @Secured("ROLE_USER")
+    @GetMapping("/get-all-cart")
+    public List<ProductForCartDto> getAllProductsInCart() {
+        return cartService.getAllProductsInCart();
     }
 
 }

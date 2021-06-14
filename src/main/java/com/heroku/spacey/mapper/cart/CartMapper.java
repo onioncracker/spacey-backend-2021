@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper;
+package com.heroku.spacey.mapper.cart;
 
 import com.heroku.spacey.entity.Cart;
 import org.springframework.jdbc.core.RowMapper;

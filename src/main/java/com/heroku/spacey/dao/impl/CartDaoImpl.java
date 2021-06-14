@@ -2,7 +2,7 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.CartDao;
 import com.heroku.spacey.entity.Cart;
-import com.heroku.spacey.mapper.CartMapper;
+import com.heroku.spacey.mapper.cart.CartMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
