@@ -10,8 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-import java.net.URL;
+import org.webjars.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -43,6 +42,8 @@ public class ProductDaoImpl implements ProductDao {
     private String deleteProduct;
     @Value("${deactivate_product}")
     private String deactivateProduct;
+    @Value("${save_photo}")
+    private String savePhoto;
 
     public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -66,9 +67,11 @@ public class ProductDaoImpl implements ProductDao {
         return products.get(0);
     }
 
-    public void saveImage(Long id, URL url) {
-        String test = "UPDATE products SET photo = ? WHERE productId = ?";
-        Objects.requireNonNull(jdbcTemplate).update(test, url, id);
+    public void saveImage(Long id, String url) {
+        if (!isExist(id)) {
+            throw new NotFoundException("product with id " + id + " not exist");
+        }
+        Objects.requireNonNull(jdbcTemplate).update(savePhoto, url, id);
     }
 
     @Override
