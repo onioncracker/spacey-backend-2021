@@ -39,7 +39,7 @@ public class EmployeeQueryAdapter {
 
                 String inParams = filteredRoles.stream().map(id -> "?").collect(Collectors.joining(","));
                 filterPart
-                        .append("login_info.userrole IN ")
+                        .append("CAST(roles.roleid AS VARCHAR) IN ")
                         .append("(")
                         .append(inParams)
                         .append(") ");
@@ -48,13 +48,18 @@ public class EmployeeQueryAdapter {
             }
 
             if (filter.getKey().equals("status")) {
+                StringBuilder filterPart = new StringBuilder();
+                List<String> filteredStatuses = Arrays.asList(filter.getValue().split(","));
+                params.addAll(filteredStatuses);
 
-                String filterPart = "login_info.status = "
-                        + "'"
-                        + filter.getValue()
-                        + "'";
+                String inParams = filteredStatuses.stream().map(id -> "?").collect(Collectors.joining(","));
+                filterPart
+                        .append("CAST(user_status.statusid AS VARCHAR) IN ")
+                        .append("(")
+                        .append(inParams)
+                        .append(") ");
 
-                filtersParts.add(filterPart + "\n");
+                filtersParts.add(filterPart.toString());
             }
 
             if (filter.getKey().equals("search")) {
