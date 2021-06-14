@@ -46,13 +46,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
         RowMapper<EmployeeDto> rowMapper = (rs, i) -> {
             EmployeeDto employeeDto = new EmployeeDto();
 
-            employeeDto.setLoginId(rs.getInt("loginid"));
+            employeeDto.setUserId(rs.getLong("userid"));
             employeeDto.setFirstName(rs.getString("firstname"));
             employeeDto.setLastName(rs.getString("lastname"));
             employeeDto.setEmail(rs.getString("email"));
             employeeDto.setPhoneNumber(rs.getString("phonenumber"));
-            employeeDto.setUserRole(rs.getString("userrole"));
-            employeeDto.setStatus(rs.getString("status"));
+            employeeDto.setRoleId(rs.getLong("roleid"));
+            employeeDto.setRoleName(rs.getString("rolename"));
+            employeeDto.setStatusId(rs.getLong("statusid"));
+            employeeDto.setStatusName(rs.getString("statusname"));
 
             return employeeDto;
         };
@@ -61,7 +63,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public EmployeeDto getById(int loginId) {
+    public EmployeeDto getById(Long userId) {
 
         ResultSetExtractor<EmployeeDto> rse = resultSet -> {
             EmployeeDto employeeDto = new EmployeeDto();
@@ -70,20 +72,20 @@ public class EmployeeDaoImpl implements EmployeeDao {
             return employeeDto;
         };
 
-        return jdbcTemplate.query(sqlSelectEmployeeById, rse, loginId);
+        return jdbcTemplate.query(sqlSelectEmployeeById, rse, userId);
     }
 
     @Override
     public void insert(EmployeeDto employeeDto) {
 
+        Long roleid = employeeDto.getRoleId();
+        Long statusid = employeeDto.getStatusId();
         String email = employeeDto.getEmail();
-        String userrole = employeeDto.getUserRole();
         String firstname = employeeDto.getFirstName();
         String lastname = employeeDto.getLastName();
-        String status = employeeDto.getStatus();
         String phonenumber = employeeDto.getPhoneNumber();
 
-        Object[] parameters = new Object[] {email, userrole, firstname, lastname, status, phonenumber};
+        Object[] parameters = new Object[] {roleid, statusid, email, firstname, lastname, phonenumber};
 
         jdbcTemplate.update(sqlInsertEmployee, parameters);
     }
@@ -91,22 +93,22 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public int update(EmployeeDto employeeDto) {
 
-        int loginid = employeeDto.getLoginId();
+        Long roleid = employeeDto.getRoleId();
+        Long statusid = employeeDto.getStatusId();
         String email = employeeDto.getEmail();
-        String userrole = employeeDto.getUserRole();
         String firstname = employeeDto.getFirstName();
         String lastname = employeeDto.getLastName();
-        String status = employeeDto.getStatus();
         String phonenumber = employeeDto.getPhoneNumber();
+        Long userid = employeeDto.getUserId();
 
-        Object[] parameters = new Object[] {email, userrole, firstname, lastname, status, phonenumber, loginid};
+        Object[] parameters = new Object[] {roleid, statusid, email, firstname, lastname, phonenumber, userid};
 
         return jdbcTemplate.update(sqlUpdateEmployee, parameters);
     }
 
     @Override
-    public int delete(int loginId) {
+    public int delete(Long userId) {
 
-        return jdbcTemplate.update(sqlDeleteEmployee, loginId);
+        return jdbcTemplate.update(sqlDeleteEmployee, userId);
     }
 }
