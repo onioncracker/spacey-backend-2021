@@ -29,9 +29,9 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public HttpStatus addProduct(@RequestBody AddProductDto addProductDto) {
-        productService.addProduct(addProductDto);
-        return HttpStatus.CREATED;
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long addProduct(@RequestBody AddProductDto addProductDto) {
+        return productService.addProduct(addProductDto);
     }
 
     @PutMapping("/edit/{id}")
