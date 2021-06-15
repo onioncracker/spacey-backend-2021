@@ -8,6 +8,8 @@ import java.sql.Date;
 public interface VerificationTokenDao {
     VerificationToken findByToken(String token);
 
+    VerificationToken findByTokenId(Long id);
+
     VerificationToken findByUser(User user);
 
     Long insert(VerificationToken verificationToken);

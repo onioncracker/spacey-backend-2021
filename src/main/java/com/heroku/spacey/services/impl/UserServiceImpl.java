@@ -8,7 +8,6 @@ import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.VerificationToken;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.entity.User;
-import com.heroku.spacey.error.UserNotActivatedException;
 import com.heroku.spacey.utils.Roles;
 import com.heroku.spacey.utils.Statuses;
 import com.heroku.spacey.utils.convertors.UserConvertor;
@@ -22,6 +21,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -88,7 +89,7 @@ public class UserServiceImpl implements UserService {
             log.info("status 'unactivated' created with id: " + statusId);
         }
         user.setStatusId(statusId);
-        user.setEnabled(false);
+        user.setEnabled(true);
 
         userDao.insert(user);
 
@@ -103,7 +104,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public String generateAuthenticationToken(String email, String password) {
         Authentication authenticate = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(email, password));
@@ -135,5 +135,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public VerificationToken getVerificationToken(String token) {
         return tokenDao.findByToken(token);
+    }
+
+    @Override
+    public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
+        VerificationToken token = tokenDao.findByToken(existingVerificationToken);
+        token.updateToken(UUID.randomUUID().toString());
+        return tokenDao.findByTokenId(tokenDao.insert(token));
+    }
+
+    @Override
+    public void changeUserPassword(User user, String password) {
+
     }
 }

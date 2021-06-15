@@ -34,4 +34,16 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
                 = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
         mailService.sendSimpleMessageWithTemplate(recipientAddress, subject, confirmationUrl);
     }
+
+    private void recoverPassword(OnRegistrationCompleteEvent event) {
+        User user = event.getUser();
+        String token = UUID.randomUUID().toString();
+        service.createVerificationToken(user, token);
+
+        String recipientAddress = user.getEmail();
+        String subject = "Recover password";
+        String confirmationUrl
+                = event.getAppUrl() + "/recoverPassword.html?token=" + token;
+        mailService.sendSimpleMessageWithTemplate(recipientAddress, subject, confirmationUrl);
+    }
 }

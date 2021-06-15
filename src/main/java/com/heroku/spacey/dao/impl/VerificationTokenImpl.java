@@ -27,6 +27,8 @@ public class VerificationTokenImpl implements VerificationTokenDao {
 
     @Value("${find_by_token}")
     private String findByToken;
+    @Value("${find_by_id}")
+    private String findByTokenId;
     @Value("${find_by_user}")
     private String findByUser;
     @Value("${insert_token}")
@@ -43,6 +45,15 @@ public class VerificationTokenImpl implements VerificationTokenDao {
     @Override
     public VerificationToken findByToken(String token) {
         List<VerificationToken> tokens = jdbcTemplate.query(findByToken, mapper, token);
+        if (tokens.isEmpty()) {
+            return null;
+        }
+        return tokens.get(0);
+    }
+
+    @Override
+    public VerificationToken findByTokenId(Long id) {
+        List<VerificationToken> tokens = jdbcTemplate.query(findByTokenId, mapper, id);
         if (tokens.isEmpty()) {
             return null;
         }
