@@ -28,9 +28,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Map<String, String> filters = new HashMap<>();
 
-        int pageNum = DEFAULT_PAGE_NUM;
-        int pageSize = DEFAULT_PAGE_SIZE;
-
         if (isValid(role)) {
             filters.put("role", role);
         }
@@ -39,48 +36,47 @@ public class EmployeeServiceImpl implements EmployeeService {
             filters.put("status", status);
         }
 
+        int pageNum = DEFAULT_PAGE_NUM;
+        int pageSize = DEFAULT_PAGE_SIZE;
+
         if (isValid(page)) {
             String[] pageProps = page.split("-");
             pageNum = Integer.parseInt(pageProps[0]);
             pageSize = Integer.parseInt(pageProps[1]);
         }
 
-        if (isValid(searchPrompt) && searchPrompt.trim().length() >= 2) {
+        if (isValid(searchPrompt)) {
             filters.put("search", searchPrompt);
         }
 
         return employeeDao.getAll(filters, pageNum, pageSize);
     }
 
-    public EmployeeDto getEmployeeById(int loginId) throws NotFoundException, SQLException {
-        return employeeDao.getById(loginId);
+    public EmployeeDto getEmployeeById(Long userId) throws NotFoundException, SQLException {
+        return employeeDao.getById(userId);
     }
 
-    public void createEmployee(EmployeeDto employeeDto) throws SQLException {
-        if (isValid(employeeDto.getEmail()) && isValid(employeeDto.getUserRole())
-                && isValid(employeeDto.getFirstName()) && isValid(employeeDto.getLastName())
-                && isValid(employeeDto.getStatus())) {
-            employeeDao.insert(employeeDto);
-        } else {
-            throw new SQLException("Fill in all mandatory fields.");
+    public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
+        employeeDao.insert(employeeDto);
+    }
+
+    public int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
+        if (employeeDao.update(employeeDto) == 0) {
+            throw new NotFoundException("Haven't found employee with such ID.");
         }
+
+        return employeeDao.update(employeeDto);
     }
 
-    public int updateEmployee(EmployeeDto employeeDto) throws SQLException {
-        if (isValid(employeeDto.getEmail()) && isValid(employeeDto.getUserRole())
-                && isValid(employeeDto.getFirstName()) && isValid(employeeDto.getLastName())
-                && isValid(employeeDto.getStatus())) {
-            return employeeDao.update(employeeDto);
-        } else {
-            throw new SQLException("Fill in all mandatory fields.");
+    public int deleteEmployee(Long userId) throws SQLException {
+        if (employeeDao.delete(userId) == 0) {
+            throw new NotFoundException("Haven't found employee with such ID.");
         }
-    }
 
-    public int deleteEmployee(int loginId) throws SQLException {
-        return employeeDao.delete(loginId);
+        return employeeDao.delete(userId);
     }
 
     private boolean isValid(String value) {
-        return value != null && !value.isEmpty();
+        return value != null && !value.isBlank();
     }
 }
