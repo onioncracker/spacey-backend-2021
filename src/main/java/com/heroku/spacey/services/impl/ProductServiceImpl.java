@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void addProduct(AddProductDto addProductDto) {
+    public Long addProduct(AddProductDto addProductDto) {
         Product product = productConvertor.adapt(addProductDto);
         Long categoryId = addProductDto.getCategory().getId();
         Long colorId = addProductDto.getColor().getId();
@@ -67,6 +67,7 @@ public class ProductServiceImpl implements ProductService {
             SizeDto size = addProductDto.getSizes().get(i);
             productDao.addSizeToProduct(size.getId(), productId, size.getQuantity());
         }
+        return productId;
     }
 
     @Override
