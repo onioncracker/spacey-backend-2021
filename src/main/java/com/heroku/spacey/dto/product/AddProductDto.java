@@ -6,7 +6,6 @@ import com.heroku.spacey.dto.material.MaterialDto;
 import com.heroku.spacey.dto.size.SizeDto;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,7 +13,7 @@ public class AddProductDto {
     private Long amount;
     private String name;
     private String productSex;
-    private BigDecimal price;
+    private Double price;
     private Double discount;
     private String photo;
     private String description;
