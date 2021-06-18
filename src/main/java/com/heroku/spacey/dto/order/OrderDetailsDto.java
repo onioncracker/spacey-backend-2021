@@ -3,7 +3,7 @@ package com.heroku.spacey.dto.order;
 import com.heroku.spacey.dto.product.ProductOrderDto;
 
 import lombok.Data;
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class OrderDetailsDto {
@@ -20,5 +20,5 @@ public class OrderDetailsDto {
     private String apartment;
     private float overallPrice;
     private String comment;
-    private ArrayList<ProductOrderDto> products;
+    private List<ProductOrderDto> products;
 }

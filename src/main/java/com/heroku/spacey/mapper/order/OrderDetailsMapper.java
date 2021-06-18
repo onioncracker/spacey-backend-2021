@@ -8,13 +8,13 @@ import org.webjars.NotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDetailsMapper implements ResultSetExtractor<OrderDetailsDto> {
 
-    private ArrayList<ProductOrderDto> products;
+    private List<ProductOrderDto> products;
 
-    public OrderDetailsMapper(ArrayList<ProductOrderDto> products) {
+    public OrderDetailsMapper(List<ProductOrderDto> products) {
         this.products = products;
     }
 

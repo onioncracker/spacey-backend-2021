@@ -37,7 +37,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
     }
 
 
-    public List<ProductOrderDto> getAllProductInOrder(Long orderId) throws SQLException {
+    public List<ProductOrderDto> getAllProductInOrder(Long orderId) {
         return jdbcTemplate.query(sqlProductInOrder, productsInOrderMapper, orderId);
     }
 }
