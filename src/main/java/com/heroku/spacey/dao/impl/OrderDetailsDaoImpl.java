@@ -12,8 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -31,8 +29,8 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
     private String sqlProductInOrder;
 
     @Override
-    public OrderDetailsDto getOrderDetails(Long orderId) throws SQLException {
-        OrderDetailsMapper mapper = new OrderDetailsMapper((ArrayList<ProductOrderDto>) getAllProductInOrder(orderId));
+    public OrderDetailsDto getOrderDetails(Long orderId) {
+        OrderDetailsMapper mapper = new OrderDetailsMapper(getAllProductInOrder(orderId));
         return jdbcTemplate.query(sqlGetOrderDetails, mapper, orderId);
     }
 
