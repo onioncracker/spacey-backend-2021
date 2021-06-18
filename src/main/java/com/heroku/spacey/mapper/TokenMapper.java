@@ -1,15 +1,15 @@
 package com.heroku.spacey.mapper;
 
-import com.heroku.spacey.entity.VerificationToken;
+import com.heroku.spacey.entity.Token;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TokenMapper implements RowMapper<VerificationToken> {
+public class TokenMapper implements RowMapper<Token> {
     @Override
-    public VerificationToken mapRow(ResultSet resultSet, int i) throws SQLException {
-        VerificationToken token = new VerificationToken();
+    public Token mapRow(ResultSet resultSet, int i) throws SQLException {
+        Token token = new Token();
         token.setTokenId(resultSet.getLong("tokenid"));
         token.setConfirmationToken(resultSet.getString("confirmationtoken"));
         token.setDate(resultSet.getTimestamp("date"));

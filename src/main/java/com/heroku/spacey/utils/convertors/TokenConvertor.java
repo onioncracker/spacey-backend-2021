@@ -1,7 +1,7 @@
 package com.heroku.spacey.utils.convertors;
 
-import com.heroku.spacey.dto.registration.VerificationTokenDto;
-import com.heroku.spacey.entity.VerificationToken;
+import com.heroku.spacey.dto.registration.TokenDto;
+import com.heroku.spacey.entity.Token;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 public class TokenConvertor {
     private final ModelMapper mapper = new ModelMapper();
 
-    public VerificationToken adapt(VerificationTokenDto source) {
-        mapper.typeMap(VerificationTokenDto.class, VerificationToken.class);
-        return mapper.map(source, VerificationToken.class);
+    public Token adapt(TokenDto source) {
+        mapper.typeMap(TokenDto.class, Token.class);
+        return mapper.map(source, Token.class);
     }
 
-    public VerificationTokenDto adapt(VerificationToken source) {
-        mapper.typeMap(VerificationToken.class, VerificationTokenDto.class);
-        return mapper.map(source, VerificationTokenDto.class);
+    public TokenDto adapt(Token source) {
+        mapper.typeMap(Token.class, TokenDto.class);
+        return mapper.map(source, TokenDto.class);
     }
 }

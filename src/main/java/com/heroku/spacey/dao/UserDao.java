@@ -10,4 +10,6 @@ public interface UserDao {
     long insert(User user);
 
     void updateUser(User user);
+
+    void updateUserStatus(User user);
 }

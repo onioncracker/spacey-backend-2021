@@ -2,7 +2,7 @@ package com.heroku.spacey.services;
 
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.User;
-import com.heroku.spacey.entity.VerificationToken;
+import com.heroku.spacey.entity.Token;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -12,7 +12,7 @@ public interface UserService extends UserDetailsService {
 
     User registerUser(UserRegisterDto userRegisterDto);
 
-    boolean userExists(String email);
+    User userExists(String email);
 
     String generateAuthenticationToken(String email, String password);
 
@@ -20,9 +20,15 @@ public interface UserService extends UserDetailsService {
 
     void createVerificationToken(User user, String token);
 
-    VerificationToken getVerificationToken(String token);
+    void updateUserStatus(User user);
 
-    VerificationToken generateNewVerificationToken(String existingVerificationToken);
+    String validatePasswordResetToken(String token);
+
+    Token getVerificationToken(String token);
+
+    Token generateNewVerificationToken(String existingVerificationToken);
 
     void changeUserPassword(User user, String password);
+
+    void deleteTokenById(Long id);
 }

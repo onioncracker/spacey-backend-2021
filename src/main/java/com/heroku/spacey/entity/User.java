@@ -1,5 +1,6 @@
 package com.heroku.spacey.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +12,7 @@ import java.util.Collections;
 
 @Data
 public class User implements UserDetails, Serializable {
-    private int userId;
+    private Long userId;
     private Long tokenId;
     private String email;
     private String firstName;
@@ -21,7 +22,7 @@ public class User implements UserDetails, Serializable {
     private long statusId;
     private String phoneNumber;
     private String password;
-    private boolean isEnabled;
+    private boolean activation;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -46,5 +47,10 @@ public class User implements UserDetails, Serializable {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return activation;
     }
 }

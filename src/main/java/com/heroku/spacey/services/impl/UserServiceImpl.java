@@ -3,13 +3,13 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.RoleDao;
 import com.heroku.spacey.dao.StatusDao;
 import com.heroku.spacey.dao.UserDao;
-import com.heroku.spacey.dao.VerificationTokenDao;
+import com.heroku.spacey.dao.TokenDao;
 import com.heroku.spacey.dto.user.UserRegisterDto;
-import com.heroku.spacey.entity.VerificationToken;
+import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.utils.Roles;
-import com.heroku.spacey.utils.Statuses;
+import com.heroku.spacey.utils.Status;
 import com.heroku.spacey.utils.convertors.UserConvertor;
 import com.heroku.spacey.utils.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 @Slf4j
@@ -32,17 +32,16 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     private RoleDao roleDao;
     private StatusDao statusDao;
-    private final VerificationTokenDao tokenDao;
+    private final TokenDao tokenDao;
     private final UserConvertor userConvertor;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-
 
     public UserServiceImpl(@Autowired BCryptPasswordEncoder passwordEncoder,
                            @Autowired UserDao userDao,
                            @Autowired RoleDao roleDao,
                            @Autowired StatusDao statusDao,
-                           @Autowired VerificationTokenDao tokenDao,
+                           @Autowired TokenDao tokenDao,
                            @Autowired UserConvertor userConvertor,
                            @Autowired AuthenticationManager authenticationManager,
                            @Autowired JwtTokenProvider jwtTokenProvider) {
@@ -57,7 +56,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDao.getUserByEmail(email);
         if (user == null) {
@@ -68,12 +66,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public User registerUser(UserRegisterDto registerDto) {
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
         User user = this.userConvertor.adapt(registerDto);
         user.setPassword(encodedPassword);
         user.setUserRole(Roles.USER.name());
+        user.setActivation(false);
 
         Long roleId = roleDao.getRoleId(Roles.USER.name());
         if (roleId == null) {
@@ -83,24 +81,22 @@ public class UserServiceImpl implements UserService {
         }
         user.setRoleId(roleId);
 
-        Long statusId = statusDao.getStatusId(Statuses.UNACTIVATED.name());
+        Long statusId = statusDao.getStatusId(Status.UNACTIVATED.name());
         if (statusId == null) {
-            statusId = statusDao.insertStatus(Statuses.UNACTIVATED.name());
+            statusId = statusDao.insertStatus(Status.UNACTIVATED.name());
             log.info("status 'unactivated' created with id: " + statusId);
         }
         user.setStatusId(statusId);
-        user.setEnabled(true);
 
-        userDao.insert(user);
+        Long userId = userDao.insert(user);
+        user.setUserId(userId);
 
         return user;
     }
 
     @Override
-    @Transactional
-    public boolean userExists(String email) {
-        User user = userDao.getUserByEmail(email);
-        return user != null;
+    public User userExists(String email) {
+        return userDao.getUserByEmail(email);
     }
 
     @Override
@@ -108,23 +104,21 @@ public class UserServiceImpl implements UserService {
         Authentication authenticate = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(email, password));
         User user = (User) authenticate.getPrincipal();
-//        if (statusDao.getStatusName(user.getStatusId()).equals(Statuses.UNACTIVATED.name())) {
+//        if (statusDao.getStatusName(user.getStatusId()).equals(Status.UNACTIVATED.name())) {
 //            throw new UserNotActivatedException("v kmv ");
 //        }
         return jwtTokenProvider.generateToken(user);
     }
 
     @Override
-    @Transactional
     public User getUser(String verificationToken) {
         Long tokenId = tokenDao.findByToken(verificationToken).getTokenId();
         return userDao.getUserByTokenId(tokenId);
     }
 
     @Override
-    @Transactional
     public void createVerificationToken(User user, String token) {
-        VerificationToken verificationToken = new VerificationToken();
+        Token verificationToken = new Token();
         verificationToken.setConfirmationToken(token);
         Long tokenId = tokenDao.insert(verificationToken);
         user.setTokenId(tokenId);
@@ -132,20 +126,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public VerificationToken getVerificationToken(String token) {
+    public void updateUserStatus(User user) {
+        user.setStatusId(Status.ACTIVATED.value);
+        userDao.updateUser(user);
+    }
+
+    @Override
+    public Token getVerificationToken(String token) {
         return tokenDao.findByToken(token);
     }
 
     @Override
-    public VerificationToken generateNewVerificationToken(String existingVerificationToken) {
-        VerificationToken token = tokenDao.findByToken(existingVerificationToken);
+    public Token generateNewVerificationToken(String existingVerificationToken) {
+        Token token = tokenDao.findByToken(existingVerificationToken);
         token.updateToken(UUID.randomUUID().toString());
         return tokenDao.findByTokenId(tokenDao.insert(token));
     }
 
     @Override
     public void changeUserPassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userDao.updateUser(user);
+    }
 
+    @Override
+    public String validatePasswordResetToken(String token) {
+        final Token passToken = tokenDao.findByToken(token);
+        return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+    }
+
+    public void deleteTokenById(Long id) {
+        tokenDao.delete(id);
+    }
+
+    private boolean isTokenFound(Token passToken) {
+        return passToken != null;
+    }
+
+    private boolean isTokenExpired(Token passToken) {
+        final Calendar cal = Calendar.getInstance();
+        return passToken.getDate().before(cal.getTime());
     }
 }

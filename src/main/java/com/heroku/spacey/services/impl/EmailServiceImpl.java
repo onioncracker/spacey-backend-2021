@@ -16,6 +16,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.Objects;
 
 @Slf4j
@@ -38,7 +39,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
-        var message = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(Objects.requireNonNull(environment.getProperty(spaceyMail)));
         message.setTo(to);
         message.setSubject(subject);
@@ -54,13 +55,13 @@ public class EmailServiceImpl implements EmailService {
         log.info(subject);
         log.info(text);
 
-        var message = emailSender.createMimeMessage();
-        var helper = new MimeMessageHelper(message, true);
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom(spaceyMail);
         helper.setTo(to);
         helper.setSubject(subject);
 
-        var context = new Context();
+        Context context = new Context();
         context.setVariable("text", text);
         String htmlContent = templateEngine.process("email", context);
         helper.setText(htmlContent, true);

@@ -15,7 +15,7 @@ CREATE TABLE verification_token
 (
     TokenId BIGSERIAL PRIMARY KEY,
     ConfirmationToken VARCHAR(255),
-    Date TIMESTAMP
+    Date Date
 );
 
 CREATE TABLE users

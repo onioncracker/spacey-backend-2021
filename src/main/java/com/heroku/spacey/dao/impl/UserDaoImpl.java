@@ -37,6 +37,9 @@ public class UserDaoImpl implements UserDao {
     @Value("${update_user}")
     private String updateUser;
 
+    @Value("${update_user_status}")
+    private String updateUserStatus;
+
     public UserDaoImpl(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapper = new UserMapper();
@@ -45,7 +48,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserByEmail(String email) {
-        var result = jdbcTemplate.query(getUserByEmail, mapper, email);
+        List<User> result = jdbcTemplate.query(getUserByEmail, mapper, email);
         if (result.isEmpty()) {
             return null;
         }
@@ -82,5 +85,11 @@ public class UserDaoImpl implements UserDao {
         Object[] params = new Object[]{user.getTokenId(), user.getPassword(),
                 user.getFirstName(), user.getLastName(), user.getUserId()};
         Objects.requireNonNull(jdbcTemplate).update(updateUser, params);
+    }
+
+    @Override
+    public void updateUserStatus(User user) {
+        Object[] params = new Object[]{user.getStatusId(), user.getUserId()};
+        Objects.requireNonNull(jdbcTemplate).update(updateUserStatus, params);
     }
 }

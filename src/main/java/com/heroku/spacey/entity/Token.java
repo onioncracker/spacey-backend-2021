@@ -4,20 +4,21 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 
 @Data
-public class VerificationToken {
+public class Token {
     private static final int EXPIRATION = 60 * 24;
 
     private Long tokenId;
     private String confirmationToken;
-    private Timestamp date;
+    private Date date;
 
-    private Timestamp calculateExpireDate(int expireTimeInMinutes) {
+    private Date calculateExpireDate(int expireTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Timestamp(cal.getTime().getTime()));
         cal.add(Calendar.MINUTE, expireTimeInMinutes);
-        return new Timestamp(cal.getTime().getTime());
+        return new Date(cal.getTime().getTime());
     }
 
     public void updateToken(final String token) {
