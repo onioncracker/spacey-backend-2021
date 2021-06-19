@@ -7,14 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
+import org.webjars.NotFoundException;
+
+import java.util.List;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
 @PropertySource("classpath:sql/checkout_queries.properties")
 public class CheckoutDaoImpl implements CheckoutDao {
-
+    private final CheckoutMapper mapper = new CheckoutMapper();
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${select_checkout_by_cart_id}")
@@ -23,13 +26,12 @@ public class CheckoutDaoImpl implements CheckoutDao {
 
     @Override
     public CheckoutDto getByCartId(Long cartId) {
-        ResultSetExtractor<CheckoutDto> rse = resultSet -> {
-            CheckoutDto checkoutDto = new CheckoutDto();
-            CheckoutMapper.mapCheckout(resultSet, checkoutDto);
+        List<CheckoutDto> checkoutDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectCheckoutByCartId, mapper, cartId);
 
-            return checkoutDto;
-        };
+        if (checkoutDtos.isEmpty()) {
+            throw new NotFoundException("Haven't found checkout info for such cart.");
+        }
 
-        return jdbcTemplate.query(sqlSelectCheckoutByCartId, rse, cartId);
+        return checkoutDtos.get(0);
     }
 }

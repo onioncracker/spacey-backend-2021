@@ -22,8 +22,6 @@ public class EmployeeDto {
 
     @NotNull
     private Long roleId;
-    @NotNull
-    @NotBlank
     private String roleName;
 
     @NameConstraint
@@ -33,8 +31,6 @@ public class EmployeeDto {
 
     @NotNull
     private Long statusId;
-    @NotNull
-    @NotBlank
     private String statusName;
 
     private String phoneNumber;

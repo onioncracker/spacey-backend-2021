@@ -4,7 +4,7 @@ import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 import java.sql.SQLException;
 import java.util.List;
 
-@PreAuthorize("hasAuthority(T(com.heroku.spacey.utils.Role).ADMIN)")
+//@Secured("ADMIN")
 @RestController
 @Validated
 @RequestMapping("/api/employees")

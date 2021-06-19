@@ -1,14 +1,20 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.OrderDao;
-import com.heroku.spacey.entity.Order;
+import com.heroku.spacey.dto.order.CreateOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.sql.Date;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,24 +31,28 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @Transactional
-    public void insert(Order order) {
-        Long orderStatusId = order.getOrderStatusId();
-        Long userId = order.getUserId();
-        String ordererFirstName = order.getOrdererFirstName();
-        String ordererLastName = order.getOrdererLastName();
-        String phoneNumber = order.getPhoneNumber();
-        String city = order.getCity();
-        String street = order.getStreet();
-        String house = order.getHouse();
-        String apartment = order.getApartment();
-        Date dateTime = order.getDateTime();
-        float overallPrice = order.getOverallPrice();
-        String commentOrder = order.getCommentOrder();
+    public Long insert(CreateOrderDto createOrderDto, Timestamp orderTime, Timestamp deliveryTime) {
+        KeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sqlInsertOrder, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, createOrderDto.getOrderStatusId());
+            ps.setLong(2, createOrderDto.getUserId());
+            ps.setString(3, createOrderDto.getOrdererFirstName());
+            ps.setString(4, createOrderDto.getOrdererLastName());
+            ps.setString(5, createOrderDto.getPhoneNumber());
+            ps.setString(6, createOrderDto.getCity());
+            ps.setString(7, createOrderDto.getStreet());
+            ps.setString(8, createOrderDto.getHouse());
+            ps.setString(9, createOrderDto.getApartment());
+            ps.setTimestamp(10, orderTime);
+            ps.setTimestamp(11, createOrderDto.getDateDelivery());
+            ps.setFloat(12, createOrderDto.getOverallPrice());
+            ps.setString(13, createOrderDto.getCommentOrder());
 
-        Object[] parameters = new Object[] {orderStatusId, userId, ordererFirstName, ordererLastName, phoneNumber,
-                                            city, street, house, apartment, dateTime, overallPrice, commentOrder};
+            return ps;
+        }, holder);
 
-        jdbcTemplate.update(sqlInsertOrder, parameters);
+        return (Long) Objects.requireNonNull(holder.getKeys()).get("orderid");
     }
 
     @Override

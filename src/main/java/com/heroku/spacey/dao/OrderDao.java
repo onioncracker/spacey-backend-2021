@@ -1,10 +1,11 @@
 package com.heroku.spacey.dao;
 
-import com.heroku.spacey.entity.Order;
+import com.heroku.spacey.dto.order.CreateOrderDto;
+
+import java.sql.Timestamp;
 
 public interface OrderDao {
-
-    void insert(Order order);
+    Long insert(CreateOrderDto order, Timestamp orderTime, Timestamp deliveryTime);
 
     void addProductToOrder(Long orderId, Long productId, int amount, float sum);
 }

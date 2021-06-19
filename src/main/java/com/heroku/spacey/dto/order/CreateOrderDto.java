@@ -1,17 +1,15 @@
-package com.heroku.spacey.entity;
+package com.heroku.spacey.dto.order;
 
 import lombok.Data;
 
-import java.sql.Date;
 import java.util.List;
+import java.sql.Timestamp;
+
 
 @Data
-public class Order {
-    private Long orderId;
+public class CreateOrderDto {
+    private List<ProductCreateOrderDto> products;
 
-    private List<Product> products;
-
-    private String orderStatus;
     private Long orderStatusId;
 
     private Long userId;
@@ -22,10 +20,10 @@ public class Order {
     private String street;
     private String house;
     private String apartment;
-    private Date dateTime;
+    private Timestamp dateDelivery;
     private float overallPrice;
     private String commentOrder;
+
+    private boolean doNotDisturb;
+    private boolean noContact;
 }
-
-
-

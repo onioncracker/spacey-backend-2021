@@ -2,16 +2,15 @@ package com.heroku.spacey.mapper;
 
 import com.heroku.spacey.dto.order.CheckoutDto;
 import com.heroku.spacey.dto.order.ProductCheckoutDto;
-import org.webjars.NotFoundException;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CheckoutMapper {
-    public static void mapCheckout(ResultSet resultSet, CheckoutDto checkoutDto) throws SQLException {
-        if (!resultSet.next()) {
-            throw new NotFoundException("Haven't found checkout info with such ID.");
-        } else {
+public class CheckoutMapper implements RowMapper<CheckoutDto> {
+    @Override
+    public CheckoutDto mapRow(ResultSet resultSet, int i) throws SQLException {
+            CheckoutDto checkoutDto = new CheckoutDto();
             ProductCheckoutDto product = new ProductCheckoutDto();
 
             product.setProductName(resultSet.getString("productname"));
@@ -31,6 +30,7 @@ public class CheckoutMapper {
             checkoutDto.setStreet(resultSet.getString("street"));
             checkoutDto.setHouse(resultSet.getString("house"));
             checkoutDto.setApartment(resultSet.getString("appartment"));
-        }
+
+            return checkoutDto;
     }
 }

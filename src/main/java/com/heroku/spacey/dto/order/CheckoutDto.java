@@ -11,6 +11,7 @@ public class CheckoutDto {
 
     private float overallPrice;
 
+    private Long userId;
     private String firstName;
     private String lastName;
     private String phoneNumber;

@@ -4,6 +4,7 @@ import com.heroku.spacey.dao.EmployeeDao;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -28,24 +29,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Map<String, String> filters = new HashMap<>();
 
-        if (isValid(role)) {
+        if (!StringUtils.isBlank(role)) {
             filters.put("role", role);
         }
 
-        if (isValid(status)) {
+        if (!StringUtils.isBlank(status)) {
             filters.put("status", status);
         }
 
         int pageNum = DEFAULT_PAGE_NUM;
         int pageSize = DEFAULT_PAGE_SIZE;
 
-        if (isValid(page)) {
+        if (!StringUtils.isBlank(page)) {
             String[] pageProps = page.split("-");
             pageNum = Integer.parseInt(pageProps[0]);
             pageSize = Integer.parseInt(pageProps[1]);
         }
 
-        if (isValid(searchPrompt)) {
+        if (!StringUtils.isBlank(searchPrompt)) {
             filters.put("search", searchPrompt);
         }
 
@@ -74,9 +75,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return employeeDao.delete(userId);
-    }
-
-    private boolean isValid(String value) {
-        return value != null && !value.isBlank();
     }
 }
