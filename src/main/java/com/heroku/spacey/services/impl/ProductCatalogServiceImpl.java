@@ -6,12 +6,14 @@ import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
 import com.heroku.spacey.services.ProductCatalogService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductCatalogServiceImpl implements ProductCatalogService {
