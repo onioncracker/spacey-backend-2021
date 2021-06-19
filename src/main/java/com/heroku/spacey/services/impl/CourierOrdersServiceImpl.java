@@ -18,9 +18,11 @@ public class CourierOrdersServiceImpl implements CourierOrdersService {
     private final OrderDao orders;
 
     public List<CourierOrdersDto> getCourierOrders(Long id, Date date) {
+
         if (date == null) {
-            date = new Date(Calendar.getInstance().getTime().getTime());
+            return orders.getCourierOrders(id, new Date(Calendar.getInstance().getTime().getTime()));
+        } else {
+            return orders.getCourierOrders(id, date);
         }
-        return orders.getCourierOrders(id, date);
     }
 }

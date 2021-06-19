@@ -3,7 +3,7 @@ package com.heroku.spacey.dao.impl;
 import com.heroku.spacey.dao.OrderDao;
 import com.heroku.spacey.entity.Order;
 import com.heroku.spacey.dto.order.CourierOrdersDto;
-import com.heroku.spacey.mapper.CourierOrdersMapper;
+import com.heroku.spacey.mapper.order.CourierOrdersMapper;
 
 import lombok.RequiredArgsConstructor;
 

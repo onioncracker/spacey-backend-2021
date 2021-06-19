@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper;
+package com.heroku.spacey.mapper.order;
 
 import com.heroku.spacey.dto.order.CourierOrdersDto;
 import org.springframework.jdbc.core.RowMapper;
