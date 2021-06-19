@@ -17,7 +17,6 @@ public class Product {
     private Color productColor;
     private Long colorId;
 
-    private Long amount;
     private String name;
     private Date createdDate;
     private String productSex;
@@ -26,5 +25,4 @@ public class Product {
     private String description;
     private Double discount;
     private Boolean isAvailable;
-    private Boolean isOnAuction;
 }

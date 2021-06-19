@@ -11,7 +11,6 @@ import lombok.Data;
 
 @Data
 public class UpdateProductDto {
-    private Long amount;
     private String name;
     private Date createdDate;
     private String productSex;
@@ -20,7 +19,6 @@ public class UpdateProductDto {
     private String photo;
     private String description;
     private Boolean isAvailable;
-    private Boolean isOnAuction;
     private CategoryDto category;
     private MaterialDto material;
     private SizeDto size;
