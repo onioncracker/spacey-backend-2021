@@ -8,6 +8,7 @@ import com.heroku.spacey.dto.product.SizeDto;
 import com.heroku.spacey.mapper.SizeQuantityMapper;
 import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,11 +19,11 @@ import org.webjars.NotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 @PropertySource("classpath:sql/product_catalog_queries.properties")
-public class ProductCatalogImpl implements ProductCatalogDao {
+public class ProductCatalogDaoImpl implements ProductCatalogDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductCatalogQueryAdapter productCatalogQueryAdapter;
