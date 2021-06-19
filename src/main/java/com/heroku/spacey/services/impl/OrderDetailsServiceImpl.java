@@ -23,8 +23,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     @Transactional
-    public void updateOrderStatus(OrderStatusDto orderStatusDto, Long orderId){
-
-
+    public void updateOrderStatus(OrderStatusDto orderStatusDto) {
+        orderDetailsDao.updateOrderStatus(orderStatusDto);
     }
 }

@@ -25,11 +25,9 @@ public class OrderDetailsController {
     }
 
     @Secured("COURIER")
-    @PutMapping("/status/{orderId}")
-    public HttpStatus editOrderStatus(@RequestBody OrderStatusDto orderStatusDto,
-                                      @PathVariable Long orderId) throws  SQLException {
-        OrderDetailsDto order = orderDetailsService.getOrderDetails(orderId);
-        orderDetailsService.updateOrderStatus(orderStatusDto, order.getOrderId());
+    @PutMapping("")
+    public HttpStatus editOrderStatus(@RequestBody OrderStatusDto orderStatusDto) {
+        orderDetailsService.updateOrderStatus(orderStatusDto);
         return HttpStatus.OK;
     }
 }

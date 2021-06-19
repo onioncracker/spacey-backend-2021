@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,19 +30,25 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
     @Value("${products_in_order}")
     private String sqlProductInOrder;
 
+    @Value("${update_order_status}")
+    private String sqlChangeOrderStatus;
+
     @Override
     public OrderDetailsDto getOrderDetails(Long orderId) {
         OrderDetailsMapper mapper = new OrderDetailsMapper(getAllProductInOrder(orderId));
         return jdbcTemplate.query(sqlGetOrderDetails, mapper, orderId);
     }
 
-
     public List<ProductOrderDto> getAllProductInOrder(Long orderId) {
         return jdbcTemplate.query(sqlProductInOrder, productsInOrderMapper, orderId);
     }
 
     @Override
-    public void updateOrderStatus (OrderStatusDto orderStatusDto) {
-
+    public void updateOrderStatus(OrderStatusDto orderStatusDto) {
+        Objects.requireNonNull(jdbcTemplate).update(
+                sqlChangeOrderStatus,
+                orderStatusDto.getOrderStatusId(),
+                orderStatusDto.getOrderId()
+        );
     }
 }

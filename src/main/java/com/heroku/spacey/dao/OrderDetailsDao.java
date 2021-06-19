@@ -8,5 +8,5 @@ import java.sql.SQLException;
 public interface OrderDetailsDao {
     OrderDetailsDto getOrderDetails(Long orderId) throws SQLException;
 
-    void updateOrderStatus (OrderStatusDto orderStatusDto);
+    void updateOrderStatus(OrderStatusDto orderStatusDto);
 }
