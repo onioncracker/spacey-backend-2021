@@ -2,13 +2,22 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.OrderDao;
 import com.heroku.spacey.entity.Order;
+import com.heroku.spacey.dto.order.CourierOrdersDto;
+import com.heroku.spacey.mapper.order.CourierOrdersMapper;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Date;
+
+import java.time.LocalDateTime;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -16,7 +25,10 @@ import java.sql.Date;
 public class OrderDaoImpl implements OrderDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CourierOrdersMapper courierOrdersMapper;
 
+    @Value("${get_courier_orders}")
+    private String getCourierOrders;
     @Value("${insert_order}")
     private String sqlInsertOrder;
     @Value("${add_product_to_order}")
@@ -49,4 +61,13 @@ public class OrderDaoImpl implements OrderDao {
     public void addProductToOrder(Long orderId, Long productId, int amount, float sum) {
         jdbcTemplate.update(sqlInsertProductToOrders, orderId, productId, amount, sum);
     }
+
+    @Override
+    public List<CourierOrdersDto> getCourierOrders(Long orderId, Date date) {
+        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
+
+        return jdbcTemplate.query(getCourierOrders, courierOrdersMapper, orderId, startOfDay, endOfDay);
+    }
+
 }
