@@ -16,7 +16,6 @@ public class ProductItemDto {
     private boolean availability;
     private String color;
     private ArrayList<SizeDto> sizes;
-    private int amount;
     private String category;
     private ArrayList<String> materials;
 }

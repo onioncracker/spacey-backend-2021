@@ -18,4 +18,5 @@ public class ProductForCartDtoMapper implements RowMapper<ProductForCartDto> {
         res.setOverallPrice(resultSet.getDouble("sum"));
         return res;
     }
+
 }

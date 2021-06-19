@@ -16,7 +16,6 @@ public class ProductItemMapper {
         productItemDto.setDiscount(rs.getInt("discount"));
         productItemDto.setAvailability(rs.getBoolean("isavailable"));
         productItemDto.setColor(rs.getString("color"));
-        productItemDto.setAmount(rs.getInt("amount"));
         productItemDto.setCategory(rs.getString("namecategory"));
     }
 }

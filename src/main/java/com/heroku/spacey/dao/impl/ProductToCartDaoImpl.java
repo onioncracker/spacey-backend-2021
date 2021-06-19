@@ -7,6 +7,9 @@ import com.heroku.spacey.entity.ProductToCart;
 import com.heroku.spacey.mapper.cart.ProductForCartDtoMapper;
 import com.heroku.spacey.mapper.cart.ProductToCartMapper;
 import com.heroku.spacey.mapper.product.ProductMapper;
+import com.heroku.spacey.entity.ProductToCart;
+import com.heroku.spacey.mapper.cart.ProductForCartDtoMapper;
+import com.heroku.spacey.mapper.cart.ProductToCartMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -49,6 +52,7 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
 
     @Value("${get_all_products_for_cart_by_userid}")
     private String getGetAllProductsForCartByUserId;
+
 
     public ProductToCartDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -115,7 +119,8 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
 
     @Override
     public List<Product> getAllProductsByUserId(Long userId) {
-        List<Product> result = jdbcTemplate.query(getGetAllProductsForCartByUserId, new ProductMapper(), userId);
+        List<Product> result = jdbcTemplate.query(getGetAllProductsForCartByUserId,
+                new ProductMapper(), userId);
         if (result.isEmpty()) {
             return new ArrayList<>();
         }

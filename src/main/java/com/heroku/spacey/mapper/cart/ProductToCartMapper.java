@@ -16,5 +16,4 @@ public class ProductToCartMapper implements RowMapper<ProductToCart> {
         res.setSum(resultSet.getDouble("sum"));
         return res;
     }
-
 }

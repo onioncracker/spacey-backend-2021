@@ -91,7 +91,7 @@ public class ProductDaoImpl implements ProductDao {
             ps.setLong(3, product.getAmount());
             ps.setString(4, product.getName());
             ps.setString(5, product.getProductSex());
-            ps.setBigDecimal(6, product.getPrice());
+            ps.setDouble(6, product.getPrice());
             ps.setString(7, product.getPhoto());
             ps.setString(8, product.getDescription());
             ps.setDouble(9, product.getDiscount());

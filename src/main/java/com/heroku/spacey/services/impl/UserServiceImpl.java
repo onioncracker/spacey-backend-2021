@@ -97,9 +97,12 @@ public class UserServiceImpl implements UserService {
         Authentication authenticate = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(email, password));
         User user = (User) authenticate.getPrincipal();
-        if (statusDao.getStatusName(user.getStatusId()).equals(Statuses.UNACTIVATED.name())) {
-            throw new UserNotActivatedException("v kmv ");
-        }
         return jwtTokenProvider.generateToken(user);
+    }
+
+    private void checkStatus(User user) {
+        if (statusDao.getStatusName(user.getStatusId()).equals(Statuses.UNACTIVATED.name())) {
+            throw new UserNotActivatedException("User has not been activated yet");
+        }
     }
 }
