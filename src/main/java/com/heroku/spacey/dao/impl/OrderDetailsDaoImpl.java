@@ -2,6 +2,7 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.OrderDetailsDao;
 import com.heroku.spacey.dto.order.OrderDetailsDto;
+import com.heroku.spacey.dto.order.OrderStatusDto;
 import com.heroku.spacey.dto.product.ProductOrderDto;
 import com.heroku.spacey.mapper.order.OrderDetailsMapper;
 import com.heroku.spacey.mapper.order.ProductsInOrderMapper;
@@ -37,5 +38,10 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
 
     public List<ProductOrderDto> getAllProductInOrder(Long orderId) {
         return jdbcTemplate.query(sqlProductInOrder, productsInOrderMapper, orderId);
+    }
+
+    @Override
+    public void updateOrderStatus (OrderStatusDto orderStatusDto) {
+
     }
 }
