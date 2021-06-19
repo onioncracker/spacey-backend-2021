@@ -14,7 +14,6 @@ import java.util.List;
 public class ProductDto {
     private Long id;
     private String name;
-    private Long amount;
     private Date createdDate;
     private String productSex;
     private BigDecimal price;
@@ -22,7 +21,6 @@ public class ProductDto {
     private String photo;
     private String description;
     private Boolean isAvailable;
-    private Boolean isOnAuction;
     private CategoryDto category;
     private ColorDto color;
     private List<MaterialDto> materials;
