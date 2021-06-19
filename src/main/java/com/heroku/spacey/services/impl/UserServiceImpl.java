@@ -6,6 +6,7 @@ import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dao.TokenDao;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.Token;
+import com.heroku.spacey.services.TokenService;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.utils.Roles;
@@ -20,9 +21,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Calendar;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private RoleDao roleDao;
     private StatusDao statusDao;
     private final TokenDao tokenDao;
+    private final TokenService tokenService;
     private final UserConvertor userConvertor;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
                            @Autowired RoleDao roleDao,
                            @Autowired StatusDao statusDao,
                            @Autowired TokenDao tokenDao,
+                           @Autowired TokenService tokenService,
                            @Autowired UserConvertor userConvertor,
                            @Autowired AuthenticationManager authenticationManager,
                            @Autowired JwtTokenProvider jwtTokenProvider) {
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
         this.statusDao = statusDao;
         this.tokenDao = tokenDao;
+        this.tokenService = tokenService;
         this.userConvertor = userConvertor;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -71,7 +75,7 @@ public class UserServiceImpl implements UserService {
         User user = this.userConvertor.adapt(registerDto);
         user.setPassword(encodedPassword);
         user.setUserRole(Roles.USER.name());
-        user.setActivation(false);
+        updateUserActivation(user, false);
 
         Long roleId = roleDao.getRoleId(Roles.USER.name());
         if (roleId == null) {
@@ -95,7 +99,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User userExists(String email) {
+    public boolean userExists(String email) {
+        return userDao.getUserByEmail(email) != null;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
         return userDao.getUserByEmail(email);
     }
 
@@ -111,60 +120,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(String verificationToken) {
+    public User getUserByToken(String verificationToken) {
         Long tokenId = tokenDao.findByToken(verificationToken).getTokenId();
         return userDao.getUserByTokenId(tokenId);
     }
 
-    @Override
-    public void createVerificationToken(User user, String token) {
-        Token verificationToken = new Token();
-        verificationToken.setConfirmationToken(token);
-        Long tokenId = tokenDao.insert(verificationToken);
-        user.setTokenId(tokenId);
-        userDao.updateUser(user);
-    }
-
-    @Override
-    public void updateUserStatus(User user) {
+    private void updateUserStatus(User user) {
         user.setStatusId(Status.ACTIVATED.value);
-        userDao.updateUser(user);
+        userDao.updateUserStatus(user);
+    }
+
+    private void updateUserActivation(User user, boolean activation) {
+        user.setActivation(activation);
+        userDao.updateUserActivation(user);
     }
 
     @Override
-    public Token getVerificationToken(String token) {
-        return tokenDao.findByToken(token);
-    }
+    public void confirmUserRegistration(String token) {
+        Token verificationToken = tokenService.getVerificationToken(token);
+        if (verificationToken == null) {
+            throw new NotFoundException("Verification token not found");
+        }
 
-    @Override
-    public Token generateNewVerificationToken(String existingVerificationToken) {
-        Token token = tokenDao.findByToken(existingVerificationToken);
-        token.updateToken(UUID.randomUUID().toString());
-        return tokenDao.findByTokenId(tokenDao.insert(token));
-    }
+        User user = getUserByToken(token);
+        Calendar cal = Calendar.getInstance();
+//        if ((verificationToken.getDate().getTime() - cal.getTime().getTime()) < 0) {
+//            throw new NotFoundException("Verification token is expired");
+//        }
 
-    @Override
-    public void changeUserPassword(User user, String password) {
-        user.setPassword(passwordEncoder.encode(password));
-        userDao.updateUser(user);
-    }
-
-    @Override
-    public String validatePasswordResetToken(String token) {
-        final Token passToken = tokenDao.findByToken(token);
-        return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
-    }
-
-    public void deleteTokenById(Long id) {
-        tokenDao.delete(id);
-    }
-
-    private boolean isTokenFound(Token passToken) {
-        return passToken != null;
-    }
-
-    private boolean isTokenExpired(Token passToken) {
-        final Calendar cal = Calendar.getInstance();
-        return passToken.getDate().before(cal.getTime());
+        user.setStatusId(Status.ACTIVATED.value);
+        userDao.updateUserStatus(user);
+        updateUserActivation(user, true);
     }
 }

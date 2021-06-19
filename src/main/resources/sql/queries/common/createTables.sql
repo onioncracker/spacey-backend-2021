@@ -23,7 +23,7 @@ CREATE TABLE users
     UserId BIGSERIAL PRIMARY KEY,
     RoleId INTEGER REFERENCES roles,
     StatusId INTEGER REFERENCES user_status,
-    TokenId INTEGER REFERENCES verification_token,
+    TokenId INTEGER REFERENCES verification_token ON DELETE CASCADE,
     Email CHARACTER VARYING(45),
     Pass CHARACTER VARYING(256),
     FirstName CHARACTER VARYING(20),

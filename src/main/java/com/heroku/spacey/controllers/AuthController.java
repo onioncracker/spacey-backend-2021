@@ -8,8 +8,11 @@ import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.services.EmailService;
+import com.heroku.spacey.services.PasswordService;
+import com.heroku.spacey.services.TokenService;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.impl.UserServiceImpl;
+import com.heroku.spacey.utils.EmailComposer;
 import com.heroku.spacey.utils.Status;
 import com.heroku.spacey.utils.registration.OnRegistrationCompleteEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -30,22 +31,29 @@ import java.util.UUID;
 public class AuthController {
     private final UserService userService;
     private final EmailService mailService;
+    private final TokenService tokenService;
+    private final PasswordService passwordService;
     private final ApplicationEventPublisher eventPublisher;
 
-    public AuthController(UserServiceImpl userService, EmailService mailService, ApplicationEventPublisher eventPublisher) {
+    public AuthController(UserServiceImpl userService, TokenService tokenService,
+                          PasswordService passwordService, EmailService mailService,
+                          ApplicationEventPublisher eventPublisher) {
         this.userService = userService;
+        this.tokenService = tokenService;
+        this.passwordService = passwordService;
         this.mailService = mailService;
         this.eventPublisher = eventPublisher;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> userRegistration(@RequestBody @Validated UserRegisterDto registerDto, HttpServletRequest request) {
-        if (userService.userExists(registerDto.getEmail()) != null) {
+    public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+        EmailComposer emailComposer = new EmailComposer("Confirm registration",
+                "registration_confirm?token=",
+                "http://localhost:8080");
+        if (userService.userExists(registerDto.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user with such email already exists");
         }
-        String appUrl = request.getContextPath();
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto),
-                request.getLocale(), appUrl));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
         String token = userService.generateAuthenticationToken(registerDto.getEmail(), registerDto.getPassword());
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, token)
@@ -62,74 +70,51 @@ public class AuthController {
 
     @GetMapping("/registration_confirm")
     public String confirmRegistration(@RequestParam("token") String token) {
-        Token verificationToken = userService.getVerificationToken(token);
-        if (verificationToken == null) {
-            return "verification token null";
-        }
-
-        User user = userService.getUser(token);
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getDate().getTime() - cal.getTime().getTime()) <= 0) {
-            return "verification token is expired";
-        }
-
-        user.setStatusId(Status.ACTIVATED.value);
-        user.setActivation(true);
-        userService.updateUserStatus(user);
-        userService.deleteTokenById(verificationToken.getTokenId());
-
+        userService.confirmUserRegistration(token);
         return "successfully";
     }
 
     @PostMapping("/reset_password")
     public String resetPassword(@RequestParam("email") String userEmail) {
-        User user = userService.userExists(userEmail);
+        EmailComposer emailComposer = new EmailComposer("Confirm registration", "registration_confirm?token=","http://localhost:8080");
+        User user = userService.getUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException("User email not found!");
         }
-        String token = UUID.randomUUID().toString();
-        userService.createVerificationToken(user, token);
-        mailService.sendSimpleMessageWithTemplate(userEmail, "reset password", "hey");
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, emailComposer));
         return "resetPasswordEmail";
     }
 
     @GetMapping("/change_password")
     public String showChangePasswordPage(@RequestParam("token") String token) {
-        String result = userService.validatePasswordResetToken(token);
-        if (result != null) {
-            return "redirect:/login.html?lang=";
-        } else {
+        String result = passwordService.validatePasswordResetToken(token);
+        if (result == null) {
             return "redirect:/updatePassword.html?lang=";
         }
+        return "redirect:/login.html?lang=";
     }
 
     @PostMapping("/save_password")
     public String savePassword(@Validated PasswordDto passwordDto) {
-        String result = userService.validatePasswordResetToken(passwordDto.getToken());
+        String result = passwordService.validatePasswordResetToken(passwordDto.getToken());
         if (result != null) {
             return "Bad";
         }
-        User user = userService.getUser(passwordDto.getToken());
+        User user = userService.getUserByToken(passwordDto.getToken());
         if (user != null) {
-            userService.changeUserPassword(user, passwordDto.getNewPassword());
+            passwordService.changeUserPassword(user, passwordDto.getNewPassword());
             return "Ok";
-        } else {
-            return "Invalid";
         }
+        return "Invalid";
     }
 
     @GetMapping("/resend_registration_token")
-    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken) {
-        Token newToken = userService.generateNewVerificationToken(existingToken);
+    public String resendRegistrationToken(@RequestParam("token") String existingToken) {
+        Token newToken = tokenService.generateNewVerificationToken(existingToken);
+        EmailComposer emailComposer = new EmailComposer("Confirm registration", "registration_confirm?token=","http://localhost:8080");
 
-        User user = userService.getUser(newToken.getConfirmationToken());
-        String appUrl =
-                "http://" + request.getServerName() +
-                        ":" + request.getServerPort() +
-                        request.getContextPath();
-//        SimpleMailMessage email =
-//                constructResendVerificationTokenEmail(appUrl, request.getLocale(), newToken, user);
-//        mailSender.send(email);
+        User user = userService.getUserByToken(newToken.getConfirmationToken());
+
 
         return "message.resendToken";
     }

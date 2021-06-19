@@ -40,6 +40,9 @@ public class UserDaoImpl implements UserDao {
     @Value("${update_user_status}")
     private String updateUserStatus;
 
+    @Value("${update_user_activation}")
+    private String updateUserActivation;
+
     public UserDaoImpl(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapper = new UserMapper();
@@ -91,5 +94,11 @@ public class UserDaoImpl implements UserDao {
     public void updateUserStatus(User user) {
         Object[] params = new Object[]{user.getStatusId(), user.getUserId()};
         Objects.requireNonNull(jdbcTemplate).update(updateUserStatus, params);
+    }
+
+    @Override
+    public void updateUserActivation(User user) {
+        Object[] params = new Object[]{user.isActivation(), user.getUserId()};
+        Objects.requireNonNull(jdbcTemplate).update(updateUserActivation, params);
     }
 }
