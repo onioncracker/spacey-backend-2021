@@ -1,6 +1,7 @@
 package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.OrderDao;
+import com.heroku.spacey.utils.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.heroku.spacey.dto.order.CourierOrdersDto;
@@ -16,13 +17,16 @@ import java.util.Calendar;
 public class CourierOrdersServiceImpl implements CourierOrdersService {
 
     private final OrderDao orders;
+    private final SecurityUtils securityUtils;
 
-    public List<CourierOrdersDto> getCourierOrders(Long id, Date date) {
+
+    public List<CourierOrdersDto> getCourierOrders(Date date) {
+        Long userId = securityUtils.getUserIdByToken();
 
         if (date == null) {
-            return orders.getCourierOrders(id, new Date(Calendar.getInstance().getTime().getTime()));
+            return orders.getCourierOrders(userId, new Date(Calendar.getInstance().getTime().getTime()));
         } else {
-            return orders.getCourierOrders(id, date);
+            return orders.getCourierOrders(userId, date);
         }
     }
 }
