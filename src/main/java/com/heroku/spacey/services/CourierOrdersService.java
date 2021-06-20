@@ -6,5 +6,5 @@ import java.sql.Date;
 import java.util.List;
 
 public interface CourierOrdersService {
-    List<CourierOrdersDto> getCourierOrders(Long id, Date date);
+    List<CourierOrdersDto> getCourierOrders(Date date);
 }

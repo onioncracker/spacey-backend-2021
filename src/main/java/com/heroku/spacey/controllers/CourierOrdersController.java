@@ -16,10 +16,9 @@ public class CourierOrdersController {
 
     private final CourierOrdersService courierOrdersService;
 
-    @GetMapping("/{id}")
+    @GetMapping("")
     public List<CourierOrdersDto> getOrders(
-            @PathVariable Long id,
             @RequestParam(required = false) Date date) {
-        return courierOrdersService.getCourierOrders(id, date);
+        return courierOrdersService.getCourierOrders(date);
     }
 }

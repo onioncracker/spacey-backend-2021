@@ -11,7 +11,7 @@ public class CourierOrdersDto {
     private String ordenerSurname;
     private String phoneNumber;
     private String status;
-    private Date dateTime;
+    private Date dateDelivery;
     private String city;
     private String street;
     private String house;

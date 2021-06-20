@@ -20,7 +20,7 @@ public class CourierOrdersMapper implements RowMapper<CourierOrdersDto> {
         courierOrdersDto.setOrdenerSurname(resultSet.getString("ordenersurname"));
         courierOrdersDto.setPhoneNumber(resultSet.getString("phonenumber"));
         courierOrdersDto.setStatus(resultSet.getString("status"));
-        courierOrdersDto.setDateTime(resultSet.getDate("datetime"));
+        courierOrdersDto.setDateDelivery(resultSet.getDate("datedelivery"));
         courierOrdersDto.setCity(resultSet.getString("city"));
         courierOrdersDto.setStreet(resultSet.getString("street"));
         courierOrdersDto.setHouse(resultSet.getString("house"));
