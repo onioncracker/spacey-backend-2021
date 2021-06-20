@@ -28,10 +28,14 @@ public class AuctionDaoImpl implements AuctionDao {
     private String getAllDecreaseAuctions;
     @Value("${get_all_increase_auctions}")
     private String getAllIncreaseAuctions;
+    @Value("${get_all_auctions}")
+    private String getAllAuctions;
     @Value("${add_product_to_auction}")
     private String productToAuction;
     @Value("${auction_get_by_id}")
     private String getAuctionById;
+    @Value("${auction_is_exist}")
+    private String isExistAuction;
     @Value("${insert_auction}")
     private String editAuction;
     @Value("${update_auction}")
@@ -62,6 +66,22 @@ public class AuctionDaoImpl implements AuctionDao {
     }
 
     @Override
+    public List<Auction> getAllAuctions() {
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllAuctions, mapper);
+        if (auctions.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return auctions;
+    }
+
+    @Override
+    public boolean isExist(Long id) {
+        List<Integer> auctions = Objects.requireNonNull(jdbcTemplate)
+                .query(isExistAuction, (rs, i) -> rs.getInt("auctionId"), id);
+        return !auctions.isEmpty();
+    }
+
+    @Override
     public Auction getById(Long id) {
         List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAuctionById, mapper);
         if (auctions.isEmpty()) {
@@ -70,6 +90,7 @@ public class AuctionDaoImpl implements AuctionDao {
         return auctions.get(0);
     }
 
+    //TODO: implement proper insert fields for auction
     @Override
     public Long insert(Auction auction) {
         KeyHolder holder = new GeneratedKeyHolder();
@@ -81,6 +102,7 @@ public class AuctionDaoImpl implements AuctionDao {
         return (Long) Objects.requireNonNull(holder.getKeys()).get("auctionId");
     }
 
+    //TODO: implement proper update fields for auction
     @Override
     public void update(Auction auction) {
         Object[] params = new Object[]{

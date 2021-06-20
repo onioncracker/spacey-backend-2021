@@ -7,6 +7,8 @@ import java.sql.Timestamp;
 @Data
 public class Auction {
     private Long auctionId;
+
+    private User auctionUser;
     private Long userId;
 
     private String auctionName;

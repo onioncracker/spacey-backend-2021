@@ -9,6 +9,10 @@ public interface AuctionDao {
 
     List<Auction> getAllIncreaseAuctions();
 
+    List<Auction> getAllAuctions();
+
+    boolean isExist(Long id);
+
     Auction getById(Long id);
 
     Long insert(Auction auction);
