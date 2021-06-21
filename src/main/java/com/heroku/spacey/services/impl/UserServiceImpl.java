@@ -6,6 +6,7 @@ import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dao.TokenDao;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.Token;
+import com.heroku.spacey.error.UserNotActivatedException;
 import com.heroku.spacey.services.TokenService;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.entity.User;
@@ -75,13 +76,11 @@ public class UserServiceImpl implements UserService {
         User user = this.userConvertor.adapt(registerDto);
         user.setPassword(encodedPassword);
         user.setUserRole(Roles.USER.name());
-        updateUserActivation(user, false);
 
         Long roleId = roleDao.getRoleId(Roles.USER.name());
         if (roleId == null) {
             roleId = roleDao.insertRole(Roles.USER.name());
             log.info("role user created with id: " + roleId);
-
         }
         user.setRoleId(roleId);
 
@@ -113,9 +112,9 @@ public class UserServiceImpl implements UserService {
         Authentication authenticate = authenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(email, password));
         User user = (User) authenticate.getPrincipal();
-//        if (statusDao.getStatusName(user.getStatusId()).equals(Status.UNACTIVATED.name())) {
-//            throw new UserNotActivatedException("v kmv ");
-//        }
+        if (statusDao.getStatusName(user.getStatusId()).equals(Status.UNACTIVATED.name())) {
+            throw new UserNotActivatedException("v kmv ");
+        }
         return jwtTokenProvider.generateToken(user);
     }
 
@@ -130,11 +129,6 @@ public class UserServiceImpl implements UserService {
         userDao.updateUserStatus(user);
     }
 
-    private void updateUserActivation(User user, boolean activation) {
-        user.setActivation(activation);
-        userDao.updateUserActivation(user);
-    }
-
     @Override
     public void confirmUserRegistration(String token) {
         Token verificationToken = tokenService.getVerificationToken(token);
@@ -143,13 +137,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = getUserByToken(token);
-        Calendar cal = Calendar.getInstance();
-//        if ((verificationToken.getDate().getTime() - cal.getTime().getTime()) < 0) {
-//            throw new NotFoundException("Verification token is expired");
-//        }
-
         user.setStatusId(Status.ACTIVATED.value);
         userDao.updateUserStatus(user);
-        updateUserActivation(user, true);
     }
 }

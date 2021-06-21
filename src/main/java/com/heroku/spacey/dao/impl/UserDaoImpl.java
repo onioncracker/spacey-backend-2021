@@ -1,7 +1,6 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.UserDao;
-import com.heroku.spacey.entity.Category;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -94,11 +93,5 @@ public class UserDaoImpl implements UserDao {
     public void updateUserStatus(User user) {
         Object[] params = new Object[]{user.getStatusId(), user.getUserId()};
         Objects.requireNonNull(jdbcTemplate).update(updateUserStatus, params);
-    }
-
-    @Override
-    public void updateUserActivation(User user) {
-        Object[] params = new Object[]{user.isActivation(), user.getUserId()};
-        Objects.requireNonNull(jdbcTemplate).update(updateUserActivation, params);
     }
 }

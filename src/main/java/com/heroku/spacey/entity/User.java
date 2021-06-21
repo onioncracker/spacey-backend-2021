@@ -1,5 +1,6 @@
 package com.heroku.spacey.entity;
 
+import com.heroku.spacey.utils.Status;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +22,6 @@ public class User implements UserDetails, Serializable {
     private long statusId;
     private String phoneNumber;
     private String password;
-    private boolean activation;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -50,6 +50,9 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return activation;
+        if (statusId == Status.ACTIVATED.value) {
+            return true;
+        }
+        return false;
     }
 }

@@ -12,6 +12,4 @@ public interface UserDao {
     void updateUser(User user);
 
     void updateUserStatus(User user);
-
-    void updateUserActivation(User user);
 }
