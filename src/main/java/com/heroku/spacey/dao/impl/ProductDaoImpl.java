@@ -91,15 +91,13 @@ public class ProductDaoImpl implements ProductDao {
             PreparedStatement ps = connection.prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, product.getCategoryId());
             ps.setLong(2, product.getColorId());
-            ps.setLong(3, product.getAmount());
-            ps.setString(4, product.getName());
-            ps.setString(5, product.getProductSex());
-            ps.setDouble(6, product.getPrice());
-            ps.setString(7, product.getPhoto());
-            ps.setString(8, product.getDescription());
-            ps.setDouble(9, product.getDiscount());
-            ps.setBoolean(10, product.getIsAvailable());
-            ps.setBoolean(11, product.getIsOnAuction());
+            ps.setString(3, product.getName());
+            ps.setString(4, product.getProductSex());
+            ps.setDouble(5, product.getPrice());
+            ps.setString(6, product.getPhoto());
+            ps.setString(7, product.getDescription());
+            ps.setDouble(8, product.getDiscount());
+            ps.setBoolean(9, product.getIsAvailable());
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("productId");
@@ -127,9 +125,9 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void update(Product product) {
         Object[] params = new Object[]{
-                product.getAmount(), product.getName(), product.getProductSex(), product.getPrice(),
+                product.getName(), product.getProductSex(), product.getPrice(),
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
-                product.getIsAvailable(), product.getIsOnAuction(), product.getId()
+                product.getIsAvailable(), product.getId()
         };
         Objects.requireNonNull(jdbcTemplate).update(updateProduct, params);
     }

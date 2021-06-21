@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 public class AddProductDto {
-    private Long amount;
     private String name;
     private String productSex;
     private Double price;
@@ -18,7 +17,6 @@ public class AddProductDto {
     private String photo;
     private String description;
     private Boolean isAvailable;
-    private Boolean isOnAuction;
     private CategoryDto category;
     private ColorDto color;
     private List<MaterialDto> materials;

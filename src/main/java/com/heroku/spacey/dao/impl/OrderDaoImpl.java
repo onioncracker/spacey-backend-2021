@@ -1,20 +1,25 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.OrderDao;
-import lombok.RequiredArgsConstructor;
+import com.heroku.spacey.dto.order.CourierOrdersDto;
 import com.heroku.spacey.dto.order.CreateOrderDto;
+import com.heroku.spacey.mapper.order.CourierOrdersMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -22,13 +27,16 @@ import java.sql.PreparedStatement;
 public class OrderDaoImpl implements OrderDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CourierOrdersMapper courierOrdersMapper;
 
     @Value("${insert_order}")
     private String sqlInsertOrder;
-    @Value("${add_user_to_orders}")
-    private String sqlInsertUserToOrders;
     @Value("${add_product_to_order}")
     private String sqlInsertProductToOrders;
+    @Value("${add_user_to_orders}")
+    private String sqlInsertUserToOrders;
+    @Value("${get_courier_orders}")
+    private String getCourierOrders;
 
 
     @Override
@@ -64,5 +72,13 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public void addProductToOrder(Long orderId, Long productId, Long sizeId, int amount, float sum) {
         jdbcTemplate.update(sqlInsertProductToOrders, orderId, productId, sizeId, amount, sum);
+    }
+
+    @Override
+    public List<CourierOrdersDto> getCourierOrders(Long orderId, Date date) {
+        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
+
+        return jdbcTemplate.query(getCourierOrders, courierOrdersMapper, orderId, startOfDay, endOfDay);
     }
 }

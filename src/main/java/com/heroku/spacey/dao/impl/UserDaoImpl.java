@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -26,8 +27,20 @@ public class UserDaoImpl implements UserDao {
     @Value("${get_user_by_email}")
     private String getUserByEmail;
 
+    @Value("${get_user_by_token_id}")
+    private String getUserByTokenId;
+
     @Value("${insert_user}")
     private String insertUser;
+
+    @Value("${update_user}")
+    private String updateUser;
+
+    @Value("${update_user_status}")
+    private String updateUserStatus;
+
+    @Value("${update_user_activation}")
+    private String updateUserActivation;
 
     public UserDaoImpl(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,11 +50,20 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserByEmail(String email) {
-        var result = jdbcTemplate.query(getUserByEmail, mapper, email);
+        List<User> result = jdbcTemplate.query(getUserByEmail, mapper, email);
         if (result.isEmpty()) {
             return null;
         }
         return result.get(0);
+    }
+
+    @Override
+    public User getUserByTokenId(Long id) {
+        List<User> users = Objects.requireNonNull(jdbcTemplate).query(getUserByTokenId, mapper, id);
+        if (users.isEmpty()) {
+            return null;
+        }
+        return users.get(0);
     }
 
     @Override
@@ -58,5 +80,18 @@ public class UserDaoImpl implements UserDao {
             return ps;
         }, holder);
         return (long) Objects.requireNonNull(holder.getKeys()).get("userId");
+    }
+
+    @Override
+    public void updateUser(User user) {
+        Object[] params = new Object[]{user.getTokenId(), user.getPassword(),
+                user.getFirstName(), user.getLastName(), user.getUserId()};
+        Objects.requireNonNull(jdbcTemplate).update(updateUser, params);
+    }
+
+    @Override
+    public void updateUserStatus(User user) {
+        Object[] params = new Object[]{user.getStatusId(), user.getUserId()};
+        Objects.requireNonNull(jdbcTemplate).update(updateUserStatus, params);
     }
 }
