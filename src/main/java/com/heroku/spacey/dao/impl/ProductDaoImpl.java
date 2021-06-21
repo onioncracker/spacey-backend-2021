@@ -10,8 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
-import java.net.URL;
+import org.webjars.NotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -43,6 +42,8 @@ public class ProductDaoImpl implements ProductDao {
     private String deleteProduct;
     @Value("${deactivate_product}")
     private String deactivateProduct;
+    @Value("${save_photo}")
+    private String savePhoto;
 
     public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -66,9 +67,11 @@ public class ProductDaoImpl implements ProductDao {
         return products.get(0);
     }
 
-    public void saveImage(Long id, URL url) {
-        String test = "UPDATE products SET photo = ? WHERE productId = ?";
-        Objects.requireNonNull(jdbcTemplate).update(test, url, id);
+    public void saveImage(Long id, String url) {
+        if (!isExist(id)) {
+            throw new NotFoundException("product with id " + id + " not exist");
+        }
+        Objects.requireNonNull(jdbcTemplate).update(savePhoto, url, id);
     }
 
     @Override
@@ -85,15 +88,13 @@ public class ProductDaoImpl implements ProductDao {
             PreparedStatement ps = connection.prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, product.getCategoryId());
             ps.setLong(2, product.getColorId());
-            ps.setLong(3, product.getAmount());
-            ps.setString(4, product.getName());
-            ps.setString(5, product.getProductSex());
-            ps.setBigDecimal(6, product.getPrice());
-            ps.setString(7, product.getPhoto());
-            ps.setString(8, product.getDescription());
-            ps.setDouble(9, product.getDiscount());
-            ps.setBoolean(10, product.getIsAvailable());
-            ps.setBoolean(11, product.getIsOnAuction());
+            ps.setString(3, product.getName());
+            ps.setString(4, product.getProductSex());
+            ps.setDouble(5, product.getPrice());
+            ps.setString(6, product.getPhoto());
+            ps.setString(7, product.getDescription());
+            ps.setDouble(8, product.getDiscount());
+            ps.setBoolean(9, product.getIsAvailable());
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("productId");
@@ -113,9 +114,9 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void update(Product product) {
         Object[] params = new Object[]{
-                product.getAmount(), product.getName(), product.getProductSex(), product.getPrice(),
+                product.getName(), product.getProductSex(), product.getPrice(),
                 product.getPhoto(), product.getDescription(), product.getDiscount(),
-                product.getIsAvailable(), product.getIsOnAuction(), product.getId()
+                product.getIsAvailable(), product.getId()
         };
         Objects.requireNonNull(jdbcTemplate).update(updateProduct, params);
     }
