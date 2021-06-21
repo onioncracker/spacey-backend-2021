@@ -50,7 +50,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        if (statusId == Status.ACTIVATED.value) {
+        if (statusId == Status.ACTIVATED.getValue()) {
             return true;
         }
         return false;

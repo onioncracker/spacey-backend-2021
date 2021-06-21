@@ -36,7 +36,13 @@ public class PasswordServiceImpl implements PasswordService {
     @Override
     public String validatePasswordResetToken(String token) {
         final Token passToken = tokenDao.findByToken(token);
-        return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+        if (isTokenExpired(passToken)) {
+            return "expired";
+        }
+        if (!isTokenFound(passToken)) {
+            return "invalidToken";
+        }
+        return null;
     }
 
     private boolean isTokenFound(Token passToken) {

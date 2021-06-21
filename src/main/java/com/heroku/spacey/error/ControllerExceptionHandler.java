@@ -76,7 +76,7 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({MailAuthenticationException.class})
+    @ExceptionHandler(MailAuthenticationException.class)
     public ResponseEntity<Object> handleMail(RuntimeException ex, WebRequest request) {
         log.error("500 Status Code", ex);
         ErrorMessage message = new ErrorMessage(

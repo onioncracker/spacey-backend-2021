@@ -24,21 +24,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.Calendar;
-
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
-    private UserDao userDao;
-    private RoleDao roleDao;
-    private StatusDao statusDao;
+    private final UserDao userDao;
+    private final RoleDao roleDao;
     private final TokenDao tokenDao;
+    private final StatusDao statusDao;
     private final TokenService tokenService;
     private final UserConvertor userConvertor;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     public UserServiceImpl(@Autowired BCryptPasswordEncoder passwordEncoder,
                            @Autowired UserDao userDao,
@@ -125,7 +123,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void updateUserStatus(User user) {
-        user.setStatusId(Status.ACTIVATED.value);
+        user.setStatusId(Status.ACTIVATED.getValue());
         userDao.updateUserStatus(user);
     }
 
@@ -137,7 +135,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = getUserByToken(token);
-        user.setStatusId(Status.ACTIVATED.value);
+        user.setStatusId(Status.ACTIVATED.getValue());
         userDao.updateUserStatus(user);
     }
 }

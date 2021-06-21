@@ -121,7 +121,7 @@
         <module name="MethodCount"/>
         <module name="OuterTypeNumber"/>
         <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
+<!--        <module name="ParameterNumber"/>-->
 
         <!-- Checks for whitespace                               -->
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->

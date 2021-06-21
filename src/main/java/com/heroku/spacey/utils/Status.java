@@ -4,9 +4,13 @@ public enum Status {
     UNACTIVATED(1),
     ACTIVATED(2);
 
-    public final int value;
+    private final int value;
 
     Status(int value) {
         this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
 }
