@@ -26,6 +26,18 @@ public class AuctionServiceImpl implements AuctionService {
         this.auctionConvertor = auctionConvertor;
     }
 
+    //TODO: implement getting all decrease auctions
+    @Override
+    public List<AuctionDto> getAllDecrease() {
+        return null;
+    }
+
+    //TODO: implement getting all increase auctions
+    @Override
+    public List<AuctionDto> getAllIncrease() {
+        return null;
+    }
+
     @Override
     public List<AuctionDto> getAll() {
         List<Auction> auctions = auctionDao.getAllAuctions();

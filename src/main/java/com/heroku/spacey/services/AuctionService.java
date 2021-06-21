@@ -5,6 +5,10 @@ import com.heroku.spacey.dto.auction.AuctionDto;
 import java.util.List;
 
 public interface AuctionService {
+    List<AuctionDto> getAllDecrease();
+
+    List<AuctionDto> getAllIncrease();
+
     List<AuctionDto> getAll();
 
     AuctionDto getById(Long id);
