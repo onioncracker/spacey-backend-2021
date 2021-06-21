@@ -1,15 +1,13 @@
 package com.heroku.spacey.dto.employee;
 
-import com.heroku.spacey.utils.validators.EmailConstraint;
-import com.heroku.spacey.utils.validators.NameConstraint;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import com.heroku.spacey.utils.validators.NameConstraint;
+import com.heroku.spacey.utils.validators.EmailConstraint;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 
 @NoArgsConstructor
 @AllArgsConstructor

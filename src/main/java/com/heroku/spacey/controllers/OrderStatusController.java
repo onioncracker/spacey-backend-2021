@@ -6,16 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/order-status")
 @RequiredArgsConstructor
 public class OrderStatusController {
-
     private final OrderStatusService orderStatusService;
-
 
     @GetMapping
     public List<OrderStatus> getOrderStatuses() {
@@ -34,17 +31,14 @@ public class OrderStatusController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public String addOrderStatus(@RequestBody OrderStatus orderStatus) throws SQLException {
-
+    public String addOrderStatus(@RequestBody OrderStatus orderStatus) {
         orderStatusService.createOrderStatus(orderStatus);
 
         return "New order status has been created.";
     }
 
     @PutMapping("/{orderStatusId}")
-    public String editEmployee(@PathVariable Long orderStatusId, @RequestBody OrderStatus orderStatus)
-            throws SQLException {
-
+    public String editEmployee(@PathVariable Long orderStatusId, @RequestBody OrderStatus orderStatus) {
         orderStatus.setOrderStatusId(orderStatusId);
         orderStatusService.updateOrderStatus(orderStatus);
 
@@ -52,8 +46,7 @@ public class OrderStatusController {
     }
 
     @DeleteMapping("/{orderStatusId}")
-    public String deleteEmployee(@PathVariable Long orderStatusId) throws SQLException {
-
+    public String deleteEmployee(@PathVariable Long orderStatusId) {
         orderStatusService.deleteOrderStatus(orderStatusId);
 
         return "Employee has been deleted.";

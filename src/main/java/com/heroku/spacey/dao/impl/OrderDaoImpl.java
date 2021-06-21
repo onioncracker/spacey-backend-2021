@@ -1,20 +1,20 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.OrderDao;
-import com.heroku.spacey.dto.order.CreateOrderDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import com.heroku.spacey.dto.order.CreateOrderDto;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
+import java.util.Objects;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Objects;
+import java.sql.PreparedStatement;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,29 +25,30 @@ public class OrderDaoImpl implements OrderDao {
 
     @Value("${insert_order}")
     private String sqlInsertOrder;
+    @Value("${add_user_to_orders}")
+    private String sqlInsertUserToOrders;
     @Value("${add_product_to_order}")
     private String sqlInsertProductToOrders;
 
 
     @Override
     @Transactional
-    public Long insert(CreateOrderDto createOrderDto, Timestamp orderTime, Timestamp deliveryTime) {
+    public Long insert(CreateOrderDto createOrderDto, Timestamp dateCreate, Long userId) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sqlInsertOrder, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, createOrderDto.getOrderStatusId());
-            ps.setLong(2, createOrderDto.getUserId());
-            ps.setString(3, createOrderDto.getOrdererFirstName());
-            ps.setString(4, createOrderDto.getOrdererLastName());
-            ps.setString(5, createOrderDto.getPhoneNumber());
-            ps.setString(6, createOrderDto.getCity());
-            ps.setString(7, createOrderDto.getStreet());
-            ps.setString(8, createOrderDto.getHouse());
-            ps.setString(9, createOrderDto.getApartment());
-            ps.setTimestamp(10, orderTime);
-            ps.setTimestamp(11, createOrderDto.getDateDelivery());
-            ps.setFloat(12, createOrderDto.getOverallPrice());
-            ps.setString(13, createOrderDto.getCommentOrder());
+            ps.setString(2, createOrderDto.getOrdererFirstName());
+            ps.setString(3, createOrderDto.getOrdererLastName());
+            ps.setString(4, createOrderDto.getPhoneNumber());
+            ps.setString(5, createOrderDto.getCity());
+            ps.setString(6, createOrderDto.getStreet());
+            ps.setString(7, createOrderDto.getHouse());
+            ps.setString(8, createOrderDto.getApartment());
+            ps.setTimestamp(9, dateCreate);
+            ps.setTimestamp(10, createOrderDto.getDateDelivery());
+            ps.setFloat(11, createOrderDto.getOverallPrice());
+            ps.setString(12, createOrderDto.getCommentOrder());
 
             return ps;
         }, holder);
@@ -56,7 +57,12 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void addProductToOrder(Long orderId, Long productId, int amount, float sum) {
-        jdbcTemplate.update(sqlInsertProductToOrders, orderId, productId, amount, sum);
+    public void addUserToOrders(Long orderId, Long userId) {
+        jdbcTemplate.update(sqlInsertUserToOrders, orderId, userId);
+    }
+
+    @Override
+    public void addProductToOrder(Long orderId, Long productId, Long sizeId, int amount, float sum) {
+        jdbcTemplate.update(sqlInsertProductToOrders, orderId, productId, sizeId, amount, sum);
     }
 }

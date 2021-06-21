@@ -12,7 +12,6 @@ public class CreateOrderDto {
 
     private Long orderStatusId;
 
-    private Long userId;
     private String ordererFirstName;
     private String ordererLastName;
     private String phoneNumber;
