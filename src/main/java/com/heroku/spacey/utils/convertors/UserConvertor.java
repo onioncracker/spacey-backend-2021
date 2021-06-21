@@ -13,4 +13,9 @@ public class UserConvertor {
         mapper.typeMap(UserRegisterDto.class, User.class);
         return mapper.map(userRegisterDto, User.class);
     }
+
+    public UserRegisterDto adapt(User source) {
+        mapper.typeMap(User.class, UserRegisterDto.class);
+        return mapper.map(source, UserRegisterDto.class);
+    }
 }
