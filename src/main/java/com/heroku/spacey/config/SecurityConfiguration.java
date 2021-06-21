@@ -52,11 +52,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(
-                        "/register", "/login", "/recover_password", "/**",
+                        "/register", "/login", "/recover_password",
                         "/v3/api-docs/**", "/v3/api-docs.yaml",
                         "/swagger-resources/**", "/swagger-ui.html",
                         "/swagger-ui/**", "/webjars/**", "/api/category/**", "/api/product/**",
-                        "/api/material/**", "/employees/**", "/api/v1/**")
+                        "/api/material/**", "/api/employees/**", "/api/v1/**", "/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

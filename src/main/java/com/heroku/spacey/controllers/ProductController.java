@@ -1,5 +1,6 @@
 package com.heroku.spacey.controllers;
 
+import com.heroku.spacey.services.AwsImageService;
 import com.heroku.spacey.services.ProductService;
 import com.heroku.spacey.dto.product.AddProductDto;
 import com.heroku.spacey.dto.product.ProductDto;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/product")
 public class ProductController {
     private final ProductService productService;
+    private final AwsImageService awsImageService;
 
     @GetMapping("/all")
     public List<ProductDto> getAllProducts() {
@@ -27,6 +29,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long addProduct(@RequestBody AddProductDto addProductDto) {
         return productService.addProduct(addProductDto);
     }
@@ -49,6 +52,7 @@ public class ProductController {
     @DeleteMapping("/cancel/{id}")
     public HttpStatus cancelAddingProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
+        awsImageService.delete(product.getPhoto());
         productService.cancelProduct(product.getId());
         return HttpStatus.ACCEPTED;
     }

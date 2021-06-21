@@ -10,11 +10,11 @@ public interface EmployeeService {
 
     List<EmployeeDto> getEmployees(String page, String role, String status, String searchPrompt) throws SQLException;
 
-    EmployeeDto getEmployeeById(int loginId) throws NotFoundException, SQLException;
+    EmployeeDto getEmployeeById(Long userId) throws NotFoundException, SQLException;
 
-    void createEmployee(EmployeeDto employeeDto) throws SQLException;
+    void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException;
 
-    int updateEmployee(EmployeeDto employeeDto) throws SQLException;
+    int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException;
 
-    int deleteEmployee(int loginId) throws SQLException;
+    int deleteEmployee(Long userId) throws SQLException;
 }

@@ -65,7 +65,6 @@ CREATE TABLE products
     ProductId BIGSERIAL PRIMARY KEY,
     CategoryId INTEGER REFERENCES categories ON DELETE CASCADE,
     ColorId INTEGER REFERENCES colors ON DELETE CASCADE,
-    Amount INTEGER,
     ProductName CHARACTER VARYING(50),
     CreatedDate TIMESTAMP,
     ProductSex CHARACTER VARYING(20),
@@ -73,8 +72,7 @@ CREATE TABLE products
     Photo CHARACTER VARYING(512),
     Description CHARACTER VARYING(512),
     Discount NUMERIC,
-    IsAvailable BOOL,
-    IsOnAuction BOOL
+    IsAvailable BOOL
 );
 
 
