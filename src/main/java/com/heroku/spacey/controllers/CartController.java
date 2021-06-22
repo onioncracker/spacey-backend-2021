@@ -3,6 +3,7 @@ package com.heroku.spacey.controllers;
 import com.heroku.spacey.dto.cart.EditCartDto;
 import com.heroku.spacey.dto.product.ProductForCartDto;
 import com.heroku.spacey.services.CartService;
+import com.heroku.spacey.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -16,22 +17,25 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
+    private final ProductService productService;
 
-    public CartController(CartService cartService) {
+    public CartController(CartService cartService,
+                          ProductService productService) {
         this.cartService = cartService;
+        this.productService = productService;
     }
 
     @Secured("ROLE_USER")
-    @PutMapping("/add-product")
+    @PostMapping("/add-product")
     public HttpStatus addProduct(@RequestBody EditCartDto editCartDto) {
-        cartService.addProductToCart(editCartDto.getProductId(), editCartDto.getAmount());
+        cartService.addProductToCart(editCartDto.getProductId(), editCartDto.getSizeId(), editCartDto.getAmount());
         return HttpStatus.OK;
     }
 
     @Secured("ROLE_USER")
     @DeleteMapping("/delete-product")
     public HttpStatus deleteProduct(@RequestBody EditCartDto editCartDto) {
-        cartService.deleteProductFromCart(editCartDto.getProductId(), editCartDto.getAmount());
+        cartService.deleteProductFromCart(editCartDto.getProductId(), editCartDto.getSizeId(), editCartDto.getAmount());
         return HttpStatus.OK;
     }
 
@@ -46,6 +50,16 @@ public class CartController {
     @GetMapping("/get-all-cart")
     public List<ProductForCartDto> getAllProductsInCart() {
         return cartService.getAllProductsInCart();
+    }
+
+    @PostMapping("/check-product-for-cart")
+    public HttpStatus checkProductForCart(@RequestBody EditCartDto editCartDto) {
+        boolean check = productService.checkAmount(editCartDto.getProductId(),
+            editCartDto.getSizeId(), editCartDto.getAmount());
+        if (check) {
+            return HttpStatus.OK;
+        }
+        return HttpStatus.FORBIDDEN;
     }
 
 }

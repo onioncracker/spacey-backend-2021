@@ -82,7 +82,7 @@ public class AuthController {
     }
 
     @GetMapping("/resend_registration_token")
-    public String resendRegistrationToken(@RequestParam("token") String existingToken) {
+    public String resendRegistrationToken(@RequestParam("token") String existingToken) throws URISyntaxException {
         Token newToken = tokenService.generateNewVerificationToken(existingToken);
         String token = newToken.toString();
         EmailComposer emailComposer = new EmailComposer(

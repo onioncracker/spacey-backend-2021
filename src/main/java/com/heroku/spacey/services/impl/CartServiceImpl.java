@@ -34,14 +34,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addProductToCart(Long productId, int amount) {
+    public void addProductToCart(Long productId, Long sizeId, int amount) {
         Product product = productDao.get(productId);
         Cart cart = getCartForCurrentUser();
         double sum = amount * product.getPrice();
 
-        ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId);
+        ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId, sizeId);
         if (productToCart == null) {
-            productToCartDao.insert(cart.getCartId(), productId, amount, sum);
+            productToCartDao.insert(cart.getCartId(), productId, sizeId, amount, sum);
             log.info("ProductToCart created");
         } else {
             productToCart.setAmount(productToCart.getAmount() + amount);
@@ -54,12 +54,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteProductFromCart(Long productId, int amount) {
+    public void deleteProductFromCart(Long productId, Long sizeId, int amount) {
         Cart cart = getCartForCurrentUser();
         Product product = productDao.get(productId);
         double sum = amount * product.getPrice();
 
-        ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId);
+        ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId, sizeId);
         if (productToCart == null) {
             throw new NotFoundException("product to cart doesnt exist");
         }
@@ -78,8 +78,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCartForCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext()
+        Object principal = SecurityContextHolder.getContext()
             .getAuthentication().getPrincipal();
+        log.debug(principal.toString());
+        User user = (User) principal;
         Long cartId = cartDao.getCartIdByUserId(user.getUserId());
         if (cartId == null) {
             cartId = cartDao.createCart(user.getUserId());

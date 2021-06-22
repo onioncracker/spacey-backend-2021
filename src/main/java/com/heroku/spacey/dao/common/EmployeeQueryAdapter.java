@@ -31,8 +31,7 @@ public class EmployeeQueryAdapter {
         List<String> filtersParts = new ArrayList<>();
 
         for (Map.Entry<String, String> filter : filters.entrySet()) {
-
-            if (filter.getKey().equals("role")) {
+            if (filter.getKey().equals("roleid")) {
                 StringBuilder filterPart = new StringBuilder();
                 List<String> filteredRoles = Arrays.asList(filter.getValue().split(","));
                 params.addAll(filteredRoles);
@@ -47,7 +46,7 @@ public class EmployeeQueryAdapter {
                 filtersParts.add(filterPart.toString());
             }
 
-            if (filter.getKey().equals("status")) {
+            if (filter.getKey().equals("statusid")) {
                 StringBuilder filterPart = new StringBuilder();
                 List<String> filteredStatuses = Arrays.asList(filter.getValue().split(","));
                 params.addAll(filteredStatuses);

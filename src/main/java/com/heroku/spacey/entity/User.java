@@ -25,7 +25,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(userRole));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userRole));
     }
 
     @Override
