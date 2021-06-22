@@ -1,7 +1,8 @@
 package com.heroku.spacey.dao;
 
-import com.heroku.spacey.dto.product.ProductForCartDto;
+import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductToCart;
+import com.heroku.spacey.dto.product.ProductForCartDto;
 
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface ProductToCartDao {
     void delete(ProductToCart productToCart);
     List<ProductToCart> getAllInCart(Long cartId);
     List<ProductForCartDto> getAllProducts(Long cartId);
+    List<Product> getAllProductsByUserId(Long userId);
 }

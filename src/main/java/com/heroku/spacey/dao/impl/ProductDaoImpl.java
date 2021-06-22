@@ -2,6 +2,7 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.entity.Product;
+import com.heroku.spacey.entity.SizeToProduct;
 import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,8 @@ public class ProductDaoImpl implements ProductDao {
     private String materialToProduct;
     @Value("${add_size_to_product}")
     private String sizeToProduct;
+    @Value("${update_size_to_product}")
+    private String updateSizeToProduct;
     @Value("${update_product}")
     private String updateProduct;
     @Value("${delete_product}")
@@ -110,10 +113,18 @@ public class ProductDaoImpl implements ProductDao {
         Objects.requireNonNull(jdbcTemplate).update(materialToProduct, materialId, productId);
     }
 
-
     @Override
     public void addSizeToProduct(Long sizeId, Long productId, Long quantity) {
         Objects.requireNonNull(jdbcTemplate).update(sizeToProduct, sizeId, productId, quantity);
+    }
+
+    @Override
+    public int updateSizeToProduct(SizeToProduct sizeToProduct) {
+        Long quantity = sizeToProduct.getQuantity();
+        Long sizeId = sizeToProduct.getSizeId();
+        Long productId = sizeToProduct.getProductId();
+
+        return Objects.requireNonNull(jdbcTemplate).update(updateSizeToProduct, quantity, sizeId, productId);
     }
 
     @Override
