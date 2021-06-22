@@ -1,9 +1,9 @@
 package com.heroku.spacey.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import com.heroku.spacey.dao.OrderStatusDao;
 import com.heroku.spacey.entity.OrderStatus;
 import com.heroku.spacey.mapper.OrderStatusMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,15 +22,15 @@ public class OrderStatusDaoImpl implements OrderStatusDao {
     private final OrderStatusMapper mapper = new OrderStatusMapper();
     private final JdbcTemplate jdbcTemplate;
 
-    @org.springframework.beans.factory.annotation.Value("${select_order_statuses}")
+    @Value("${select_order_statuses}")
     private String sqlSelectOrderStatuses;
-    @org.springframework.beans.factory.annotation.Value("${select_order_status_by_id}")
+    @Value("${select_order_status_by_id}")
     private String sqlSelectOrderStatusById;
-    @org.springframework.beans.factory.annotation.Value("${select_order_status_by_name}")
+    @Value("${select_order_status_by_name}")
     private String sqlSelectOrderStatusByName;
-    @org.springframework.beans.factory.annotation.Value("${insert_order_status}")
+    @Value("${insert_order_status}")
     private String sqlInsertOrderStatus;
-    @org.springframework.beans.factory.annotation.Value("${update_order_status}")
+    @Value("${update_order_status}")
     private String sqlUpdateOrderStatus;
     @Value("${delete_order_status}")
     private String sqlDeleteOrderStatus;

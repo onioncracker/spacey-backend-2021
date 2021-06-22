@@ -2,8 +2,8 @@ package com.heroku.spacey.dto.order;
 
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 @Data
 public class CheckoutDto {
@@ -11,7 +11,6 @@ public class CheckoutDto {
 
     private float overallPrice;
 
-    private Long userId;
     private String firstName;
     private String lastName;
     private String phoneNumber;
