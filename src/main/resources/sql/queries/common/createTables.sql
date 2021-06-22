@@ -11,12 +11,19 @@ CREATE TABLE user_status
     StatusName CHARACTER VARYING (30)
 );
 
+CREATE TABLE verification_token
+(
+    TokenId BIGSERIAL PRIMARY KEY,
+    ConfirmationToken VARCHAR(255),
+    Date Date
+);
 
 CREATE TABLE users
 (
     UserId BIGSERIAL PRIMARY KEY,
     RoleId INTEGER REFERENCES roles,
     StatusId INTEGER REFERENCES user_status,
+    TokenId INTEGER REFERENCES verification_token,
     Email CHARACTER VARYING(45),
     Pass CHARACTER VARYING(256),
     FirstName CHARACTER VARYING(20),

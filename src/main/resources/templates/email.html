@@ -8,10 +8,12 @@
     <title>Document</title>
 </head>
 <body>
-    <h2 th:text="'Hello, dear user!'"></h2>
-    <div th:text="'We are glad to welcome you in our store'"></div>
-    <div>Please confirm your mail: <a th:href="${text}">confirm.spacey.com</a></div>
-    <div th:text="'In case you wasn’t requesting of creating account, just ignore this letter.'"></div>
-    <div th:text="'Thankfully, Spacey Team.'"></div>
+    <div>
+        <h2 th:text="'Hello, dear user!'"></h2>
+        <p th:text="'We are glad to welcome you in our store'"></p>
+        <body>Please confirm your mail: <a th:href="${text}">confirm.spacey.com</a></body>
+        <p th:text="'In case you wasn’t requesting of creating account, just ignore this letter.'"></p>
+        <p th:text="'Thankfully, Spacey Team.'"></p>
+    </div>
 </body>
 </html>

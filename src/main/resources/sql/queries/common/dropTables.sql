@@ -18,3 +18,4 @@ DROP TABLE roles CASCADE;
 DROP TABLE user_status CASCADE;
 DROP TABLE colors CASCADE;
 DROP TABLE order_status CASCADE;
+DROP TABLE verification_token CASCADE;
