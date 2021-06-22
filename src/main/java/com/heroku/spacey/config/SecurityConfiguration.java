@@ -3,6 +3,7 @@ package com.heroku.spacey.config;
 import com.heroku.spacey.utils.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,7 +38,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration cors = new CorsConfiguration();
+        cors.applyPermitDefaultValues();
+        cors.addAllowedMethod(HttpMethod.DELETE);
+        cors.addAllowedMethod(HttpMethod.PUT);
+        cors.addAllowedMethod(HttpMethod.POST);
+        cors.addAllowedMethod(HttpMethod.GET);
+        source.registerCorsConfiguration("/**", cors);
         return source;
     }
 
