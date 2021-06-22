@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
             OrderStatus orderStatus = new OrderStatus();
             orderStatus.setStatus("SUBMITTED");
             orderStatusDao.insert(orderStatus);
-            orderStatusId = orderStatusDao.getByName("SUBMITTED").getOrderStatusId();;
+            orderStatusId = orderStatusDao.getByName("SUBMITTED").getOrderStatusId();
         }
         createOrderDto.setOrderStatusId(orderStatusId);
     }
