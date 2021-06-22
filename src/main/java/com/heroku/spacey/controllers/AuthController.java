@@ -25,8 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URISyntaxException;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -59,17 +57,16 @@ public class AuthController {
     private String resetPasswordUrl;
 
     @PostMapping("/register")
-    public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+    public HttpStatus userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         EmailComposer emailComposer = new EmailComposer(
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
                 confirmRegistrationUrl);
         if (userService.userExists(registerDto.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user with such email already exists");
+            return HttpStatus.BAD_REQUEST;
         }
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
-        String token = userService.generateAuthenticationToken(registerDto.getEmail(), registerDto.getPassword());
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(new UserTokenDto(token));
+        return HttpStatus.OK;
     }
 
     @PostMapping("/login")
@@ -85,7 +82,7 @@ public class AuthController {
     }
 
     @GetMapping("/resend_registration_token")
-    public String resendRegistrationToken(@RequestParam("token") String existingToken) throws URISyntaxException {
+    public String resendRegistrationToken(@RequestParam("token") String existingToken) {
         Token newToken = tokenService.generateNewVerificationToken(existingToken);
         String token = newToken.toString();
         EmailComposer emailComposer = new EmailComposer(

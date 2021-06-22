@@ -13,7 +13,7 @@ public class EmailComposer {
 
     public String composeUri(String token) {
         return UriComponentsBuilder.fromUriString(url)
-                .pathSegment("api", "v1", endpoint)
+                .pathSegment(endpoint)
                 .queryParam("token", token)
                 .build().toString();
     }
