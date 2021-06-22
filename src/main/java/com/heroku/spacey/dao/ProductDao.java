@@ -26,4 +26,6 @@ public interface ProductDao {
     void addSizeToProduct(Long sizeId, Long productId, Long quantity);
 
     int updateSizeToProduct(SizeToProduct sizeToProduct);
+
+    double getAmount(Long sizeId, Long productId);
 }

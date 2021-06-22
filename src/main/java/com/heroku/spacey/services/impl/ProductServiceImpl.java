@@ -97,4 +97,12 @@ public class ProductServiceImpl implements ProductService {
         }
         productDao.delete(id);
     }
+
+    @Override
+    @Transactional
+    public boolean checkAmount(Long productId, Long sizeId, double amount) {
+        Product product = productDao.get(productId);
+        double maxAmount = productDao.getAmount(sizeId, productId);
+        return product.getIsAvailable() && amount < maxAmount;
+    }
 }

@@ -7,8 +7,9 @@ import com.heroku.spacey.dto.product.ProductForCartDto;
 import java.util.List;
 
 public interface ProductToCartDao {
-    void insert(Long cartId, Long productId, int amount, double sum);
-    ProductToCart get(Long cartId, Long productId);
+
+    void insert(Long cartId, Long productId, Long sizeId, int amount, double sum);
+    ProductToCart get(Long cartId, Long productId, Long sizeId);
     void update(ProductToCart productToCart);
     void delete(ProductToCart productToCart);
     List<ProductToCart> getAllInCart(Long cartId);
