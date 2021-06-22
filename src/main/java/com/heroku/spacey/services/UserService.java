@@ -1,14 +1,23 @@
 package com.heroku.spacey.services;
 
 import com.heroku.spacey.dto.user.UserRegisterDto;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.heroku.spacey.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface UserService extends UserDetailsService {
     @Override
-    UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
-    UserDetails registerUser(UserRegisterDto userRegisterDto);
+    User loadUserByUsername(String email) throws UsernameNotFoundException;
+
+    User registerUser(UserRegisterDto userRegisterDto);
+
     boolean userExists(String email);
+
+    User getUserByToken(String verificationToken);
+
     String generateAuthenticationToken(String email, String password);
+
+    User getUserByEmail(String email);
+
+    void confirmUserRegistration(String token);
 }
