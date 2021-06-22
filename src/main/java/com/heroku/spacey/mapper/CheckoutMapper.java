@@ -4,6 +4,7 @@ import com.heroku.spacey.dto.order.CheckoutDto;
 import org.springframework.jdbc.core.RowMapper;
 import com.heroku.spacey.dto.order.ProductCheckoutDto;
 
+import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -15,12 +16,14 @@ public class CheckoutMapper implements RowMapper<CheckoutDto> {
         ProductCheckoutDto product = new ProductCheckoutDto();
 
         product.setProductName(resultSet.getString("productname"));
+        product.setPhoto(resultSet.getString("photo"));
         product.setColor(resultSet.getString("color"));
         product.setSizeName(resultSet.getString("sizename"));
         product.setAmount(resultSet.getInt("amount"));
         product.setSum(resultSet.getFloat("sum"));
 
-        checkoutDto.getProducts().add(product);
+        List<ProductCheckoutDto> products = checkoutDto.getProducts();
+        products.add(product);
 
         checkoutDto.setOverallPrice(resultSet.getFloat("overallprice"));
         checkoutDto.setFirstName(resultSet.getString("firstname"));

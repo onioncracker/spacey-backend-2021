@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.services.EmployeeService;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.security.access.annotation.Secured;
 
 import java.util.List;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import javax.validation.constraints.Size;
 
 @Validated
 @RestController
-@Secured("ROLE_ADMIN")
 @RequiredArgsConstructor
 @RequestMapping("/api/employees")
 public class EmployeeController {
