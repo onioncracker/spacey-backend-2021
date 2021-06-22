@@ -27,7 +27,7 @@ public class EmployeeQueryAdapter {
             return this;
         }
 
-        query.append("WHERE ");
+        query.append("AND ");
         List<String> filtersParts = new ArrayList<>();
 
         for (Map.Entry<String, String> filter : filters.entrySet()) {
