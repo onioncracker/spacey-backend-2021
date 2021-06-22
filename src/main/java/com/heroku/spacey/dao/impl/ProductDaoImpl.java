@@ -6,11 +6,14 @@ import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.webjars.NotFoundException;
+
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ public class ProductDaoImpl implements ProductDao {
     private String deactivateProduct;
     @Value("${save_photo}")
     private String savePhoto;
+    @Value("${get_amount_by_size}")
+    private String getAmountBySize;
 
     public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -77,7 +82,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public boolean isExist(Long id) {
         List<Integer> products = Objects.requireNonNull(jdbcTemplate)
-                .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
+            .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
         return !products.isEmpty();
     }
 
@@ -114,9 +119,9 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void update(Product product) {
         Object[] params = new Object[]{
-                product.getName(), product.getProductSex(), product.getPrice(),
-                product.getPhoto(), product.getDescription(), product.getDiscount(),
-                product.getIsAvailable(), product.getId()
+            product.getName(), product.getProductSex(), product.getPrice(),
+            product.getPhoto(), product.getDescription(), product.getDiscount(),
+            product.getIsAvailable(), product.getId()
         };
         Objects.requireNonNull(jdbcTemplate).update(updateProduct, params);
     }
@@ -129,5 +134,11 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void deactivate(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deactivateProduct, id);
+    }
+
+    @Override
+    public double getAmount(Long sizeId, Long productId) {
+        return DataAccessUtils.singleResult(jdbcTemplate.query(getAmountBySize,
+            SingleColumnRowMapper.newInstance(Integer.class), sizeId, productId));
     }
 }

@@ -50,21 +50,22 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     }
 
     @Override
-    public void insert(Long cartId, Long productId, int amount, double sum) {
+    public void insert(Long cartId, Long productId, Long sizeId, int amount, double sum) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, cartId);
             ps.setLong(2, productId);
-            ps.setInt(3, amount);
-            ps.setDouble(4, sum);
+            ps.setLong(3, sizeId);
+            ps.setInt(4, amount);
+            ps.setDouble(5, sum);
             return ps;
         }, holder);
     }
 
     @Override
-    public ProductToCart get(Long cartId, Long productId) {
-        var result = jdbcTemplate.query(getProductToCart, mapper, cartId, productId);
+    public ProductToCart get(Long cartId, Long productId, Long sizeId) {
+        var result = jdbcTemplate.query(getProductToCart, mapper, cartId, productId, sizeId);
         if (result.isEmpty()) {
             return null;
         }
@@ -74,8 +75,11 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public void update(ProductToCart productToCart) {
         Object[] params = new Object[]{
-            productToCart.getAmount(), productToCart.getSum(),
-            productToCart.getCartId(), productToCart.getProductId()
+            productToCart.getAmount(),
+            productToCart.getSum(),
+            productToCart.getCartId(),
+            productToCart.getProductId(),
+            productToCart.getSizeId()
         };
         Objects.requireNonNull(jdbcTemplate).update(update, params);
     }
@@ -84,7 +88,8 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     public void delete(ProductToCart productToCart) {
         Object[] params = new Object[] {
             productToCart.getCartId(),
-            productToCart.getProductId()
+            productToCart.getProductId(),
+            productToCart.getSizeId()
         };
         Objects.requireNonNull(jdbcTemplate).update(delete, params);
     }

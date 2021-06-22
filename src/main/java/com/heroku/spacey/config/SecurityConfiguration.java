@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,6 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -51,23 +53,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.cors()
-                .and()
-                .csrf()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers(
-                        "/register", "/login", "/recover_password",
-                        "/v3/api-docs/**", "/v3/api-docs.yaml",
-                        "/swagger-resources/**", "/swagger-ui.html",
-                        "/swagger-ui/**", "/webjars/**", "/api/category/**", "/api/product/**",
-                        "/api/material/**", "/api/employees/**", "/api/v1/**", "/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+            .and()
+            .csrf()
+            .disable()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers(
+                "/register", "/login", "/recover_password",
+                "/v3/api-docs/**", "/v3/api-docs.yaml",
+                "/swagger-resources/**", "/swagger-ui.html",
+                "/swagger-ui/**", "/webjars/**", "/api/category/**", "/api/product/**",
+                "/api/material/**", "/api/employees/**", "/api/v1/**", "/**")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

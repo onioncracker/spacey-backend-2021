@@ -6,8 +6,8 @@ import com.heroku.spacey.entity.Cart;
 import java.util.List;
 
 public interface CartService {
-    void addProductToCart(Long productId, int amount);
-    void deleteProductFromCart(Long productId, int amount);
+    void addProductToCart(Long productId, Long sizeId, int amount);
+    void deleteProductFromCart(Long productId, Long sizeId, int amount);
     Cart getCartForCurrentUser();
     void cleanCart();
     List<ProductForCartDto> getAllProductsInCart();
