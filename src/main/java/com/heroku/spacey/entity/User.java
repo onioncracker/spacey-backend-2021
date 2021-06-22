@@ -25,7 +25,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userRole));
+        return Collections.singletonList(new SimpleGrantedAuthority(userRole));
     }
 
     @Override
@@ -50,9 +50,6 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        if (statusId == Status.ACTIVATED.getValue()) {
-            return true;
-        }
-        return false;
+        return statusId == Status.ACTIVATED.getValue();
     }
 }
