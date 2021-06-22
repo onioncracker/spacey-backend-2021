@@ -8,18 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
 @PropertySource("classpath:sql/employee_queries.properties")
 public class EmployeeDaoImpl implements EmployeeDao {
-
+    private final EmployeeMapper mapper = new EmployeeMapper();
     private final JdbcTemplate jdbcTemplate;
     private final EmployeeQueryAdapter employeeQueryAdapter;
 
@@ -37,47 +38,34 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public List<EmployeeDto> getAll(Map<String, String> filters, int page, int pageSize) {
-
         employeeQueryAdapter
                 .createSelect(sqlSelectEmployees)
                 .addFilters(filters)
                 .setPage(page, pageSize);
 
-        RowMapper<EmployeeDto> rowMapper = (rs, i) -> {
-            EmployeeDto employeeDto = new EmployeeDto();
+        List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(employeeQueryAdapter.build(),
+                mapper, employeeQueryAdapter.getParams().toArray());
 
-            employeeDto.setUserId(rs.getLong("userid"));
-            employeeDto.setFirstName(rs.getString("firstname"));
-            employeeDto.setLastName(rs.getString("lastname"));
-            employeeDto.setEmail(rs.getString("email"));
-            employeeDto.setPhoneNumber(rs.getString("phonenumber"));
-            employeeDto.setRoleId(rs.getLong("roleid"));
-            employeeDto.setRoleName(rs.getString("rolename"));
-            employeeDto.setStatusId(rs.getLong("statusid"));
-            employeeDto.setStatusName(rs.getString("statusname"));
+        if (employeeDtos.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-            return employeeDto;
-        };
-
-        return jdbcTemplate.query(employeeQueryAdapter.build(), rowMapper, employeeQueryAdapter.getParams().toArray());
+        return employeeDtos;
     }
 
     @Override
     public EmployeeDto getById(Long userId) {
+        List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectEmployeeById, mapper, userId);
 
-        ResultSetExtractor<EmployeeDto> rse = resultSet -> {
-            EmployeeDto employeeDto = new EmployeeDto();
-            EmployeeMapper.mapEmployee(resultSet, employeeDto);
+        if (employeeDtos.isEmpty()) {
+            throw new NotFoundException("Haven't found employee with such ID.");
+        }
 
-            return employeeDto;
-        };
-
-        return jdbcTemplate.query(sqlSelectEmployeeById, rse, userId);
+        return employeeDtos.get(0);
     }
 
     @Override
     public void insert(EmployeeDto employeeDto) {
-
         Long roleid = employeeDto.getRoleId();
         Long statusid = employeeDto.getStatusId();
         String email = employeeDto.getEmail();
@@ -92,7 +80,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public int update(EmployeeDto employeeDto) {
-
         Long roleid = employeeDto.getRoleId();
         Long statusid = employeeDto.getStatusId();
         String email = employeeDto.getEmail();
@@ -108,7 +95,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public int delete(Long userId) {
-
         return jdbcTemplate.update(sqlDeleteEmployee, userId);
     }
 }

@@ -2,9 +2,11 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductToCartDao;
 import com.heroku.spacey.dto.product.ProductForCartDto;
+import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductToCart;
 import com.heroku.spacey.mapper.cart.ProductForCartDtoMapper;
 import com.heroku.spacey.mapper.cart.ProductToCartMapper;
+import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -45,26 +47,30 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Value("${get_all_products_for_cart}")
     private String getAllProductsForCart;
 
+    @Value("${get_all_products_for_cart_by_userid}")
+    private String getGetAllProductsForCartByUserId;
+
     public ProductToCartDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public void insert(Long cartId, Long productId, int amount, double sum) {
+    public void insert(Long cartId, Long productId, Long sizeId, int amount, double sum) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, cartId);
             ps.setLong(2, productId);
-            ps.setInt(3, amount);
-            ps.setDouble(4, sum);
+            ps.setLong(3, sizeId);
+            ps.setInt(4, amount);
+            ps.setDouble(5, sum);
             return ps;
         }, holder);
     }
 
     @Override
-    public ProductToCart get(Long cartId, Long productId) {
-        var result = jdbcTemplate.query(getProductToCart, mapper, cartId, productId);
+    public ProductToCart get(Long cartId, Long productId, Long sizeId) {
+        var result = jdbcTemplate.query(getProductToCart, mapper, cartId, productId, sizeId);
         if (result.isEmpty()) {
             return null;
         }
@@ -74,8 +80,11 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public void update(ProductToCart productToCart) {
         Object[] params = new Object[]{
-            productToCart.getAmount(), productToCart.getSum(),
-            productToCart.getCartId(), productToCart.getProductId()
+                productToCart.getAmount(),
+                productToCart.getSum(),
+                productToCart.getCartId(),
+                productToCart.getProductId(),
+                productToCart.getSizeId()
         };
         Objects.requireNonNull(jdbcTemplate).update(update, params);
     }
@@ -83,8 +92,9 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public void delete(ProductToCart productToCart) {
         Object[] params = new Object[] {
-            productToCart.getCartId(),
-            productToCart.getProductId()
+                productToCart.getCartId(),
+                productToCart.getProductId(),
+                productToCart.getSizeId()
         };
         Objects.requireNonNull(jdbcTemplate).update(delete, params);
     }
@@ -101,7 +111,17 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public List<ProductForCartDto> getAllProducts(Long cartId) {
         List<ProductForCartDto> result = jdbcTemplate.query(getAllProductsForCart,
-            new ProductForCartDtoMapper(), cartId);
+                new ProductForCartDtoMapper(), cartId);
+        if (result.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Product> getAllProductsByUserId(Long userId) {
+        List<Product> result = jdbcTemplate.query(getGetAllProductsForCartByUserId,
+                new ProductMapper(), userId);
         if (result.isEmpty()) {
             return new ArrayList<>();
         }

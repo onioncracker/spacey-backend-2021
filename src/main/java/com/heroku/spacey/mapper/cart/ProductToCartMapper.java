@@ -12,9 +12,9 @@ public class ProductToCartMapper implements RowMapper<ProductToCart> {
         ProductToCart res = new ProductToCart();
         res.setCartId(resultSet.getLong("cartid"));
         res.setProductId(resultSet.getLong("productid"));
+        res.setSizeId(resultSet.getLong("sizeid"));
         res.setAmount(resultSet.getInt("amount"));
         res.setSum(resultSet.getDouble("sum"));
         return res;
     }
-
 }
