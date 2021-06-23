@@ -25,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -56,17 +58,18 @@ public class AuthController {
     @Value("${reset_password_url}")
     private String resetPasswordUrl;
 
+    @ResponseBody
     @PostMapping("/register")
-    public HttpStatus userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+    public ResponseEntity<Void> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         EmailComposer emailComposer = new EmailComposer(
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
                 confirmRegistrationUrl);
         if (userService.userExists(registerDto.getEmail())) {
-            return HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
-        return HttpStatus.OK;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")
@@ -82,7 +85,7 @@ public class AuthController {
     }
 
     @GetMapping("/resend_registration_token")
-    public String resendRegistrationToken(@RequestParam("token") String existingToken) {
+    public String resendRegistrationToken(@RequestParam("token") String existingToken) throws URISyntaxException {
         Token newToken = tokenService.generateNewVerificationToken(existingToken);
         String token = newToken.toString();
         EmailComposer emailComposer = new EmailComposer(
