@@ -43,7 +43,7 @@ public class CheckoutDaoImpl implements CheckoutDao {
         List<CheckoutDto> checkoutDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectCheckoutByUserId, mapper, userId);
 
         if (checkoutDtos.isEmpty()) {
-            throw new NotFoundException("Haven't found checkout info for such cart.");
+            throw new NotFoundException("Haven't found checkout info for such user.");
         }
 
         return checkoutDtos.get(0);

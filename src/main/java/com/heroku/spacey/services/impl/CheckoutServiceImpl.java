@@ -1,8 +1,8 @@
 package com.heroku.spacey.services.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import com.heroku.spacey.dao.CheckoutDao;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.heroku.spacey.dto.order.CheckoutDto;
 import com.heroku.spacey.services.CheckoutService;
