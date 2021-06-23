@@ -58,16 +58,23 @@ public class AuthController {
     @Value("${reset_password_url}")
     private String resetPasswordUrl;
 
+    @ResponseBody
     @PostMapping("/register")
-    public HttpStatus userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+    public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         log.info("step 1");
         EmailComposer emailComposer = new EmailComposer(
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
                 confirmRegistrationUrl);
+        log.info("step 2");
+        if (userService.userExists(registerDto.getEmail())) {
+            log.info("step 3");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        log.info("step 4");
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
         log.info("step 5");
-        return HttpStatus.OK;
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/login")
