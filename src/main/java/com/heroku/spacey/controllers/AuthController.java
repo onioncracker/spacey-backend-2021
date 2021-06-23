@@ -60,16 +60,16 @@ public class AuthController {
 
     @ResponseBody
     @PostMapping("/register")
-    public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+    public ResponseEntity<Void> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         EmailComposer emailComposer = new EmailComposer(
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
                 confirmRegistrationUrl);
         if (userService.userExists(registerDto.getEmail())) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")
