@@ -96,7 +96,16 @@ public class AuctionDaoImpl implements AuctionDao {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editAuction, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, auction.getAuctionName());
+            ps.setLong(1, auction.getUserId());
+            ps.setString(2, auction.getAuctionName());
+            ps.setBoolean(3, auction.getAuctionType());
+            ps.setDouble(4, auction.getStartPrice());
+            ps.setDouble(5, auction.getEndPrice());
+            ps.setDouble(6, auction.getPriceStep());
+            ps.setDate(7, auction.getStartTime());
+            ps.setDate(8, auction.getEndTime());
+            ps.setString(9, auction.getStatus());
+
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("auctionId");
@@ -106,9 +115,10 @@ public class AuctionDaoImpl implements AuctionDao {
     @Override
     public void update(Auction auction) {
         Object[] params = new Object[]{
-                auction.getAuctionName(), auction.getAuctionType(), auction.getStartPrice(),
+                auction.getUserId(), auction.getAuctionName(), auction.getAuctionType(), auction.getStartPrice(),
                 auction.getEndPrice(), auction.getPriceStep(), auction.getStartTime(),
-                auction.getEndTime(), auction.getStatus(), auction.getAuctionId()};
+                auction.getEndTime(), auction.getStatus(), auction.getAuctionId()
+        };
         Objects.requireNonNull(jdbcTemplate).update(updateAuction, params);
     }
 
