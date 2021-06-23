@@ -14,8 +14,8 @@ import com.heroku.spacey.utils.Roles;
 import com.heroku.spacey.utils.Status;
 import com.heroku.spacey.utils.convertors.UserConvertor;
 import com.heroku.spacey.utils.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +26,7 @@ import org.webjars.NotFoundException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
@@ -37,26 +38,6 @@ public class UserServiceImpl implements UserService {
     private final UserConvertor userConvertor;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-
-    public UserServiceImpl(@Autowired BCryptPasswordEncoder passwordEncoder,
-                           @Autowired UserDao userDao,
-                           @Autowired RoleDao roleDao,
-                           @Autowired StatusDao statusDao,
-                           @Autowired TokenDao tokenDao,
-                           @Autowired TokenService tokenService,
-                           @Autowired UserConvertor userConvertor,
-                           @Autowired AuthenticationManager authenticationManager,
-                           @Autowired JwtTokenProvider jwtTokenProvider) {
-        this.passwordEncoder = passwordEncoder;
-        this.userDao = userDao;
-        this.statusDao = statusDao;
-        this.tokenDao = tokenDao;
-        this.tokenService = tokenService;
-        this.userConvertor = userConvertor;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.roleDao = roleDao;
-    }
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -120,11 +101,6 @@ public class UserServiceImpl implements UserService {
     public User getUserByToken(String verificationToken) {
         Long tokenId = tokenDao.findByToken(verificationToken).getTokenId();
         return userDao.getUserByTokenId(tokenId);
-    }
-
-    private void updateUserStatus(User user) {
-        user.setStatusId(Status.ACTIVATED.getValue());
-        userDao.updateUserStatus(user);
     }
 
     @Override
