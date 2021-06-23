@@ -65,12 +65,6 @@ public class AuthController {
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
                 confirmRegistrationUrl);
-        log.info("step 2");
-        if (userService.userExists(registerDto.getEmail())) {
-            log.info("step 3");
-            return HttpStatus.BAD_REQUEST;
-        }
-        log.info("step 4");
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
         log.info("step 5");
         return HttpStatus.OK;
