@@ -35,7 +35,6 @@ public class OrderStatusDaoImpl implements OrderStatusDao {
     @Value("${delete_order_status}")
     private String sqlDeleteOrderStatus;
 
-
     @Override
     public List<OrderStatus> getAll() {
         List<OrderStatus> orderStatuses = Objects.requireNonNull(jdbcTemplate).query(sqlSelectOrderStatuses, mapper);

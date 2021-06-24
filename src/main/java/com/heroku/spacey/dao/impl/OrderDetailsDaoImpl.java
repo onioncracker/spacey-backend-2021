@@ -4,6 +4,8 @@ import com.heroku.spacey.dao.OrderDetailsDao;
 import com.heroku.spacey.dto.order.OrderDetailsDto;
 import com.heroku.spacey.dto.order.OrderStatusDto;
 import com.heroku.spacey.dto.product.ProductOrderDto;
+import com.heroku.spacey.entity.OrderStatus;
+import com.heroku.spacey.mapper.OrderStatusMapper;
 import com.heroku.spacey.mapper.order.OrderDetailsMapper;
 import com.heroku.spacey.mapper.order.ProductsInOrderMapper;
 
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +36,9 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
     @Value("${update_order_status}")
     private String sqlChangeOrderStatus;
 
+    @Value("${get_all_status}")
+    private String sqlAllOrderStatus;
+
     @Override
     public OrderDetailsDto getOrderDetails(Long orderId) {
         OrderDetailsMapper mapper = new OrderDetailsMapper(getAllProductInOrder(orderId));
@@ -50,5 +56,16 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
                 orderStatusDto.getOrderStatusId(),
                 orderStatusDto.getOrderId()
         );
+    }
+
+    @Override
+    public List<OrderStatus> getAllOrderStatus() {
+        OrderStatusMapper orderStatusMapper = new OrderStatusMapper();
+        List<OrderStatus> orderStatuses = Objects.requireNonNull(jdbcTemplate)
+                .query(sqlAllOrderStatus, orderStatusMapper);
+        if (orderStatuses.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return orderStatuses;
     }
 }

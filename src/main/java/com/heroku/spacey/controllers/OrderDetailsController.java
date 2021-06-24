@@ -1,5 +1,6 @@
 package com.heroku.spacey.controllers;
 
+import com.heroku.spacey.dto.order.AllOrderStatusDto;
 import com.heroku.spacey.dto.order.OrderDetailsDto;
 import com.heroku.spacey.dto.order.OrderStatusDto;
 import com.heroku.spacey.services.OrderDetailsService;
@@ -10,6 +11,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,5 +31,10 @@ public class OrderDetailsController {
     public HttpStatus editOrderStatus(@RequestBody OrderStatusDto orderStatusDto) {
         orderDetailsService.updateOrderStatus(orderStatusDto);
         return HttpStatus.OK;
+    }
+
+    @GetMapping("/status")
+    public List<AllOrderStatusDto> getAllOrderStatus() {
+        return orderDetailsService.getAllOrderStatus();
     }
 }
