@@ -40,8 +40,12 @@ public class ProductDaoImpl implements ProductDao {
     private String materialToProduct;
     @Value("${add_size_to_product}")
     private String sizeToProduct;
+    @Value("${update_material_to_product}")
+    private String updateMaterialToProduct;
     @Value("${update_size_to_product}")
     private String updateSizeToProduct;
+    @Value("${update_product_quantity}")
+    private String updateProductQuantity;
     @Value("${update_product}")
     private String updateProduct;
     @Value("${delete_product}")
@@ -119,12 +123,22 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public int updateSizeToProduct(SizeToProduct sizeToProduct) {
+    public void updateMaterialToProduct(Long materialId, Long productId) {
+        Objects.requireNonNull(jdbcTemplate).update(updateMaterialToProduct, materialId, productId);
+    }
+
+    @Override
+    public void updateSizeToProduct(Long sizeId, Long productId, Long quantity) {
+        Objects.requireNonNull(jdbcTemplate).update(updateSizeToProduct, sizeId, quantity, productId);
+    }
+
+    @Override
+    public int updateProductQuantity(SizeToProduct sizeToProduct) {
         Long quantity = sizeToProduct.getQuantity();
         Long sizeId = sizeToProduct.getSizeId();
         Long productId = sizeToProduct.getProductId();
 
-        return Objects.requireNonNull(jdbcTemplate).update(updateSizeToProduct, quantity, sizeId, productId);
+        return Objects.requireNonNull(jdbcTemplate).update(updateProductQuantity, quantity, sizeId, productId);
     }
 
     @Override

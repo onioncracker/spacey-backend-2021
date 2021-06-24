@@ -84,12 +84,12 @@ public class ProductServiceImpl implements ProductService {
 
         for (int i = 0; i < updateProductDto.getMaterials().size(); i++) {
             Long materialId = updateProductDto.getMaterials().get(i).getId();
-            //productDao.addMaterialToProduct(materialId, id);
+            productDao.updateMaterialToProduct(materialId, id);
         }
 
         for (int i = 0; i < updateProductDto.getSizes().size(); i++) {
             SizeDto size = updateProductDto.getSizes().get(i);
-            //productDao.addSizeToProduct(size.getId(), id, size.getQuantity());
+            productDao.updateSizeToProduct(size.getId(), id, size.getQuantity());
         }
     }
 
