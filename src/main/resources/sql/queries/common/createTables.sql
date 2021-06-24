@@ -176,18 +176,17 @@ CREATE TABLE notification_to_users
 CREATE TABLE auctions
 (
     AuctionId BIGSERIAL PRIMARY KEY,
-    UserId INTEGER REFERENCES users,
+    UserId BIGSERIAL REFERENCES users,
+    ProductId BIGSERIAL REFERENCES products,
+    SizeId BIGSERIAL REFERENCES sizes,
+    Amount INTEGER,
     AuctionName CHARACTER VARYING(50),
-    Price DECIMAL,
-    AuctionDate TIMESTAMP,
-    Quantity INTEGER,
+    AuctionType BOOLEAN,
+    StartPrice DECIMAL,
+    EndPrice DECIMAL,
+    PriceStep DECIMAL,
+    BuyPrice DECIMAL,
+    StartTime TIMESTAMP,
+    EndTime TIMESTAMP,
     Status CHARACTER VARYING(45)
-);
-
-
-CREATE TABLE product_to_auctions
-(
-    ProductId INTEGER REFERENCES products,
-    AuctionId INTEGER REFERENCES auctions,
-    PRIMARY KEY (ProductId, AuctionId)
 );

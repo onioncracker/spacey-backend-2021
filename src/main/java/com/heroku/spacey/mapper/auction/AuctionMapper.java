@@ -23,12 +23,6 @@ public class AuctionMapper implements RowMapper<Auction> {
 
         UserForAuctionMapper userMapper = new UserForAuctionMapper();
         User user = userMapper.mapRow(resultSet, i);
-
-        do {
-            Product product = new Product();
-        } while (resultSet.next());
-
-        auction.setAuctionUser(user);
         return auction;
     }
 }
