@@ -8,15 +8,17 @@ import java.sql.Date;
 public class Auction {
     private Long auctionId;
 
-    private User auctionUser;
+    private User auctionBuyer;
     private Long userId;
 
-    private Product auctionProduct;
+    private Product actionProduct;
     private Long productId;
 
     private Size productSize;
     private Long sizeId;
 
+    private Integer amount;
+    private Long packageAmount;
     private String auctionName;
     private Boolean auctionType;
     private Double startPrice;
@@ -25,5 +27,4 @@ public class Auction {
     private Date startTime;
     private Date endTime;
     private String status;
-    private Integer amount;
 }

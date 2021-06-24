@@ -12,10 +12,12 @@ import com.heroku.spacey.utils.convertors.CommonConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.util.List;
 
+@Service
 public class AuctionServiceImpl implements AuctionService {
     private final AuctionDao auctionDao;
     private final CommonConvertor commonConvertor;
@@ -53,7 +55,7 @@ public class AuctionServiceImpl implements AuctionService {
     public AuctionDto getById(Long id) {
         Auction auction = auctionDao.getById(id);
         if (auction == null) {
-            throw new NotFoundException("Product not found");
+            throw new NotFoundException("Auction not found");
         }
         return auctionConvertor.adapt(auction);
     }
