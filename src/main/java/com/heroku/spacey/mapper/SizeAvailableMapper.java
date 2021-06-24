@@ -8,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class SizeQuantityMapper implements RowMapper<SizeDto> {
+public class SizeAvailableMapper implements RowMapper<SizeDto> {
     @Override
     public SizeDto mapRow(ResultSet resultSet, int i) throws SQLException {
         SizeDto sizeDto = new SizeDto();
-        sizeDto.setSize(resultSet.getString("sizename"));
-        sizeDto.setQuantity(resultSet.getInt("quantity"));
+        sizeDto.setId(resultSet.getLong("sizeid"));
+        sizeDto.setName(resultSet.getString("sizename"));
+        sizeDto.setAvailable(resultSet.getInt("quantity") > 0);
         return sizeDto;
     }
 }
