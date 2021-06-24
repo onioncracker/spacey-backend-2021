@@ -64,18 +64,20 @@ public class AuctionServiceImpl implements AuctionService {
         Auction auction = auctionConvertor.adapt(auctionDto);
         Long userId = auctionDto.getAuctionUser().getId();
         auction.setUserId(userId);
+        Long productId = auctionDto.getProduct().getId();
+        auction.setProductId(productId);
+        Long sizeId = auctionDto.getSize().getId();
+        auction.setSizeId(sizeId);
 
         Long auctionId = auctionDao.insert(auction);
 
-        for (int i = 0; i < auctionDto.getProducts().size(); i++) {
-            Long productId = auctionDto.getProducts().get(i).getId();
-            Long sizeId = auctionDto.getSizes().get(i).getId();
+        //TODO add amount of products
+        Integer amount = 0;
 
-            //Long sizeId, Integer amount
-            auctionDao.addProductToAuction(auctionId, productId, sizeId, );
-        }
+        auctionDao.addProductToAuction(auctionId, productId, sizeId, amount);
 
-        return null;
+
+        return auctionId;
     }
 
     @Override

@@ -6,13 +6,14 @@ import com.heroku.spacey.dto.user.UserDto;
 import lombok.Data;
 
 import java.sql.Date;
-import java.util.List;
 
 @Data
 public class AuctionDto {
     private Long auctionId;
 
     private UserDto auctionUser;
+    private ProductDto product;
+    private SizeDto size;
 
     private String auctionName;
     private Boolean auctionType;
@@ -22,7 +23,5 @@ public class AuctionDto {
     private Date startTime;
     private Date endTime;
     private String status;
-
-    private List<ProductDto> products;
-    private List<SizeDto> sizes;
+    private Integer amount;
 }

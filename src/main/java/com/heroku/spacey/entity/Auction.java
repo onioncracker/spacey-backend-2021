@@ -11,6 +11,12 @@ public class Auction {
     private User auctionUser;
     private Long userId;
 
+    private Product auctionProduct;
+    private Long productId;
+
+    private Size productSize;
+    private Long sizeId;
+
     private String auctionName;
     private Boolean auctionType;
     private Double startPrice;
@@ -19,4 +25,5 @@ public class Auction {
     private Date startTime;
     private Date endTime;
     private String status;
+    private Integer amount;
 }
