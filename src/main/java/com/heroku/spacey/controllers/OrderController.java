@@ -10,17 +10,18 @@ import org.springframework.security.access.annotation.Secured;
 import java.sql.SQLException;
 
 @RestController
+// TODO: remove security
 @Secured("ROLE_USER")
 @RequiredArgsConstructor
 @RequestMapping("/api/order")
 public class OrderController {
     private final OrderService orderService;
 
-    @ResponseStatus(HttpStatus.CREATED)
+
     @PostMapping
-    public String createOrder(@RequestBody CreateOrderDto createOrderDto) throws SQLException {
+    public HttpStatus createOrder(@RequestBody CreateOrderDto createOrderDto) throws SQLException {
         orderService.createOrder(createOrderDto);
 
-        return "New order has been created.";
+        return HttpStatus.CREATED;
     }
 }

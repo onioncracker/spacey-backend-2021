@@ -16,8 +16,8 @@ import com.heroku.spacey.dto.order.CreateOrderDto;
 import com.heroku.spacey.utils.security.SecurityUtils;
 import com.heroku.spacey.dto.order.ProductCreateOrderDto;
 import com.heroku.spacey.error.ProductOutOfStockException;
-import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.sql.Timestamp;
@@ -66,6 +66,9 @@ public class OrderServiceImpl implements OrderService {
         createOrderDto.setOrderStatusId(orderStatusId);
     }
 
+    /////////////////////////////////////
+    // TODO: make another method with inner for
+    //////////////////////////////////////
     private void updateStock(CreateOrderDto createOrderDto) {
         for (ProductCreateOrderDto orderProduct : createOrderDto.getProducts()) {
             Product productOnStock = productDao.get(orderProduct.getProductId());

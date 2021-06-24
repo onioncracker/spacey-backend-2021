@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.annotation.Secured;
 
 @RestController
+// TODO: remove security
 @Secured("ROLE_USER")
 @RequiredArgsConstructor
 @RequestMapping("/api/checkout")
@@ -21,6 +22,9 @@ public class CheckoutController {
         return checkoutService.getCheckoutByUserId();
     }
 
+    /////////////////////////////////////
+    // TODO: remove this functionality
+    //////////////////////////////////////
     @GetMapping("/{cartId}")
     public CheckoutDto getCheckoutByCartId(@PathVariable Long cartId) {
         return checkoutService.getCheckoutByCartId(cartId);
