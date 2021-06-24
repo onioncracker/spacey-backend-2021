@@ -1,6 +1,6 @@
 package com.heroku.spacey.dao;
 
-import com.heroku.spacey.dto.product.ProductForCartDto;
+import com.heroku.spacey.dto.cart.ProductForCartDto;
 import com.heroku.spacey.entity.ProductToCart;
 
 import java.util.List;
