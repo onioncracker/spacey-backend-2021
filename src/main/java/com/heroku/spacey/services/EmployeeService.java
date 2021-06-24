@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    List<EmployeeDto> getEmployees(String page, String role, String status, String searchPrompt) throws SQLException;
+    List<EmployeeDto> getEmployees(int page, int pageSize,
+                                   String roleId, String statusId, String searchPrompt) throws SQLException;
 
     EmployeeDto getEmployeeById(Long userId) throws NotFoundException, SQLException;
 

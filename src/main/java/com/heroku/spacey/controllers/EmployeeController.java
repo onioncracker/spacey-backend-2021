@@ -1,57 +1,51 @@
 package com.heroku.spacey.controllers;
 
-import com.heroku.spacey.dto.employee.EmployeeDto;
-import com.heroku.spacey.services.EmployeeService;
+import org.webjars.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.webjars.NotFoundException;
+import com.heroku.spacey.dto.employee.EmployeeDto;
+import com.heroku.spacey.services.EmployeeService;
+import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Size;
-import java.sql.SQLException;
 import java.util.List;
+import java.sql.SQLException;
+import javax.validation.constraints.Size;
 
-@PreAuthorize("hasAuthority(T(com.heroku.spacey.utils.Role).ADMIN)")
-@RestController
 @Validated
-@RequestMapping("/api/employees")
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/employees")
 public class EmployeeController {
-
     private final EmployeeService employeeService;
-
 
     @GetMapping
     public List<EmployeeDto> getEmployees(
-            @RequestParam(required = false) String page,
-            @RequestParam(required = false) String role,
-            @RequestParam(required = false) String status) throws SQLException {
-
-        return employeeService.getEmployees(page, role, status, null);
+            @RequestParam(defaultValue = "${default_page_num}") int page,
+            @RequestParam(defaultValue = "${default_page_size}") int pagesize,
+            @RequestParam(required = false) String roleid,
+            @RequestParam(required = false) String statusid) throws SQLException {
+        return employeeService.getEmployees(page, pagesize, roleid, statusid, null);
     }
 
     @GetMapping("/{userId}")
     public EmployeeDto getEmployeeById(@PathVariable Long userId) throws NotFoundException, SQLException {
-
         return employeeService.getEmployeeById(userId);
     }
 
     @GetMapping("/search/{prompt}")
     public List<EmployeeDto> searchEmployeeByNameSurname(
             @PathVariable @Size(min = 2) String prompt,
-            @RequestParam(required = false) String page,
-            @RequestParam(required = false) String role,
-            @RequestParam(required = false) String status) throws SQLException {
-
-        return employeeService.getEmployees(page, role, status, prompt);
+            @RequestParam(defaultValue = "${default_page_num}") int page,
+            @RequestParam(defaultValue = "${default_page_size}") int pagesize,
+            @RequestParam(required = false) String roleid,
+            @RequestParam(required = false) String statusid) throws SQLException {
+        return employeeService.getEmployees(page, pagesize, roleid, statusid, prompt);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public String addEmployee(@RequestBody @Validated EmployeeDto employeeDto) throws SQLException {
-
         employeeService.createEmployee(employeeDto);
 
         return "New employee has been created.";
@@ -60,7 +54,6 @@ public class EmployeeController {
     @PutMapping("/{userId}")
     public String editEmployee(@PathVariable Long userId, @RequestBody @Validated EmployeeDto employeeDto)
             throws SQLException {
-
         employeeDto.setUserId(userId);
         employeeService.updateEmployee(employeeDto);
 
@@ -69,7 +62,6 @@ public class EmployeeController {
 
     @DeleteMapping("/{userId}")
     public String deleteEmployee(@PathVariable Long userId) throws SQLException {
-
         employeeService.deleteEmployee(userId);
 
         return "Employee has been deleted.";

@@ -58,18 +58,18 @@ public class AuthController {
     @Value("${reset_password_url}")
     private String resetPasswordUrl;
 
+    @ResponseBody
     @PostMapping("/register")
-    public ResponseEntity userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
+    public ResponseEntity<Void> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         EmailComposer emailComposer = new EmailComposer(
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
                 confirmRegistrationUrl);
         if (userService.userExists(registerDto.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user with such email already exists");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
-        String token = userService.generateAuthenticationToken(registerDto.getEmail(), registerDto.getPassword());
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(new UserTokenDto(token));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")

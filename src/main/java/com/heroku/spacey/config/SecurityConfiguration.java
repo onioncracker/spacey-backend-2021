@@ -53,23 +53,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.cors()
-            .and()
-            .csrf()
-            .disable()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeRequests()
-            .antMatchers(
-                "/register", "/login", "/recover_password",
-                "/v3/api-docs/**", "/v3/api-docs.yaml",
-                "/swagger-resources/**", "/swagger-ui.html",
-                "/swagger-ui/**", "/webjars/**", "/api/category/**", "/api/product/**",
-                "/api/material/**", "/api/employees/**", "/api/v1/**", "/**")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                .and()
+                .csrf()
+                .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers(
+                        "/register", "/login", "/recover_password",
+                        "/v3/api-docs/**", "/v3/api-docs.yaml",
+                        "/swagger-resources/**", "/swagger-ui.html",
+                        "/swagger-ui/**", "/webjars/**", "/api/category/**",
+                        "/api/product/**", "/api/material/**", "/api/employees/**",
+                        "/api/order-status/**", "/api/checkout/**", "/api/order/**",
+                        "/api/v1/**", "/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
