@@ -1,6 +1,8 @@
 package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.dto.auction.AuctionDto;
+import com.heroku.spacey.dto.auction.DecreaseAuctionDto;
+import com.heroku.spacey.dto.auction.IncreaseAuctionDto;
 import com.heroku.spacey.services.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,16 @@ public class AuctionController {
     @GetMapping("/all")
     public List<AuctionDto> getAllAuctions() {
         return auctionService.getAll();
+    }
+
+    @GetMapping("/all_increase")
+    public List<IncreaseAuctionDto> getAllIncreaseAuctions() {
+        return auctionService.getAllIncrease();
+    }
+
+    @GetMapping("/all_decrease")
+    public List<DecreaseAuctionDto> getAllDecreaseAuctions() {
+        return auctionService.getAllDecrease();
     }
 
     @GetMapping("/{id}")

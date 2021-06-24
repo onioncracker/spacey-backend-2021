@@ -31,14 +31,12 @@ public class AuctionServiceImpl implements AuctionService {
         this.auctionConvertor = auctionConvertor;
     }
 
-    //TODO: implement getting all decrease auctions
     @Override
     public List<DecreaseAuctionDto> getAllDecrease() {
         List<Auction> decreaseAuctions = auctionDao.getAllDecreaseAuctions();
         return commonConvertor.mapList(decreaseAuctions, DecreaseAuctionDto.class);
     }
 
-    //TODO: implement getting all increase auctions
     @Override
     public List<IncreaseAuctionDto> getAllIncrease() {
         List<Auction> increaseAuctions = auctionDao.getAllIncreaseAuctions();
@@ -60,7 +58,6 @@ public class AuctionServiceImpl implements AuctionService {
         return auctionConvertor.adapt(auction);
     }
 
-    //TODO: implement addition for auction
     @Override
     public Long add(AuctionDto auctionDto) {
         Auction auction = auctionConvertor.adapt(auctionDto);
