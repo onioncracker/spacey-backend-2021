@@ -3,11 +3,14 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.CartDao;
 import com.heroku.spacey.dao.ProductDao;
 import com.heroku.spacey.dao.ProductToCartDao;
-import com.heroku.spacey.dto.product.ProductForCartDto;
+import com.heroku.spacey.dto.cart.EditCartDto;
+import com.heroku.spacey.dto.cart.ProductForCartDto;
+import com.heroku.spacey.dto.cart.ProductForUnauthorizedCart;
 import com.heroku.spacey.entity.Cart;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductToCart;
 import com.heroku.spacey.entity.User;
+import com.heroku.spacey.error.NotEnoughProductException;
 import com.heroku.spacey.services.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -93,7 +97,7 @@ public class CartServiceImpl implements CartService {
     public void cleanCart() {
         Cart cart = getCartForCurrentUser();
         List<ProductToCart> list = productToCartDao.getAllInCart(cart.getCartId());
-        for (ProductToCart productToCart: list) {
+        for (ProductToCart productToCart : list) {
             productToCartDao.delete(productToCart);
         }
         cartDao.updatePrice(cart.getCartId(), 0);
@@ -103,5 +107,30 @@ public class CartServiceImpl implements CartService {
     public List<ProductForCartDto> getAllProductsInCart() {
         Cart cart = getCartForCurrentUser();
         return productToCartDao.getAllProducts(cart.getCartId());
+    }
+
+    @Override
+    public List<ProductForCartDto> getUnauthorizedCart(List<EditCartDto> unauthorizedCart) {
+        List<ProductForCartDto> list = new ArrayList<>();
+        for (EditCartDto cartProduct : unauthorizedCart) {
+            ProductForUnauthorizedCart product = productDao.getProductByIdAndSize(
+                cartProduct.getProductId(), cartProduct.getSizeId());
+            if (product.getQuantity() > cartProduct.getAmount()) {
+                list.add(
+                    new ProductForCartDto(
+                        product.getId(), product.getSizeId(),
+                        product.getName(), product.getColor(),
+                        product.getSize(), product.getPhoto(),
+                        cartProduct.getAmount(),
+                        cartProduct.getAmount() * product.getPrice()
+                    ));
+            } else {
+                throw new NotEnoughProductException(
+                    String.format(
+                        "Available amount of product %s is less then in cart",
+                        product.getName()));
+            }
+        }
+        return list;
     }
 }

@@ -1,7 +1,7 @@
 package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.dto.cart.EditCartDto;
-import com.heroku.spacey.dto.product.ProductForCartDto;
+import com.heroku.spacey.dto.cart.ProductForCartDto;
 import com.heroku.spacey.services.CartService;
 import com.heroku.spacey.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +60,11 @@ public class CartController {
             return HttpStatus.OK;
         }
         return HttpStatus.FORBIDDEN;
+    }
+
+    @PostMapping("/get-unchecked-cart")
+    public List<ProductForCartDto> getUnauthorizedCart(@RequestBody List<EditCartDto> cart) {
+        return cartService.getUnauthorizedCart(cart);
     }
 
 }
