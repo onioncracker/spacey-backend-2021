@@ -2,6 +2,9 @@ package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.AuctionDao;
 import com.heroku.spacey.dto.auction.AuctionDto;
+import com.heroku.spacey.dto.auction.DecreaseAuctionDto;
+import com.heroku.spacey.dto.auction.IncreaseAuctionDto;
+import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.entity.Auction;
 import com.heroku.spacey.services.AuctionService;
 import com.heroku.spacey.utils.convertors.AuctionConvertor;
@@ -30,14 +33,16 @@ public class AuctionServiceImpl implements AuctionService {
 
     //TODO: implement getting all decrease auctions
     @Override
-    public List<AuctionDto> getAllDecrease() {
-        return null;
+    public List<DecreaseAuctionDto> getAllDecrease() {
+        List<Auction> decreaseAuctions = auctionDao.getAllDecreaseAuctions();
+        return commonConvertor.mapList(decreaseAuctions, DecreaseAuctionDto.class);
     }
 
     //TODO: implement getting all increase auctions
     @Override
-    public List<AuctionDto> getAllIncrease() {
-        return null;
+    public List<IncreaseAuctionDto> getAllIncrease() {
+        List<Auction> increaseAuctions = auctionDao.getAllIncreaseAuctions();
+        return commonConvertor.mapList(increaseAuctions, IncreaseAuctionDto.class);
     }
 
     @Override
@@ -58,7 +63,15 @@ public class AuctionServiceImpl implements AuctionService {
     //TODO: implement addition for auction
     @Override
     public Long add(AuctionDto auctionDto) {
-        return null;
+        Auction auction = auctionConvertor.adapt(auctionDto);
+        Long userId = auctionDto.getAuctionUser().getId();
+        auction.setUserId(userId);
+        Long productId = auctionDto.getProduct().getId();
+        auction.setProductId(productId);
+        Long sizeId = auctionDto.getSize().getId();
+        auction.setSizeId(sizeId);
+
+        return auctionDao.insert(auction);
     }
 
     @Override

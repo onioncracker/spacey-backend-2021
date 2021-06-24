@@ -30,8 +30,6 @@ public class AuctionDaoImpl implements AuctionDao {
     private String getAllIncreaseAuctions;
     @Value("${get_all_auctions}")
     private String getAllAuctions;
-    @Value("${add_product_to_auction}")
-    private String productToAuction;
     @Value("${auction_get_by_id}")
     private String getAuctionById;
     @Value("${auction_is_exist}")
@@ -96,7 +94,20 @@ public class AuctionDaoImpl implements AuctionDao {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(editAuction, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, auction.getAuctionName());
+            ps.setLong(1, auction.getUserId());
+            ps.setLong(2, auction.getProductId());
+            ps.setLong(3, auction.getSizeId());
+            ps.setInt(4, auction.getAmount());
+            ps.setString(5, auction.getAuctionName());
+            ps.setBoolean(6, auction.getAuctionType());
+            ps.setDouble(7, auction.getStartPrice());
+            ps.setDouble(8, auction.getEndPrice());
+            ps.setDouble(9, auction.getPriceStep());
+            ps.setDouble(10, auction.getBuyPrice());
+            ps.setDate(11, auction.getStartTime());
+            ps.setDate(12, auction.getEndTime());
+            ps.setString(13, auction.getStatus());
+
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("auctionId");
@@ -106,15 +117,13 @@ public class AuctionDaoImpl implements AuctionDao {
     @Override
     public void update(Auction auction) {
         Object[] params = new Object[]{
+                auction.getProductId(), auction.getSizeId(), auction.getAmount(),
                 auction.getAuctionName(), auction.getAuctionType(), auction.getStartPrice(),
-                auction.getEndPrice(), auction.getPriceStep(), auction.getStartTime(),
-                auction.getEndTime(), auction.getStatus(), auction.getAuctionId()};
+                auction.getEndPrice(), auction.getPriceStep(), auction.getBuyPrice(),
+                auction.getStartTime(), auction.getEndTime(), auction.getStatus(),
+                auction.getAuctionId()
+        };
         Objects.requireNonNull(jdbcTemplate).update(updateAuction, params);
-    }
-
-    @Override
-    public void addProductToAuction(Long auctionId, Long productId, Long sizeId, Integer amount) {
-        Objects.requireNonNull(jdbcTemplate).update(productToAuction, auctionId, productId, sizeId, amount);
     }
 
     @Override

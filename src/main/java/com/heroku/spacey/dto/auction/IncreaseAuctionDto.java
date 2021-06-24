@@ -1,28 +1,24 @@
-package com.heroku.spacey.entity;
+package com.heroku.spacey.dto.auction;
 
+import com.heroku.spacey.dto.product.ProductDto;
+import com.heroku.spacey.dto.size.SizeDto;
+import com.heroku.spacey.dto.user.UserDto;
 import lombok.Data;
 
 import java.sql.Date;
 
 @Data
-public class Auction {
+public class IncreaseAuctionDto {
     private Long auctionId;
 
-    private User auctionBuyer;
-    private Long userId;
-
-    private Product actionProduct;
-    private Long productId;
-
-    private Size productSize;
-    private Long sizeId;
+    private UserDto users;
+    private ProductDto product;
+    private SizeDto size;
 
     private Integer amount;
-    private Long packageAmount;
     private String auctionName;
     private Boolean auctionType;
     private Double startPrice;
-    private Double endPrice;
     private Double priceStep;
     private Double buyPrice;
     private Date startTime;

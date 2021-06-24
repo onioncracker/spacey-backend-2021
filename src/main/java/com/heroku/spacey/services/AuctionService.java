@@ -1,13 +1,15 @@
 package com.heroku.spacey.services;
 
 import com.heroku.spacey.dto.auction.AuctionDto;
+import com.heroku.spacey.dto.auction.DecreaseAuctionDto;
+import com.heroku.spacey.dto.auction.IncreaseAuctionDto;
 
 import java.util.List;
 
 public interface AuctionService {
-    List<AuctionDto> getAllDecrease();
+    List<DecreaseAuctionDto> getAllDecrease();
 
-    List<AuctionDto> getAllIncrease();
+    List<IncreaseAuctionDto> getAllIncrease();
 
     List<AuctionDto> getAll();
 
