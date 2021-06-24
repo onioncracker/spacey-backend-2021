@@ -25,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URISyntaxException;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @RestController
@@ -79,13 +79,13 @@ public class AuthController {
     }
 
     @GetMapping("/registration_confirm")
-    public HttpStatus confirmRegistration(@RequestParam("token") String token) {
+    public HttpStatus confirmRegistration(@RequestParam("token") String token) throws TimeoutException {
         userService.confirmUserRegistration(token);
         return HttpStatus.OK;
     }
 
     @GetMapping("/resend_registration_token")
-    public String resendRegistrationToken(@RequestParam("token") String existingToken) throws URISyntaxException {
+    public String resendRegistrationToken(@RequestParam("token") String existingToken) {
         Token newToken = tokenService.generateNewVerificationToken(existingToken);
         String token = newToken.toString();
         EmailComposer emailComposer = new EmailComposer(

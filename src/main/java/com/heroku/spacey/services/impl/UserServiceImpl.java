@@ -24,6 +24,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.Calendar;
+import java.util.concurrent.TimeoutException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -104,13 +107,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmUserRegistration(String token) {
+    public void confirmUserRegistration(String token) throws TimeoutException {
         Token verificationToken = tokenService.getVerificationToken(token);
         if (verificationToken == null) {
             throw new NotFoundException("Verification token not found");
         }
 
         User user = getUserByToken(token);
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getDate().getTime() - cal.getTime().getTime()) <= 0) {
+            throw new TimeoutException("Verification token is out of date");
+        }
+
         user.setStatusId(Status.ACTIVATED.getValue());
         userDao.updateUserStatus(user);
     }
