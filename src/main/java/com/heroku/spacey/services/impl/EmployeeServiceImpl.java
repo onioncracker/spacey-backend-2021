@@ -3,16 +3,18 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.EmployeeDao;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.services.EmployeeService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.webjars.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+
 
 @Slf4j
 @Service
@@ -23,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     public List<EmployeeDto> getEmployees(int pageNum, int pageSize,
-                                          String roleId, String statusId, String searchPrompt) throws SQLException {
+                                          String roleId, String statusId, String searchPrompt) {
         Map<String, String> filters = new HashMap<>();
 
         if (!StringUtils.isBlank(roleId)) {
@@ -41,15 +43,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.getAll(filters, pageNum, pageSize);
     }
 
-    public EmployeeDto getEmployeeById(Long userId) throws NotFoundException, SQLException {
+    public EmployeeDto getEmployeeById(Long userId) throws NotFoundException {
         return employeeDao.getById(userId);
     }
 
-    public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
+    public List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) throws SQLException {
+        return employeeDao.getAvailableCouriers(dateDelivery);
+    }
+
+    public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException {
         employeeDao.insert(employeeDto);
     }
 
-    public int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
+    public int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException {
         if (employeeDao.update(employeeDto) == 0) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }
@@ -57,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.update(employeeDto);
     }
 
-    public int deleteEmployee(Long userId) throws SQLException {
+    public int deleteEmployee(Long userId) {
         if (employeeDao.delete(userId) == 0) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }

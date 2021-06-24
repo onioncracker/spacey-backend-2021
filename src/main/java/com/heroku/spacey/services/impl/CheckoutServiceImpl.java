@@ -20,6 +20,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         return checkoutDao.getByCartId(cartId);
     }
 
+    // TODO: add scenery for unauthorized user
     @Override
     public CheckoutDto getCheckoutByUserId() {
         Long userId = securityUtils.getUserIdByToken();

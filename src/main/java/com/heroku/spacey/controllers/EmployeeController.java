@@ -15,8 +15,7 @@ import javax.validation.constraints.Size;
 
 @Validated
 @RestController
-// TODO: return security
-//@Secured("ROLE_ADMIN")
+@Secured("ROLE_ADMIN")
 @RequiredArgsConstructor
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -46,7 +45,6 @@ public class EmployeeController {
         return employeeService.getEmployees(page, pagesize, roleid, statusid, prompt);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public HttpStatus addEmployee(@RequestBody @Validated EmployeeDto employeeDto) throws SQLException {
         employeeService.createEmployee(employeeDto);

@@ -1,20 +1,22 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.EmployeeDao;
-import com.heroku.spacey.dao.common.EmployeeQueryAdapter;
-import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.mapper.EmployeeMapper;
+import com.heroku.spacey.dto.employee.EmployeeDto;
+import com.heroku.spacey.dao.common.EmployeeQueryAdapter;
 import lombok.RequiredArgsConstructor;
+import org.webjars.NotFoundException;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Map;
+import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -28,6 +30,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
     private String sqlSelectEmployees;
     @Value("${select_employee_by_id}")
     private String sqlSelectEmployeeById;
+    @Value("${select_available_couriers}")
+    private String sqlSelectAvailableCouriers;
     @Value("${insert_employee}")
     private String sqlInsertEmployee;
     @Value("${update_employee}")
@@ -45,7 +49,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
         List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(employeeQueryAdapter.build(),
                 mapper, employeeQueryAdapter.getParams().toArray());
-
+        // TODO: why?
         if (employeeDtos.isEmpty()) {
             return new ArrayList<>();
         }
@@ -55,13 +59,27 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public EmployeeDto getById(Long userId) {
+        // TODO: queryForObject
         List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectEmployeeById, mapper, userId);
 
+        // TODO: why?
         if (employeeDtos.isEmpty()) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }
 
         return employeeDtos.get(0);
+    }
+
+    @Override
+    public List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) {
+        List<EmployeeDto> couriers = Objects.requireNonNull(jdbcTemplate).query(sqlSelectAvailableCouriers,
+                                                                                mapper,
+                                                                                dateDelivery);
+        if (couriers.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return couriers;
     }
 
     @Override
