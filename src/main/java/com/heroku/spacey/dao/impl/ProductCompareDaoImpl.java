@@ -3,7 +3,7 @@ package com.heroku.spacey.dao.impl;
 import com.heroku.spacey.dao.ProductCompareDao;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.SizeDto;
-import com.heroku.spacey.mapper.SizeQuantityMapper;
+import com.heroku.spacey.mapper.SizeAvailableMapper;
 import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ProductCompareDaoImpl implements ProductCompareDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SizeQuantityMapper sizeQuantityMapper;
+    private final SizeAvailableMapper sizeAvailableMapper;
 
     @Value("${get_all_compared_products}")
     private String sqlGetAllProducts;
@@ -92,7 +92,7 @@ public class ProductCompareDaoImpl implements ProductCompareDao {
     }
 
     public List<SizeDto> getSizesByProductId(Long id) {
-        return jdbcTemplate.query(sqlGetSizesByProductId, sizeQuantityMapper, id);
+        return jdbcTemplate.query(sqlGetSizesByProductId, sizeAvailableMapper, id);
     }
 
 }
