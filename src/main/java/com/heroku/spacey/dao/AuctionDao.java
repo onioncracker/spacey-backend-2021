@@ -20,6 +20,4 @@ public interface AuctionDao {
     void update(Auction auction);
 
     void delete(Long id);
-
-    void addProductToAuction(Long auctionId, Long productId, Long sizeId, Integer amount);
 }

@@ -71,15 +71,7 @@ public class AuctionServiceImpl implements AuctionService {
         Long sizeId = auctionDto.getSize().getId();
         auction.setSizeId(sizeId);
 
-        Long auctionId = auctionDao.insert(auction);
-
-        //TODO add amount of products
-        Integer amount = 0;
-
-        auctionDao.addProductToAuction(auctionId, productId, sizeId, amount);
-
-
-        return auctionId;
+        return auctionDao.insert(auction);
     }
 
     @Override

@@ -15,13 +15,14 @@ public class AuctionDto {
     private ProductDto product;
     private SizeDto size;
 
+    private Integer amount;
     private String auctionName;
     private Boolean auctionType;
     private Double startPrice;
     private Double endPrice;
     private Double priceStep;
+    private Double buyPrice;
     private Date startTime;
     private Date endTime;
     private String status;
-    private Integer amount;
 }

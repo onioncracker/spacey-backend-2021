@@ -24,6 +24,7 @@ public class Auction {
     private Double startPrice;
     private Double endPrice;
     private Double priceStep;
+    private Double buyPrice;
     private Date startTime;
     private Date endTime;
     private String status;
