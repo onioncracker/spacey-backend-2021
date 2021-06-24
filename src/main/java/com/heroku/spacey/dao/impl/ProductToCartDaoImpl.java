@@ -2,7 +2,6 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductToCartDao;
 import com.heroku.spacey.dto.cart.ProductForCartDto;
-import com.heroku.spacey.dto.product.ProductForCartDto;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductToCart;
 import com.heroku.spacey.mapper.cart.ProductForCartDtoMapper;
