@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
                                                                     productOnStock.getId(),
                                                                     productSizeOnStock.getQuantity());
                     checkAvailability(sizeToProduct);
-                    productDao.updateSizeToProduct(sizeToProduct);
+                    productDao.updateProductQuantity(sizeToProduct);
                 }
             }
         }
