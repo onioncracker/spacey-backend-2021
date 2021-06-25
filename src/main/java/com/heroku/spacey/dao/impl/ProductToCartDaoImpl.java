@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -64,6 +65,7 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
             ps.setLong(3, sizeId);
             ps.setInt(4, amount);
             ps.setDouble(5, sum);
+            ps.setObject(6, LocalDateTime.now());
             return ps;
         }, holder);
     }
@@ -80,21 +82,22 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public void update(ProductToCart productToCart) {
         Object[] params = new Object[]{
-                productToCart.getAmount(),
-                productToCart.getSum(),
-                productToCart.getCartId(),
-                productToCart.getProductId(),
-                productToCart.getSizeId()
+            productToCart.getAmount(),
+            productToCart.getSum(),
+            LocalDateTime.now(),
+            productToCart.getCartId(),
+            productToCart.getProductId(),
+            productToCart.getSizeId()
         };
         Objects.requireNonNull(jdbcTemplate).update(update, params);
     }
 
     @Override
     public void delete(ProductToCart productToCart) {
-        Object[] params = new Object[] {
-                productToCart.getCartId(),
-                productToCart.getProductId(),
-                productToCart.getSizeId()
+        Object[] params = new Object[]{
+            productToCart.getCartId(),
+            productToCart.getProductId(),
+            productToCart.getSizeId()
         };
         Objects.requireNonNull(jdbcTemplate).update(delete, params);
     }
@@ -111,7 +114,7 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public List<ProductForCartDto> getAllProducts(Long cartId) {
         List<ProductForCartDto> result = jdbcTemplate.query(getAllProductsForCart,
-                new ProductForCartDtoMapper(), cartId);
+            new ProductForCartDtoMapper(), cartId);
         if (result.isEmpty()) {
             return new ArrayList<>();
         }
@@ -121,7 +124,7 @@ public class ProductToCartDaoImpl implements ProductToCartDao {
     @Override
     public List<Product> getAllProductsByUserId(Long userId) {
         List<Product> result = jdbcTemplate.query(getGetAllProductsForCartByUserId,
-                new ProductMapper(), userId);
+            new ProductMapper(), userId);
         if (result.isEmpty()) {
             return new ArrayList<>();
         }

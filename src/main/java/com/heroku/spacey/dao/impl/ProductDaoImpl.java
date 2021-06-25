@@ -152,7 +152,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public double getAmount(Long sizeId, Long productId) {
+    public int getAmount(Long sizeId, Long productId) {
         return DataAccessUtils.singleResult(jdbcTemplate.query(getAmountBySize,
             SingleColumnRowMapper.newInstance(Integer.class), sizeId, productId));
     }

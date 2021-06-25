@@ -29,7 +29,7 @@ public interface ProductDao {
 
     int updateSizeToProduct(SizeToProduct sizeToProduct);
 
-    double getAmount(Long sizeId, Long productId);
+    int getAmount(Long sizeId, Long productId);
 
     ProductForUnauthorizedCart getProductByIdAndSize(Long productId, Long sizeId);
 }
