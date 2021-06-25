@@ -9,7 +9,8 @@ import java.util.List;
 public interface ProductCatalogDao {
     ProductItemDto getProductById(Long id) throws SQLException;
 
-    List<ProductPageDto> getAllProduct(String[] categories,
+    List<ProductPageDto> getAllProduct(String prompt,
+                                       String[] categories,
                                        Integer[] prices,
                                        String sex,
                                        String[] colors,

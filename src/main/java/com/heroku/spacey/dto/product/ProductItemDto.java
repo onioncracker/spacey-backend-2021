@@ -1,4 +1,5 @@
 package com.heroku.spacey.dto.product;
+import com.heroku.spacey.dto.size.SizeProductDto;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class ProductItemDto {
     private int discount;
     private boolean availability;
     private String color;
-    private ArrayList<SizeDto> sizes;
+    private ArrayList<SizeProductDto> sizes;
     private String category;
     private ArrayList<String> materials;
 }
