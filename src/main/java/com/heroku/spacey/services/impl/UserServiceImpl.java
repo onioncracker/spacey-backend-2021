@@ -24,12 +24,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.concurrent.TimeoutException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserDao userDao;
     private final RoleDao roleDao;
     private final TokenDao tokenDao;
@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final TokenService tokenService;
     private final UserConvertor userConvertor;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @Override
@@ -104,13 +105,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmUserRegistration(String token) {
+    public void confirmUserRegistration(String token) throws TimeoutException {
         Token verificationToken = tokenService.getVerificationToken(token);
         if (verificationToken == null) {
             throw new NotFoundException("Verification token not found");
         }
 
         User user = getUserByToken(token);
+        tokenService.checkTokenExpiration(verificationToken);
+
         user.setStatusId(Status.ACTIVATED.getValue());
         userDao.updateUserStatus(user);
     }

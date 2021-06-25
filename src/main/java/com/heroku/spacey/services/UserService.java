@@ -5,6 +5,8 @@ import com.heroku.spacey.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.concurrent.TimeoutException;
+
 public interface UserService extends UserDetailsService {
     @Override
     User loadUserByUsername(String email) throws UsernameNotFoundException;
@@ -19,5 +21,5 @@ public interface UserService extends UserDetailsService {
 
     User getUserByEmail(String email);
 
-    void confirmUserRegistration(String token);
+    void confirmUserRegistration(String token) throws TimeoutException;
 }

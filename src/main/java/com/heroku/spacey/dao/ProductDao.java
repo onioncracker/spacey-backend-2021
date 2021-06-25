@@ -25,9 +25,13 @@ public interface ProductDao {
 
     void addMaterialToProduct(Long materialId, Long productId);
 
+    void deleteMaterialToProduct(Long productId);
+
     void addSizeToProduct(Long sizeId, Long productId, Long quantity);
 
-    int updateSizeToProduct(SizeToProduct sizeToProduct);
+    void deleteSizeToProduct(Long productId);
+
+    int updateProductQuantity(SizeToProduct sizeToProduct);
 
     double getAmount(Long sizeId, Long productId);
 
