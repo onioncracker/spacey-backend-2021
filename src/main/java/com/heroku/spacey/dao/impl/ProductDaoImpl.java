@@ -1,7 +1,9 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductDao;
+import com.heroku.spacey.dto.cart.ProductForUnauthorizedCart;
 import com.heroku.spacey.entity.Product;
+import com.heroku.spacey.mapper.cart.ProductForUnauthorizedCartMapper;
 import com.heroku.spacey.entity.SizeToProduct;
 import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +58,8 @@ public class ProductDaoImpl implements ProductDao {
     private String savePhoto;
     @Value("${get_amount_by_size}")
     private String getAmountBySize;
+    @Value("${getProductByIdAndSizeId}")
+    private String getProductByIdAndSizeId;
 
     public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -165,5 +169,17 @@ public class ProductDaoImpl implements ProductDao {
     public double getAmount(Long sizeId, Long productId) {
         return DataAccessUtils.singleResult(jdbcTemplate.query(getAmountBySize,
             SingleColumnRowMapper.newInstance(Integer.class), sizeId, productId));
+    }
+
+
+    @Override
+    public ProductForUnauthorizedCart getProductByIdAndSize(Long productId, Long sizeId) {
+        List<ProductForUnauthorizedCart> list = jdbcTemplate.query(getProductByIdAndSizeId,
+            new ProductForUnauthorizedCartMapper(), productId, sizeId);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+
     }
 }

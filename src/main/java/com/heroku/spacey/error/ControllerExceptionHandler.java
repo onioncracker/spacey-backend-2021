@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,8 @@ import org.webjars.NotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.InputMismatchException;
+import java.util.concurrent.TimeoutException;
 
 
 @Slf4j
@@ -116,6 +119,32 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(NotEnoughProductException.class)
+    public ResponseEntity<ErrorMessage> notEnoughProductException(NotEnoughProductException ex, WebRequest request) {
+        log.error("404 Status Code", ex);
+        log.error(ex.getMessage());
+        ErrorMessage message = new ErrorMessage(
+            HttpStatus.NOT_FOUND.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ErrorMessage> userDisabledException(DisabledException ex, WebRequest request) {
+        log.error("403 Status Code", ex);
+        log.error("User status is not active");
+        ErrorMessage message = new ErrorMessage(
+            HttpStatus.UNAUTHORIZED.value(),
+            new Date(),
+            ex.getMessage(),
+            request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorMessage> badCredentialsException(BadCredentialsException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
@@ -137,5 +166,41 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Object> disabledException(DisabledException ex, WebRequest request) {
+        log.error("401 Status Code", ex);
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.UNAUTHORIZED.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InputMismatchException.class)
+    public ResponseEntity<Object> inputMismatchException(InputMismatchException ex, WebRequest request) {
+        log.error("400 Bad Request", ex);
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TimeoutException.class)
+    public ResponseEntity<Object> timeoutException(TimeoutException ex, WebRequest request) {
+        log.error("400 Bad Request", ex);
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }

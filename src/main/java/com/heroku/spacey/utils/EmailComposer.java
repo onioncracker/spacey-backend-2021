@@ -7,9 +7,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Data
 @AllArgsConstructor
 public class EmailComposer {
+    private String url;
     private String subject;
     private String endpoint;
-    private String url;
+    private String template;
 
     public String composeUri(String token) {
         return UriComponentsBuilder.fromUriString(url)

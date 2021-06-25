@@ -74,7 +74,7 @@ public class TokenDaoImpl implements TokenDao {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insertToken, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, token.getConfirmationToken());
+            ps.setString(1, token.getToken());
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("tokenid");
