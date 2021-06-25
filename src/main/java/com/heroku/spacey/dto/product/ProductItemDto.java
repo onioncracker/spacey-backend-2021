@@ -1,5 +1,4 @@
 package com.heroku.spacey.dto.product;
-
 import lombok.Data;
 
 import java.util.ArrayList;

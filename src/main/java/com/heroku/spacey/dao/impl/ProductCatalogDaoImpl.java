@@ -5,7 +5,7 @@ import com.heroku.spacey.dao.common.ProductCatalogQueryAdapter;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
 import com.heroku.spacey.dto.product.SizeDto;
-import com.heroku.spacey.mapper.SizeQuantityMapper;
+import com.heroku.spacey.mapper.SizeAvailableMapper;
 import com.heroku.spacey.mapper.product.ProductItemMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.webjars.NotFoundException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 @Slf4j
@@ -27,7 +26,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductCatalogQueryAdapter productCatalogQueryAdapter;
-    private final SizeQuantityMapper sizeQuantityMapper;
+    private final SizeAvailableMapper sizeAvailableMapper;
 
     @Value("${get_all_products}")
     private String sqlGetAll;
@@ -40,7 +39,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
 
 
     @Override
-    public ProductItemDto getProductById(Long id) throws SQLException {
+    public ProductItemDto getProductById(Long id) {
         ProductItemDto productItemDto = new ProductItemDto();
         ResultSetExtractor<ProductItemDto> rse = rs -> {
             if (!rs.next()) {
@@ -62,7 +61,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
                                               String[] colors,
                                               Integer pageNum,
                                               Integer pageSize,
-                                              String order) throws SQLException {
+                                              String order) {
 
         productCatalogQueryAdapter
                 .createSelect(sqlGetAll)
@@ -89,6 +88,6 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
     }
 
     private List<SizeDto> getSizes(Long id) {
-        return jdbcTemplate.query(sqlGetSizesById, sizeQuantityMapper, id);
+        return jdbcTemplate.query(sqlGetSizesById, sizeAvailableMapper, id);
     }
 }
