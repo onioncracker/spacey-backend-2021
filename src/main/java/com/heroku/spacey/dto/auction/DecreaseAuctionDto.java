@@ -23,6 +23,5 @@ public class DecreaseAuctionDto {
     private Double priceStep;
     private Double buyPrice;
     private Date startTime;
-    private Date endTime;
     private String status;
 }

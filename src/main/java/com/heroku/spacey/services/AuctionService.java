@@ -21,7 +21,7 @@ public interface AuctionService {
 
     void remove(Long id);
 
-    void bidDecreasePrice();
+    void bidDecreasePrice(DecreaseAuctionDto decreaseAuctionDto);
 
     void bidIncreasePrice();
 }

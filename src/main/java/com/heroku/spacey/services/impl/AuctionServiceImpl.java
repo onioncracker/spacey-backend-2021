@@ -83,7 +83,7 @@ public class AuctionServiceImpl implements AuctionService {
 
     //TODO: implement decrease price bid for auction
     @Override
-    public void bidDecreasePrice() {
+    public void bidDecreasePrice(DecreaseAuctionDto decreaseAuctionDto) {
 
     }
 
