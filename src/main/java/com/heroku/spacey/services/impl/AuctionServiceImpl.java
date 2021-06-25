@@ -52,9 +52,6 @@ public class AuctionServiceImpl implements AuctionService {
     public Long add(AuctionDto auctionDto) {
         Auction auction = auctionConvertor.adapt(auctionDto);
 
-        Long userId = auctionDto.getAuctionUser().getId();
-        auction.setUserId(userId);
-
         Long productId = auctionDto.getProduct().getId();
         auction.setProductId(productId);
 
