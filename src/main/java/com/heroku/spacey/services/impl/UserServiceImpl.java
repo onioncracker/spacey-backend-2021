@@ -24,15 +24,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.Calendar;
 import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserDao userDao;
     private final RoleDao roleDao;
     private final TokenDao tokenDao;
@@ -40,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final TokenService tokenService;
     private final UserConvertor userConvertor;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @Override

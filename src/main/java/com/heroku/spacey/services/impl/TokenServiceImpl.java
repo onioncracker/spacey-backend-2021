@@ -5,8 +5,10 @@ import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.services.TokenService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -16,20 +18,19 @@ import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@PropertySource("classpath:application.properties")
 public class TokenServiceImpl implements TokenService {
-    private UserDao userDao;
+    private final UserDao userDao;
     private final TokenDao tokenDao;
 
-    public TokenServiceImpl(@Autowired UserDao userDao,
-                            @Autowired TokenDao tokenDao) {
-        this.userDao = userDao;
-        this.tokenDao = tokenDao;
-    }
+    @Value("${link_registration_lifetime}")
+    private Long registrationLinkLifetime;
 
     @Override
     public void createVerificationToken(User user, String token) {
         Token verificationToken = new Token();
-        verificationToken.setConfirmationToken(token);
+        verificationToken.setToken(token);
         Long tokenId = tokenDao.insert(verificationToken);
         user.setTokenId(tokenId);
         userDao.updateUser(user);
@@ -56,7 +57,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void checkTokenExpiration(Token token) throws TimeoutException {
         Calendar cal = Calendar.getInstance();
-        if ((token.getDate().getTime() - cal.getTime().getTime()) > 86_400_000_000L) {
+        if ((token.getDate().getTime() - cal.getTime().getTime()) > registrationLinkLifetime) {
             throw new TimeoutException("Verification token is out of date");
         }
     }

@@ -17,6 +17,7 @@ import org.webjars.NotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.InputMismatchException;
 
 
 @Slf4j
@@ -150,5 +151,17 @@ public class ControllerExceptionHandler {
                 request.getDescription(false));
 
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InputMismatchException.class)
+    public ResponseEntity<Object> inputMismatchException(InputMismatchException ex, WebRequest request) {
+        log.error("400 Bad Request", ex);
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }

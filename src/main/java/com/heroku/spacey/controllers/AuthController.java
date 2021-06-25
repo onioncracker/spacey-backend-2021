@@ -4,6 +4,7 @@ import com.amazonaws.services.apigateway.model.NotFoundException;
 import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import com.heroku.spacey.dto.auth.UserTokenDto;
 import com.heroku.spacey.dto.registration.PasswordDto;
+import com.heroku.spacey.dto.registration.ResetPasswordDto;
 import com.heroku.spacey.dto.user.LoginDto;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.Token;
@@ -97,7 +98,7 @@ public class AuthController {
     public HttpStatus resendRegistrationToken(@RequestParam("token") String existingToken) {
         User user = userService.getUserByToken(existingToken);
         Token newToken = tokenService.generateNewVerificationToken(user, existingToken);
-        String token = newToken.getConfirmationToken();
+        String token = newToken.getToken();
         EmailComposer emailComposer = new EmailComposer(
                 resendRegistrationUrl,
                 resendRegistrationSubject,
@@ -124,26 +125,36 @@ public class AuthController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("/confirm_change_password")
-    public HttpStatus showChangePasswordPage(@RequestParam("token") String token) throws TimeoutException {
-        String result = passwordService.validatePasswordResetToken(token);
-        if (result == null) {
-            throw new NotFoundException("User email not found!");
+    @GetMapping("/reset_password_confirm")
+    public HttpStatus showResetPasswordPage(@RequestParam("token") String token) throws TimeoutException {
+        String tokenValidation = passwordService.validatePasswordResetToken(token);
+        if (tokenValidation == null) {
+            throw new NotFoundException("User token is incorrect!");
         }
         return HttpStatus.OK;
     }
 
-    @PostMapping("/save_password")
-    public HttpStatus savePassword(@RequestBody @Validated PasswordDto passwordDto) throws TimeoutException {
-        String result = passwordService.validatePasswordResetToken(passwordDto.getToken());
-        if (result != null) {
+    @PostMapping("/reset_password_save")
+    public HttpStatus saveResetPassword(@RequestBody @Validated ResetPasswordDto resetPasswordDto) {
+        User user = userService.getUserByEmail(resetPasswordDto.getEmail());
+        if (user == null) {
+            throw new NotFoundException("User not found!");
+        }
+        passwordService.saveResetPassword(user, resetPasswordDto);
+        return HttpStatus.OK;
+    }
+
+    @PostMapping("/change_password_save")
+    public HttpStatus saveChangePassword(@RequestBody @Validated PasswordDto passwordDto) {
+        User user = userService.getUserByEmail(passwordDto.getEmail());
+        if (user == null) {
+            throw new NotFoundException("User not found!");
+        }
+        if (!passwordService.passwordConformity(passwordDto.getNewPassword(), passwordDto.getNewPasswordRepeat())) {
             return HttpStatus.BAD_REQUEST;
         }
-        User user = userService.getUserByToken(passwordDto.getToken());
-        if (user != null) {
-            passwordService.changeUserPassword(user, passwordDto.getNewPassword());
-            return HttpStatus.OK;
-        }
-        return HttpStatus.NOT_FOUND;
+        passwordService.changeUserPassword(user, passwordDto.getNewPassword());
+        return HttpStatus.OK;
     }
 }
+
