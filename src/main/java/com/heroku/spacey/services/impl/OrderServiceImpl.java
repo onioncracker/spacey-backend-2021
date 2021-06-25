@@ -12,6 +12,7 @@ import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.dto.order.CreateOrderDto;
 import com.heroku.spacey.dto.order.ProductCreateOrderDto;
 import com.heroku.spacey.error.NoAvailableCourierException;
+import com.heroku.spacey.services.CartService;
 import com.heroku.spacey.services.OrderService;
 import com.heroku.spacey.utils.security.SecurityUtils;
 import com.heroku.spacey.error.ProductOutOfStockException;
@@ -21,11 +22,11 @@ import org.webjars.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.sql.Timestamp;
 
 @Slf4j
 @Service
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductDao productDao;
     private final EmployeeDao employeeDao;
     private final SecurityUtils securityUtils;
+    private final CartService cartService;
 
     private Long orderId;
 
@@ -48,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
         updateStock(createOrderDto);
         addProductsToOrder(createOrderDto);
         assignCourier(createOrderDto);
+        cartService.cleanCart();
     }
 
     private void setOrderComment(CreateOrderDto createOrderDto) {

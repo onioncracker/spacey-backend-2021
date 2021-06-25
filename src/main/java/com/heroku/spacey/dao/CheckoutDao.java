@@ -1,10 +1,15 @@
 package com.heroku.spacey.dao;
 
 import com.heroku.spacey.dto.order.CheckoutDto;
+import com.heroku.spacey.dto.order.ProductCheckoutDto;
+
+import java.util.List;
 
 public interface CheckoutDao {
 
-    CheckoutDto getByCartId(Long cartId);
+    List<ProductCheckoutDto> getProductsFromCartByUserId(Long userId);
 
-    CheckoutDto getByUserId(Long userId);
+    CheckoutDto getCheckoutInfoByUserId(Long userId);
+
+    CheckoutDto getAuctionCheckoutByAuctionId(Long auctionId, Long userId);
 }

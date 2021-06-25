@@ -1,32 +1,29 @@
 package com.heroku.spacey.controllers;
 
-import lombok.RequiredArgsConstructor;
 import com.heroku.spacey.dto.order.CheckoutDto;
 import com.heroku.spacey.services.CheckoutService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.annotation.Secured;
 
 @RestController
-// TODO: remove security
-@Secured("ROLE_USER")
 @RequiredArgsConstructor
-@RequestMapping("/api/checkout")
 public class CheckoutController {
+
     private final CheckoutService checkoutService;
 
-    @GetMapping("")
-    public CheckoutDto getCheckoutByUserId() {
-        return checkoutService.getCheckoutByUserId();
+
+    @Secured("ROLE_USER")
+    @GetMapping("/api/checkout")
+    public CheckoutDto getCheckout() {
+        return checkoutService.getCheckout();
     }
 
-    /////////////////////////////////////
-    // TODO: remove this functionality
-    //////////////////////////////////////
-    @GetMapping("/{cartId}")
-    public CheckoutDto getCheckoutByCartId(@PathVariable Long cartId) {
-        return checkoutService.getCheckoutByCartId(cartId);
+    @Secured("ROLE_USER")
+    @GetMapping("/api/auction-checkout/{auctionId}")
+    public CheckoutDto getAuctionCheckout(@PathVariable Long auctionId) {
+        return checkoutService.getAuctionCheckout(auctionId);
     }
 }

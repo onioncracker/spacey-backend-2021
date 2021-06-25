@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 @PropertySource("classpath:sql/employee_queries.properties")
 public class EmployeeDaoImpl implements EmployeeDao {
-    private final EmployeeMapper mapper = new EmployeeMapper();
+    private final EmployeeMapper mapper;
     private final JdbcTemplate jdbcTemplate;
     private final EmployeeQueryAdapter employeeQueryAdapter;
 
@@ -60,7 +60,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public EmployeeDto getById(Long userId) {
         // TODO: queryForObject
-        List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectEmployeeById, mapper, userId);
+        List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectEmployeeById,
+                                                                                    mapper,
+                                                                                    userId);
 
         // TODO: why?
         if (employeeDtos.isEmpty()) {
@@ -75,6 +77,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         List<EmployeeDto> couriers = Objects.requireNonNull(jdbcTemplate).query(sqlSelectAvailableCouriers,
                                                                                 mapper,
                                                                                 dateDelivery);
+        // TODO: why?
         if (couriers.isEmpty()) {
             return new ArrayList<>();
         }
