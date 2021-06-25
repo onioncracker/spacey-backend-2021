@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.util.Calendar;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
@@ -39,14 +41,24 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token generateNewVerificationToken(String existingVerificationToken) {
+    public Token generateNewVerificationToken(User user, String existingVerificationToken) {
         Token token = tokenDao.findByToken(existingVerificationToken);
         if (token == null) {
             throw new NotFoundException("Token not found");
         }
         token.updateToken(UUID.randomUUID().toString());
         Long tokenId = tokenDao.insert(token);
+        user.setTokenId(tokenId);
+        userDao.updateUser(user);
         return tokenDao.findByTokenId(tokenId);
+    }
+
+    @Override
+    public void checkTokenExpiration(Token token) throws TimeoutException {
+        Calendar cal = Calendar.getInstance();
+        if ((token.getDate().getTime() - cal.getTime().getTime()) > 86_400_000_000L) {
+            throw new TimeoutException("Verification token is out of date");
+        }
     }
 
     @Override

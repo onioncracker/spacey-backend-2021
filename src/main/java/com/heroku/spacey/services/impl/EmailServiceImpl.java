@@ -47,10 +47,10 @@ public class EmailServiceImpl implements EmailService {
         emailSender.send(message);
     }
 
+    @Override
     @SneakyThrows
     @ExceptionHandler(MessagingException.class)
-    @Override
-    public void sendSimpleMessageWithTemplate(String to, String subject, String text) {
+    public void sendSimpleMessageWithTemplate(String to, String subject, String text, String template) {
         log.info(to);
         log.info(subject);
         log.info(text);
@@ -63,7 +63,7 @@ public class EmailServiceImpl implements EmailService {
 
         Context context = new Context();
         context.setVariable("text", text);
-        String htmlContent = templateEngine.process("email", context);
+        String htmlContent = templateEngine.process(template, context);
         helper.setText(htmlContent, true);
         emailSender.send(message);
     }

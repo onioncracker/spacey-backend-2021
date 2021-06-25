@@ -39,32 +39,41 @@ public class AuthController {
     private final PasswordService passwordService;
     private final ApplicationEventPublisher eventPublisher;
 
+    @Value("${confirm_registration_url}")
+    private String confirmRegistrationUrl;
     @Value("${confirm_registration_subject}")
     private String confirmRegistrationSubject;
     @Value("${confirm_registration_endpoint}")
     private String confirmRegistrationEndpoint;
-    @Value("${confirm_registration_url}")
-    private String confirmRegistrationUrl;
+    @Value("${confirm_registration_template}")
+    private String confirmRegistrationTemplate;
+
+    @Value("${resend_registration_url}")
+    private String resendRegistrationUrl;
     @Value("${resend_registration_subject}")
     private String resendRegistrationSubject;
     @Value("${resend_registration_endpoint}")
     private String resendRegistrationEndpoint;
-    @Value("${resend_registration_url}")
-    private String resendRegistrationUrl;
+    @Value("${resend_registration_template}")
+    private String resendRegistrationTemplate;
+
+    @Value("${reset_password_url}")
+    private String resetPasswordUrl;
     @Value("${reset_password_subject}")
     private String resetPasswordSubject;
     @Value("${reset_password_endpoint}")
     private String resetPasswordEndpoint;
-    @Value("${reset_password_url}")
-    private String resetPasswordUrl;
+    @Value("${reset_password_template}")
+    private String resetPasswordTemplate;
 
     @ResponseBody
     @PostMapping("/register")
     public ResponseEntity<Void> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         EmailComposer emailComposer = new EmailComposer(
+                confirmRegistrationUrl,
                 confirmRegistrationSubject,
                 confirmRegistrationEndpoint,
-                confirmRegistrationUrl);
+                confirmRegistrationTemplate);
         if (userService.userExists(registerDto.getEmail())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -85,25 +94,28 @@ public class AuthController {
     }
 
     @GetMapping("/resend_registration_token")
-    public String resendRegistrationToken(@RequestParam("token") String existingToken) {
-        Token newToken = tokenService.generateNewVerificationToken(existingToken);
-        String token = newToken.toString();
+    public HttpStatus resendRegistrationToken(@RequestParam("token") String existingToken) {
+        User user = userService.getUserByToken(existingToken);
+        Token newToken = tokenService.generateNewVerificationToken(user, existingToken);
+        String token = newToken.getConfirmationToken();
         EmailComposer emailComposer = new EmailComposer(
+                resendRegistrationUrl,
                 resendRegistrationSubject,
                 resendRegistrationEndpoint,
-                resendRegistrationUrl);
-        User user = userService.getUserByToken(newToken.getConfirmationToken());
+                resendRegistrationTemplate);
         String recipient = user.getEmail();
-        emailService.sendSimpleMessageWithTemplate(recipient, emailComposer.getSubject(), emailComposer.composeUri(token));
-        return "message.resendToken";
+        emailService.sendSimpleMessageWithTemplate(recipient, emailComposer.getSubject(),
+                emailComposer.composeUri(token), emailComposer.getTemplate());
+        return HttpStatus.OK;
     }
 
     @PostMapping("/reset_password")
     public HttpStatus resetPassword(@RequestParam("email") String userEmail) {
         EmailComposer emailComposer = new EmailComposer(
+                resetPasswordUrl,
                 resetPasswordSubject,
                 resetPasswordEndpoint,
-                resetPasswordUrl);
+                resetPasswordTemplate);
         User user = userService.getUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException("User email not found!");
@@ -113,7 +125,7 @@ public class AuthController {
     }
 
     @GetMapping("/confirm_change_password")
-    public HttpStatus showChangePasswordPage(@RequestParam("token") String token) {
+    public HttpStatus showChangePasswordPage(@RequestParam("token") String token) throws TimeoutException {
         String result = passwordService.validatePasswordResetToken(token);
         if (result == null) {
             throw new NotFoundException("User email not found!");
@@ -122,7 +134,7 @@ public class AuthController {
     }
 
     @PostMapping("/save_password")
-    public HttpStatus savePassword(@Validated PasswordDto passwordDto) {
+    public HttpStatus savePassword(@RequestBody @Validated PasswordDto passwordDto) throws TimeoutException {
         String result = passwordService.validatePasswordResetToken(passwordDto.getToken());
         if (result != null) {
             return HttpStatus.BAD_REQUEST;

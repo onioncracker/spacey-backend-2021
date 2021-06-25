@@ -114,10 +114,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = getUserByToken(token);
-        Calendar cal = Calendar.getInstance();
-        if ((verificationToken.getDate().getTime() - cal.getTime().getTime()) <= 0) {
-            throw new TimeoutException("Verification token is out of date");
-        }
+        tokenService.checkTokenExpiration(verificationToken);
 
         user.setStatusId(Status.ACTIVATED.getValue());
         userDao.updateUserStatus(user);
