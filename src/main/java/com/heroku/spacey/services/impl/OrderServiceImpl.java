@@ -49,8 +49,16 @@ public class OrderServiceImpl implements OrderService {
         setOrderComment(createOrderDto);
         setOrderStatus(createOrderDto);
         updateStock(createOrderDto);
+
+        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
+        createOrderDto.setDateCreate(orderTime);
+        orderId = orderDao.insert(createOrderDto);
+
         addProductsToOrder(createOrderDto);
+        // TODO: it must be optional, just for registered user
+        addUserToOrders();
         assignCourier(createOrderDto);
+        // TODO: it's too
         cartService.cleanCart();
     }
 
@@ -107,15 +115,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void addProductsToOrder(CreateOrderDto createOrderDto) {
-        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
-        Long userId = securityUtils.getUserIdByToken();
-        orderId = orderDao.insert(createOrderDto, orderTime, userId);
-        orderDao.addUserToOrders(orderId, userId);
         for (ProductCreateOrderDto product : createOrderDto.getProducts()) {
             int amount = product.getAmount();
             float sum = product.getSum();
             orderDao.addProductToOrder(orderId, product.getProductId(), product.getSizeId(), amount, sum);
         }
+    }
+
+    private void addUserToOrders() {
+        Long userId = securityUtils.getUserIdByToken();
+        orderDao.addUserToOrders(orderId, userId);
     }
 
     private void assignCourier(CreateOrderDto createOrderDto) throws SQLException {

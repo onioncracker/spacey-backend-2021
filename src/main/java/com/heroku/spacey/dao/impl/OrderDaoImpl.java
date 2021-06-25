@@ -41,7 +41,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @Transactional
-    public Long insert(CreateOrderDto createOrderDto, Timestamp dateCreate, Long userId) {
+    public Long insert(CreateOrderDto createOrderDto) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sqlInsertOrder, Statement.RETURN_GENERATED_KEYS);
@@ -53,7 +53,7 @@ public class OrderDaoImpl implements OrderDao {
             ps.setString(6, createOrderDto.getStreet());
             ps.setString(7, createOrderDto.getHouse());
             ps.setString(8, createOrderDto.getApartment());
-            ps.setTimestamp(9, dateCreate);
+            ps.setTimestamp(9, createOrderDto.getDateCreate());
             ps.setTimestamp(10, createOrderDto.getDateDelivery());
             ps.setFloat(11, createOrderDto.getOverallPrice());
             ps.setString(12, createOrderDto.getCommentOrder());

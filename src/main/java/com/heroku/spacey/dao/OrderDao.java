@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderDao {
 
-    Long insert(CreateOrderDto order, Timestamp dateCreate, Long userId);
+    Long insert(CreateOrderDto order);
 
     void addProductToOrder(Long orderId, Long productId, Long sizeId, int amount, float sum);
 

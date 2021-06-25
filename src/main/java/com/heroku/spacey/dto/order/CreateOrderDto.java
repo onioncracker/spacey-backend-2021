@@ -19,6 +19,7 @@ public class CreateOrderDto {
     private String street;
     private String house;
     private String apartment;
+    private Timestamp dateCreate;
     private Timestamp dateDelivery;
     private float overallPrice;
     private String commentOrder;
