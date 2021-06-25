@@ -37,6 +37,31 @@ public class ProductCatalogController {
             @RequestParam(required = false) String order) throws SQLException {
 
         return productCatalogServiceImpl.getAllProduct(
+                null,
+                pageNum,
+                pageSize,
+                sex,
+                price,
+                categories,
+                colors,
+                order
+        );
+    }
+
+
+    @GetMapping("/search/{prompt}")
+    public List<ProductPageDto> getProductsSearch(
+            @PathVariable String prompt,
+            @RequestParam(defaultValue = "${default_page_num}") Integer pageNum,
+            @RequestParam(defaultValue = "${default_page_size}") Integer pageSize,
+            @RequestParam(required = false) String sex,
+            @RequestParam(required = false) String price,
+            @RequestParam(required = false) String categories,
+            @RequestParam(required = false) String colors,
+            @RequestParam(required = false) String order) throws SQLException {
+
+        return productCatalogServiceImpl.getAllProduct(
+                prompt,
                 pageNum,
                 pageSize,
                 sex,
