@@ -11,7 +11,7 @@ import java.sql.Date;
 public class IncreaseAuctionDto {
     private Long auctionId;
 
-    private UserDto users;
+    private UserDto user;
     private ProductDto product;
     private SizeDto size;
 

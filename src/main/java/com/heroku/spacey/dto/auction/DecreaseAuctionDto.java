@@ -11,7 +11,7 @@ import java.sql.Date;
 public class DecreaseAuctionDto {
     private Long auctionId;
 
-    private UserDto users;
+    private UserDto user;
     private ProductDto product;
     private SizeDto size;
 
@@ -20,9 +20,9 @@ public class DecreaseAuctionDto {
     private Boolean auctionType;
     private Double startPrice;
     private Double endPrice;
+    private Double priceStep;
     private Double buyPrice;
     private Date startTime;
     private Date endTime;
     private String status;
-
 }
