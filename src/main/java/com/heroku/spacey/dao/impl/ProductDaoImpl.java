@@ -40,14 +40,10 @@ public class ProductDaoImpl implements ProductDao {
     private String materialToProduct;
     @Value("${add_size_to_product}")
     private String sizeToProduct;
-    @Value("${update_material_to_product}")
-    private String updateMaterialToProduct;
     @Value("${delete_material_to_product}")
     private String deleteMaterialToProduct;
     @Value("${delete_size_to_product}")
     private String deleteSizeToProduct;
-    @Value("${update_size_to_product}")
-    private String updateSizeToProduct;
     @Value("${update_product_quantity}")
     private String updateProductQuantity;
     @Value("${update_product}")
@@ -134,16 +130,6 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void deleteSizeToProduct(Long productId) {
         Objects.requireNonNull(jdbcTemplate).update(deleteSizeToProduct, productId);
-    }
-
-    @Override
-    public void updateMaterialToProduct(Long materialId, Long productId) {
-        Objects.requireNonNull(jdbcTemplate).update(updateMaterialToProduct, materialId, productId);
-    }
-
-    @Override
-    public void updateSizeToProduct(Long sizeId, Long productId, Long quantity) {
-        Objects.requireNonNull(jdbcTemplate).update(updateSizeToProduct, sizeId, quantity, productId);
     }
 
     @Override
