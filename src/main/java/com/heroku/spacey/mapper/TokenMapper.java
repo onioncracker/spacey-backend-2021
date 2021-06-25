@@ -11,7 +11,7 @@ public class TokenMapper implements RowMapper<Token> {
     public Token mapRow(ResultSet resultSet, int i) throws SQLException {
         Token token = new Token();
         token.setTokenId(resultSet.getLong("tokenid"));
-        token.setConfirmationToken(resultSet.getString("confirmationtoken"));
+        token.setToken(resultSet.getString("confirmationtoken"));
         token.setDate(resultSet.getTimestamp("date"));
         return token;
     }

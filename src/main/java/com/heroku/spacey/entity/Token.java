@@ -11,7 +11,7 @@ public class Token {
     private static final int EXPIRATION = 60 * 24;
 
     private Long tokenId;
-    private String confirmationToken;
+    private String token;
     private Date date;
 
     private Date calculateExpireDate(int expireTimeInMinutes) {
@@ -22,7 +22,7 @@ public class Token {
     }
 
     public void updateToken(final String token) {
-        this.confirmationToken = token;
+        this.token = token;
         this.date = calculateExpireDate(EXPIRATION);
     }
 }

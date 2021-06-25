@@ -30,6 +30,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         String recipientAddress = user.getEmail();
         mailService.sendSimpleMessageWithTemplate(recipientAddress,
                 event.getEmailComposer().getSubject(),
-                event.getEmailComposer().composeUri(token));
+                event.getEmailComposer().composeUri(token),
+                event.getEmailComposer().getTemplate());
     }
 }
