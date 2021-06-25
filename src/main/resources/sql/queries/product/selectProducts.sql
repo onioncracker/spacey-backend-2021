@@ -6,4 +6,4 @@ INNER JOIN materials m on mtp.materialId = m.materialId
 INNER JOIN categories c on p.categoryId = c.categoryId
 INNER JOIN sizes s on stp.sizeid = s.sizeid
 INNER JOIN colors clrs on clrs.colorid = p.colorid
-WHERE p.productId = 5
+WHERE p.productId = 7

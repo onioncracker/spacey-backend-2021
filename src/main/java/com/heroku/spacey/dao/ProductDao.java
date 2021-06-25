@@ -23,7 +23,11 @@ public interface ProductDao {
 
     void addMaterialToProduct(Long materialId, Long productId);
 
+    void deleteMaterialToProduct(Long productId);
+
     void addSizeToProduct(Long sizeId, Long productId, Long quantity);
+
+    void deleteSizeToProduct(Long productId);
 
     void updateMaterialToProduct(Long materialId, Long productId);
 

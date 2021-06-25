@@ -82,14 +82,17 @@ public class ProductServiceImpl implements ProductService {
 
         productDao.update(product);
 
+        productDao.deleteMaterialToProduct(id);
+        productDao.deleteSizeToProduct(id);
+
         for (int i = 0; i < updateProductDto.getMaterials().size(); i++) {
             Long materialId = updateProductDto.getMaterials().get(i).getId();
-            productDao.updateMaterialToProduct(materialId, id);
+            productDao.addMaterialToProduct(materialId, id);
         }
 
         for (int i = 0; i < updateProductDto.getSizes().size(); i++) {
             SizeDto size = updateProductDto.getSizes().get(i);
-            productDao.updateSizeToProduct(size.getId(), id, size.getQuantity());
+            productDao.addSizeToProduct(size.getId(), id, size.getQuantity());
         }
     }
 
