@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class SizeDto {
-    private String size;
-    private int quantity;
+    private Long id;
+    private String name;
+    private boolean isAvailable;
 }

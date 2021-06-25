@@ -1,4 +1,6 @@
 package com.heroku.spacey.dao;
+
+import com.heroku.spacey.dto.cart.ProductForUnauthorizedCart;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.SizeToProduct;
 
@@ -28,4 +30,6 @@ public interface ProductDao {
     int updateSizeToProduct(SizeToProduct sizeToProduct);
 
     double getAmount(Long sizeId, Long productId);
+
+    ProductForUnauthorizedCart getProductByIdAndSize(Long productId, Long sizeId);
 }

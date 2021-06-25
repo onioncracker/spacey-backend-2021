@@ -18,13 +18,13 @@ public class OrderDetailsController {
 
     private final OrderDetailsService orderDetailsService;
 
-    @Secured("COURIER")
+    @Secured("ROLE_COURIER")
     @GetMapping("/{orderId}")
     public OrderDetailsDto getOrderDetailsById(@PathVariable Long orderId) throws SQLException {
         return orderDetailsService.getOrderDetails(orderId);
     }
 
-    @Secured("COURIER")
+    @Secured("ROLE_COURIER")
     @PutMapping("")
     public HttpStatus editOrderStatus(@RequestBody OrderStatusDto orderStatusDto) {
         orderDetailsService.updateOrderStatus(orderStatusDto);
