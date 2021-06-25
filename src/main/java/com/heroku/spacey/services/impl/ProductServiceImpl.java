@@ -75,7 +75,25 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(UpdateProductDto updateProductDto, Long id) {
         Product product = productConvertor.adapt(updateProductDto);
         product.setId(id);
+        Long categoryId = updateProductDto.getCategory().getId();
+        Long colorId = updateProductDto.getColor().getId();
+        product.setCategoryId(categoryId);
+        product.setColorId(colorId);
+
         productDao.update(product);
+
+        productDao.deleteMaterialToProduct(id);
+        productDao.deleteSizeToProduct(id);
+
+        for (int i = 0; i < updateProductDto.getMaterials().size(); i++) {
+            Long materialId = updateProductDto.getMaterials().get(i).getId();
+            productDao.addMaterialToProduct(materialId, id);
+        }
+
+        for (int i = 0; i < updateProductDto.getSizes().size(); i++) {
+            SizeDto size = updateProductDto.getSizes().get(i);
+            productDao.addSizeToProduct(size.getId(), id, size.getQuantity());
+        }
     }
 
     @Override
