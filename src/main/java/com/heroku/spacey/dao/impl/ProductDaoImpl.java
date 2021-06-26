@@ -60,6 +60,8 @@ public class ProductDaoImpl implements ProductDao {
     private String getAmountBySize;
     @Value("${getProductByIdAndSizeId}")
     private String getProductByIdAndSizeId;
+    @Value("${is_available_by_id}")
+    private String isAvailableById;
 
     public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -166,16 +168,31 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public double getAmount(Long sizeId, Long productId) {
-        return DataAccessUtils.singleResult(jdbcTemplate.query(getAmountBySize,
+    public int getAmount(Long sizeId, Long productId) {
+        Integer result = DataAccessUtils.singleResult(jdbcTemplate.query(getAmountBySize,
             SingleColumnRowMapper.newInstance(Integer.class), sizeId, productId));
+        if (result == null) {
+            log.error("either size or product does not exist in db");
+            throw new NotFoundException("Size not found");
+        }
+        return result;
     }
 
+    @Override
+    public boolean isAvailable(Long productId) {
+        Boolean result = DataAccessUtils.singleResult(jdbcTemplate.query(isAvailableById,
+            SingleColumnRowMapper.newInstance(Boolean.class), productId));
+        if (result == null) {
+            log.error("Product does not exist in db");
+            throw new NotFoundException("Product not found");
+        }
+        return result;
+    }
 
     @Override
     public ProductForUnauthorizedCart getProductByIdAndSize(Long productId, Long sizeId) {
         List<ProductForUnauthorizedCart> list = jdbcTemplate.query(getProductByIdAndSizeId,
-            new ProductForUnauthorizedCartMapper(), productId, sizeId);
+            new ProductForUnauthorizedCartMapper(), sizeId, productId);
         if (list.isEmpty()) {
             return null;
         }

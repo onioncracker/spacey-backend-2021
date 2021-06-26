@@ -12,4 +12,5 @@ public class ProductForUnauthorizedCart {
     private String photo;
     private int quantity;
     private double price;
+    private Double discount;
 }

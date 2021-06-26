@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.ArrayList;
@@ -38,17 +39,30 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void addProductToCart(Long productId, Long sizeId, int amount) {
         Product product = productDao.get(productId);
         Cart cart = getCartForCurrentUser();
-        double sum = amount * product.getPrice();
+        if (product.getDiscount() == null) {
+            product.setDiscount(0.);
+        }
+        double sum = amount * (product.getPrice() * ((100 - product.getDiscount()) / 100));
 
         ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId, sizeId);
         if (productToCart == null) {
+            int available = productDao.getAmount(sizeId, productId);
+            if (amount > available) {
+                throw new NotEnoughProductException("Cannot add product: product out of stock");
+            }
             productToCartDao.insert(cart.getCartId(), productId, sizeId, amount, sum);
             log.info("ProductToCart created");
         } else {
-            productToCart.setAmount(productToCart.getAmount() + amount);
+            int newAmount = productToCart.getAmount() + amount;
+            int available = productDao.getAmount(sizeId, productId);
+            if (newAmount > available) {
+                throw new NotEnoughProductException("Cannot add product: product out of stock");
+            }
+            productToCart.setAmount(newAmount);
             productToCart.setSum(productToCart.getSum() + sum);
             productToCartDao.update(productToCart);
             log.info("ProductToCart updated");
@@ -58,10 +72,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void deleteProductFromCart(Long productId, Long sizeId, int amount) {
         Cart cart = getCartForCurrentUser();
         Product product = productDao.get(productId);
-        double sum = amount * product.getPrice();
+        if (product.getDiscount() == null) {
+            product.setDiscount(0.);
+        }
+        double sum = amount * (product.getPrice() * ((100 - product.getDiscount()) / 100));
 
         ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId, sizeId);
         if (productToCart == null) {
@@ -94,6 +112,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void cleanCart() {
         Cart cart = getCartForCurrentUser();
         List<ProductToCart> list = productToCartDao.getAllInCart(cart.getCartId());
@@ -106,7 +125,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<ProductForCartDto> getAllProductsInCart() {
         Cart cart = getCartForCurrentUser();
-        return productToCartDao.getAllProducts(cart.getCartId());
+        List<ProductForCartDto> list = productToCartDao.getAllProducts(cart.getCartId());
+        for (ProductForCartDto product: list) {
+            product.setUnavailableAmount(
+                getUnavailableCount(
+                    product.getId(),
+                    product.getSizeId(),
+                    product.getAmount()
+            ));
+        }
+        return list;
     }
 
     @Override
@@ -115,22 +143,37 @@ public class CartServiceImpl implements CartService {
         for (EditCartDto cartProduct : unauthorizedCart) {
             ProductForUnauthorizedCart product = productDao.getProductByIdAndSize(
                 cartProduct.getProductId(), cartProduct.getSizeId());
-            if (product.getQuantity() > cartProduct.getAmount()) {
-                list.add(
-                    new ProductForCartDto(
-                        product.getId(), product.getSizeId(),
-                        product.getName(), product.getColor(),
-                        product.getSize(), product.getPhoto(),
-                        cartProduct.getAmount(),
-                        cartProduct.getAmount() * product.getPrice()
-                    ));
+
+            int unavailableAmount;
+            if (product.getQuantity() < cartProduct.getAmount()) {
+                unavailableAmount = cartProduct.getAmount() - product.getQuantity();
             } else {
-                throw new NotEnoughProductException(
-                    String.format(
-                        "Available amount of product %s is less then in cart",
-                        product.getName()));
+                unavailableAmount = 0;
             }
+
+            if (product.getDiscount() == null) {
+                product.setDiscount(0.);
+            }
+
+            list.add(
+                new ProductForCartDto(
+                    product.getId(), product.getSizeId(),
+                    product.getName(), product.getColor(),
+                    product.getSize(), product.getPhoto(),
+                    cartProduct.getAmount(),
+                    unavailableAmount,
+                    product.getDiscount(),
+                    cartProduct.getAmount() * product.getPrice()
+                ));
         }
         return list;
+    }
+
+    private int getUnavailableCount(Long productId, Long sizeId, int amount) {
+        int available = productDao.getAmount(sizeId, productId);
+        if (amount > available) {
+            return amount - available;
+        }
+        return 0;
     }
 }

@@ -18,6 +18,7 @@ public class ProductForUnauthorizedCartMapper implements RowMapper<ProductForUna
         res.setPhoto(resultSet.getString("photo"));
         res.setQuantity(resultSet.getInt("quantity"));
         res.setPrice(resultSet.getDouble("price"));
+        res.setDiscount(resultSet.getDouble("discount"));
         return res;
     }
 

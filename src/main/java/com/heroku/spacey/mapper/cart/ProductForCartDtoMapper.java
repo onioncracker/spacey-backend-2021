@@ -16,6 +16,7 @@ public class ProductForCartDtoMapper implements RowMapper<ProductForCartDto> {
         res.setSize(resultSet.getString("sizename"));
         res.setPhoto(resultSet.getString("photo"));
         res.setAmount(resultSet.getInt("amount"));
+        res.setDiscount(resultSet.getDouble("discount"));
         res.setOverallPrice(resultSet.getDouble("sum"));
         return res;
     }

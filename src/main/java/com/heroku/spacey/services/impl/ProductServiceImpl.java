@@ -9,6 +9,7 @@ import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
 import com.heroku.spacey.utils.convertors.CommonConvertor;
 import com.heroku.spacey.utils.convertors.ProductConvertor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.webjars.NotFoundException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
@@ -118,9 +120,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public boolean checkAmount(Long productId, Long sizeId, double amount) {
-        Product product = productDao.get(productId);
-        double maxAmount = productDao.getAmount(sizeId, productId);
-        return product.getIsAvailable() && amount < maxAmount;
+    public boolean checkAmount(Long productId, Long sizeId, int amount) {
+        log.info("in product service: " + productId + " " + sizeId + " " + amount);
+        boolean available = productDao.isAvailable(productId);
+        int maxAmount = productDao.getAmount(sizeId, productId);
+        return available && (amount < maxAmount);
     }
 }
