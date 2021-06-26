@@ -2,7 +2,7 @@ package com.heroku.spacey.entity;
 
 import lombok.Data;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 public class Auction {
@@ -25,7 +25,7 @@ public class Auction {
     private Double endPrice;
     private Double priceStep;
     private Double buyPrice;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private String status;
 }

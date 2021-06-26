@@ -53,15 +53,16 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Override
     public Long add(AuctionDto auctionDto) {
-        Auction auction = auctionConvertor.adapt(auctionDto);
+//        Auction auction = auctionConvertor.adapt(auctionDto);
+//
+//        Long productId = auctionDto.getProductId();
+//        auction.setProductId(productId);
+//
+//        Long sizeId = auctionDto.getSizeId();
+//        auction.setSizeId(sizeId);
 
-        Long productId = auctionDto.getProductId();
-        auction.setProductId(productId);
-
-        Long sizeId = auctionDto.getSizeId();
-        auction.setSizeId(sizeId);
-
-        return auctionDao.insert(auction);
+//        return auctionDao.insert(auction);
+        return 1L;
     }
 
     // TODO: fix update method

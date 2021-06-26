@@ -1,6 +1,5 @@
 package com.heroku.spacey.dto.auction;
 
-import com.heroku.spacey.dto.size.SizeDto;
 import lombok.Data;
 
 import java.sql.Date;
@@ -10,8 +9,9 @@ public class AuctionDto {
     private Long auctionId;
 
     private Long userId;
-    private Long productId;
-    private Long sizeId;
+    private AuctionProductDto product;
+
+    private String sizeName;
     private Integer amount;
     private String auctionName;
     private Boolean auctionType;

@@ -103,8 +103,8 @@ public class AuctionDaoImpl implements AuctionDao {
             ps.setDouble(6, auction.getStartPrice());
             ps.setDouble(7, auction.getEndPrice());
             ps.setDouble(8, auction.getPriceStep());
-            ps.setDate(9, auction.getStartTime());
-            ps.setDate(10, auction.getEndTime());
+            ps.setTimestamp(9, auction.getStartTime());
+            ps.setTimestamp(10, auction.getEndTime());
             ps.setString(11, auction.getStatus());
 
             return ps;
