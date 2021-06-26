@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ProductCatalogService {
-    List<ProductPageDto> getAllProduct(Integer pageNum,
+    List<ProductPageDto> getAllProduct(String prompt,
+                                       Integer pageNum,
                                        Integer pageSize,
                                        String sex,
                                        String price,
