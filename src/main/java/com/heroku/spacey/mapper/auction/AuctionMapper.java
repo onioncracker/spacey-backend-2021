@@ -4,6 +4,7 @@ import com.heroku.spacey.entity.Auction;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.Size;
 import com.heroku.spacey.entity.User;
+import com.heroku.spacey.mapper.UserMapper;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -27,7 +28,7 @@ public class AuctionMapper implements RowMapper<Auction> {
         auction.setEndTime(resultSet.getDate("endtime"));
         auction.setStatus(resultSet.getString("status"));
 
-        UserForAuctionMapper userMapper = new UserForAuctionMapper();
+        UserMapper userMapper = new UserMapper();
         User user = userMapper.mapRow(resultSet, i);
         ProductForAuctionMapper productMapper = new ProductForAuctionMapper();
         Product product = productMapper.mapRow(resultSet, i);
