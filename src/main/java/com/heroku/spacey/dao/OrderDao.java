@@ -4,12 +4,11 @@ import com.heroku.spacey.dto.order.CreateOrderDto;
 import com.heroku.spacey.dto.order.CourierOrdersDto;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderDao {
 
-    Long insert(CreateOrderDto order, Timestamp dateCreate, Long userId);
+    Long insert(CreateOrderDto order);
 
     void addProductToOrder(Long orderId, Long productId, Long sizeId, int amount, float sum);
 

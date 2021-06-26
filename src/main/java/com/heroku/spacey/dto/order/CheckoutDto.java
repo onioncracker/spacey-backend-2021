@@ -1,5 +1,6 @@
 package com.heroku.spacey.dto.order;
 
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import lombok.Data;
 
 import java.util.List;

@@ -1,28 +1,40 @@
 package com.heroku.spacey.services.impl;
 
-import lombok.extern.slf4j.Slf4j;
-import lombok.RequiredArgsConstructor;
 import com.heroku.spacey.dao.CheckoutDao;
-import org.springframework.stereotype.Service;
 import com.heroku.spacey.dto.order.CheckoutDto;
 import com.heroku.spacey.services.CheckoutService;
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import com.heroku.spacey.utils.security.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CheckoutServiceImpl implements CheckoutService {
+
     private final CheckoutDao checkoutDao;
     private final SecurityUtils securityUtils;
 
+
     @Override
-    public CheckoutDto getCheckoutByCartId(Long cartId) {
-        return checkoutDao.getByCartId(cartId);
+    public CheckoutDto getCheckout() {
+        Long userId = securityUtils.getUserIdByToken();
+        CheckoutDto checkoutDto = checkoutDao.getCheckoutInfoByUserId(userId);
+
+        List<ProductCheckoutDto> products = checkoutDao.getProductsFromCartByUserId(userId);
+        checkoutDto.getProducts().addAll(products);
+
+        return checkoutDto;
     }
 
     @Override
-    public CheckoutDto getCheckoutByUserId() {
+    public CheckoutDto getAuctionCheckout(Long auctionId) {
         Long userId = securityUtils.getUserIdByToken();
-        return checkoutDao.getByUserId(userId);
+
+        return checkoutDao.getAuctionCheckoutByAuctionId(auctionId, userId);
     }
 }

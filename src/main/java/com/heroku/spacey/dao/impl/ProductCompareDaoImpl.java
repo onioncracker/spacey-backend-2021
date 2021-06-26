@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,12 +74,12 @@ public class ProductCompareDaoImpl implements ProductCompareDao {
 
 
     @Override
-    public Integer getCountComparingProduct(Long userId) throws SQLException {
+    public Integer getCountComparingProduct(Long userId) {
         return jdbcTemplate.queryForObject(sqlGetCountComparedProducts, Integer.class, userId);
     }
 
     @Override
-    public List<String> getMaterialByProductId(Long productId) throws SQLException {
+    public List<String> getMaterialByProductId(Long productId) {
         RowMapper<String> rw = (resultSet, i) -> resultSet.getString("namematerial");
         return jdbcTemplate.query(sqlGetMaterialByProductId, rw, productId);
     }

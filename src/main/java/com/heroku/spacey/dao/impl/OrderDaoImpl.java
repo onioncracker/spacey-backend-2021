@@ -1,22 +1,21 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.OrderDao;
-import com.heroku.spacey.dto.order.CourierOrdersDto;
 import com.heroku.spacey.dto.order.CreateOrderDto;
+import com.heroku.spacey.dto.order.CourierOrdersDto;
 import com.heroku.spacey.mapper.order.CourierOrdersMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +40,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     @Transactional
-    public Long insert(CreateOrderDto createOrderDto, Timestamp dateCreate, Long userId) {
+    public Long insert(CreateOrderDto createOrderDto) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sqlInsertOrder, Statement.RETURN_GENERATED_KEYS);
@@ -53,7 +52,7 @@ public class OrderDaoImpl implements OrderDao {
             ps.setString(6, createOrderDto.getStreet());
             ps.setString(7, createOrderDto.getHouse());
             ps.setString(8, createOrderDto.getApartment());
-            ps.setTimestamp(9, dateCreate);
+            ps.setTimestamp(9, createOrderDto.getDateCreate());
             ps.setTimestamp(10, createOrderDto.getDateDelivery());
             ps.setFloat(11, createOrderDto.getOverallPrice());
             ps.setString(12, createOrderDto.getCommentOrder());
