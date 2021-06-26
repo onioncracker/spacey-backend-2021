@@ -2,7 +2,7 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.CheckoutDao;
 import com.heroku.spacey.dto.order.CheckoutDto;
-import com.heroku.spacey.dto.order.ProductCheckoutDto;
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import com.heroku.spacey.mapper.order.CheckoutMapper;
 import com.heroku.spacey.mapper.order.ProductCheckoutMapper;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,6 @@ public class CheckoutDaoImpl implements CheckoutDao {
 
     @Override
     public CheckoutDto getCheckoutInfoByUserId(Long userId) {
-        // TODO: queryForObject
         List<CheckoutDto> checkoutInfos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectCheckoutInfoByUserId,
                                                                                      checkoutMapper,
                                                                                      userId);
@@ -62,7 +61,6 @@ public class CheckoutDaoImpl implements CheckoutDao {
 
     @Override
     public CheckoutDto getAuctionCheckoutByAuctionId(Long auctionId, Long userId) {
-        // TODO: queryForObject
         List<CheckoutDto> checkoutDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectAuctionCheckoutByAuctionId,
                                                                                     checkoutMapper,
                                                                                     auctionId, userId);

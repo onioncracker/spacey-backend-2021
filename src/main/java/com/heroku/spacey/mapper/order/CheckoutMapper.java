@@ -13,8 +13,14 @@ public class CheckoutMapper implements RowMapper<CheckoutDto> {
     @Override
     public CheckoutDto mapRow(ResultSet resultSet, int i) throws SQLException {
         CheckoutDto checkoutDto = new CheckoutDto();
-        // TODO: remove duplications
+
         checkoutDto.setOverallPrice(resultSet.getFloat("overallprice"));
+        mapDeliveryInfo(resultSet, checkoutDto);
+
+        return checkoutDto;
+    }
+
+    public static void mapDeliveryInfo(ResultSet resultSet, CheckoutDto checkoutDto) throws SQLException {
         checkoutDto.setFirstName(resultSet.getString("firstname"));
         checkoutDto.setLastName(resultSet.getString("lastname"));
         checkoutDto.setPhoneNumber(resultSet.getString("phonenumber"));
@@ -23,7 +29,5 @@ public class CheckoutMapper implements RowMapper<CheckoutDto> {
         checkoutDto.setStreet(resultSet.getString("street"));
         checkoutDto.setHouse(resultSet.getString("house"));
         checkoutDto.setApartment(resultSet.getString("appartment"));
-
-        return checkoutDto;
     }
 }

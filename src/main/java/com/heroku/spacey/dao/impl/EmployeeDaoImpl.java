@@ -49,7 +49,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
         List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(employeeQueryAdapter.build(),
                 mapper, employeeQueryAdapter.getParams().toArray());
-        // TODO: why?
+
         if (employeeDtos.isEmpty()) {
             return new ArrayList<>();
         }
@@ -59,12 +59,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public EmployeeDto getById(Long userId) {
-        // TODO: queryForObject
         List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectEmployeeById,
                                                                                     mapper,
                                                                                     userId);
-
-        // TODO: why?
         if (employeeDtos.isEmpty()) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }
@@ -77,7 +74,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
         List<EmployeeDto> couriers = Objects.requireNonNull(jdbcTemplate).query(sqlSelectAvailableCouriers,
                                                                                 mapper,
                                                                                 dateDelivery);
-        // TODO: why?
         if (couriers.isEmpty()) {
             return new ArrayList<>();
         }

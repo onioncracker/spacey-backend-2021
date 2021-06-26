@@ -3,7 +3,7 @@ package com.heroku.spacey.services.impl;
 import com.heroku.spacey.dao.CheckoutDao;
 import com.heroku.spacey.dto.order.CheckoutDto;
 import com.heroku.spacey.services.CheckoutService;
-import com.heroku.spacey.dto.order.ProductCheckoutDto;
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import com.heroku.spacey.utils.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -38,4 +38,11 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         return checkoutDao.getAuctionCheckoutByAuctionId(auctionId, userId);
     }
+
+//    @Override
+//    public void getAvailableTimeSlots() {
+//        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+//        List<Timestamp> timeSlotsForNextThreeDays = new ArrayList<>();
+//
+//    }
 }

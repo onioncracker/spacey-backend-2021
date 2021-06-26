@@ -1,7 +1,7 @@
 package com.heroku.spacey.mapper.order;
 
 import com.heroku.spacey.dto.order.CheckoutDto;
-import com.heroku.spacey.dto.order.ProductCheckoutDto;
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,6 @@ public class AuctionCheckoutMapper implements RowMapper<CheckoutDto> {
 
     @Override
     public CheckoutDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-        // TODO: remove duplications
         CheckoutDto checkoutDto = new CheckoutDto();
         ProductCheckoutDto product = new ProductCheckoutDto();
 
@@ -26,14 +25,7 @@ public class AuctionCheckoutMapper implements RowMapper<CheckoutDto> {
 
         checkoutDto.getProducts().add(product);
 
-        checkoutDto.setFirstName(rs.getString("firstname"));
-        checkoutDto.setLastName(rs.getString("lastname"));
-        checkoutDto.setPhoneNumber(rs.getString("phonenumber"));
-        checkoutDto.setEmail(rs.getString("email"));
-        checkoutDto.setCity(rs.getString("city"));
-        checkoutDto.setStreet(rs.getString("street"));
-        checkoutDto.setHouse(rs.getString("house"));
-        checkoutDto.setApartment(rs.getString("appartment"));
+        CheckoutMapper.mapDeliveryInfo(rs, checkoutDto);
 
         checkoutDto.setOverallPrice(rs.getFloat("finalprice"));
 

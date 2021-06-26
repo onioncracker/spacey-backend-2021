@@ -10,7 +10,7 @@ import com.heroku.spacey.entity.OrderStatus;
 import com.heroku.spacey.entity.SizeToProduct;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.dto.order.CreateOrderDto;
-import com.heroku.spacey.dto.order.ProductCreateOrderDto;
+import com.heroku.spacey.dto.product.ProductCreateOrderDto;
 import com.heroku.spacey.error.NoAvailableCourierException;
 import com.heroku.spacey.services.CartService;
 import com.heroku.spacey.services.OrderService;
@@ -86,9 +86,6 @@ public class OrderServiceImpl implements OrderService {
         createOrderDto.setOrderStatusId(orderStatusId);
     }
 
-    /////////////////////////////////////
-    // TODO: make another method with inner for
-    //////////////////////////////////////
     private void updateStock(CreateOrderDto createOrderDto) {
         for (ProductCreateOrderDto orderProduct : createOrderDto.getProducts()) {
             Product productOnStock = productDao.get(orderProduct.getProductId());
@@ -96,16 +93,22 @@ public class OrderServiceImpl implements OrderService {
 
             for (Size productSizeOnStock : productSizesOnStock) {
                 if (productSizeOnStock.getId().equals(orderProduct.getSizeId())) {
-                    Long quantity = productSizeOnStock.getQuantity();
-                    productSizeOnStock.setQuantity(quantity - orderProduct.getAmount());
-                    SizeToProduct sizeToProduct = new SizeToProduct(productSizeOnStock.getId(),
-                                                                    productOnStock.getId(),
-                                                                    productSizeOnStock.getQuantity());
-                    checkAvailability(sizeToProduct);
-                    productDao.updateProductQuantity(sizeToProduct);
+                    subtractProductsFromStock(productSizeOnStock, orderProduct, productOnStock);
                 }
             }
         }
+    }
+
+    private void subtractProductsFromStock(Size productSizeOnStock,
+                                           ProductCreateOrderDto orderProduct,
+                                           Product productOnStock) {
+        Long quantity = productSizeOnStock.getQuantity();
+        productSizeOnStock.setQuantity(quantity - orderProduct.getAmount());
+        SizeToProduct sizeToProduct = new SizeToProduct(productSizeOnStock.getId(),
+                productOnStock.getId(),
+                productSizeOnStock.getQuantity());
+        checkAvailability(sizeToProduct);
+        productDao.updateProductQuantity(sizeToProduct);
     }
 
     private void checkAvailability(SizeToProduct sizeToProduct) {

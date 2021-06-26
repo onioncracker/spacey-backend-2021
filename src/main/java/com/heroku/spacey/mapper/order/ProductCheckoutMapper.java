@@ -1,6 +1,6 @@
 package com.heroku.spacey.mapper.order;
 
-import com.heroku.spacey.dto.order.ProductCheckoutDto;
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

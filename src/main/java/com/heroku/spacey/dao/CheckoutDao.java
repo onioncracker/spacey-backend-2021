@@ -1,7 +1,7 @@
 package com.heroku.spacey.dao;
 
 import com.heroku.spacey.dto.order.CheckoutDto;
-import com.heroku.spacey.dto.order.ProductCheckoutDto;
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 
 import java.util.List;
 
