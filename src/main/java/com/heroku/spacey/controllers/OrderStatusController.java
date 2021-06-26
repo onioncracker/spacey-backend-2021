@@ -31,24 +31,24 @@ public class OrderStatusController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public String addOrderStatus(@RequestBody OrderStatus orderStatus) {
+    public HttpStatus addOrderStatus(@RequestBody OrderStatus orderStatus) {
         orderStatusService.createOrderStatus(orderStatus);
 
-        return "New order status has been created.";
+        return HttpStatus.CREATED;
     }
 
     @PutMapping("/{orderStatusId}")
-    public String editEmployee(@PathVariable Long orderStatusId, @RequestBody OrderStatus orderStatus) {
+    public HttpStatus editEmployee(@PathVariable Long orderStatusId, @RequestBody OrderStatus orderStatus) {
         orderStatus.setOrderStatusId(orderStatusId);
         orderStatusService.updateOrderStatus(orderStatus);
 
-        return "Employee info has been updated";
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/{orderStatusId}")
-    public String deleteEmployee(@PathVariable Long orderStatusId) {
+    public HttpStatus deleteEmployee(@PathVariable Long orderStatusId) {
         orderStatusService.deleteOrderStatus(orderStatusId);
 
-        return "Employee has been deleted.";
+        return HttpStatus.OK;
     }
 }

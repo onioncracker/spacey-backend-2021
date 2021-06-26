@@ -2,9 +2,9 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductCompareDao;
 import com.heroku.spacey.dto.product.ProductItemDto;
-import com.heroku.spacey.dto.product.SizeDto;
-import com.heroku.spacey.mapper.SizeAvailableMapper;
+import com.heroku.spacey.dto.size.SizeProductDto;
 import com.heroku.spacey.mapper.product.ProductItemMapper;
+import com.heroku.spacey.mapper.product.SizeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
 public class ProductCompareDaoImpl implements ProductCompareDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SizeAvailableMapper sizeAvailableMapper;
+    private final SizeMapper sizeMapper;
 
     @Value("${get_all_compared_products}")
     private String sqlGetAllProducts;
@@ -67,7 +66,7 @@ public class ProductCompareDaoImpl implements ProductCompareDao {
             ProductItemDto productItemDto = new ProductItemDto();
             ProductItemMapper.productItemMapper(rs, productItemDto);
             productItemDto.setMaterials((ArrayList<String>) getMaterialByProductId(productItemDto.getId()));
-            productItemDto.setSizes((ArrayList<SizeDto>) getSizesByProductId(productItemDto.getId()));
+            productItemDto.setSizes((ArrayList<SizeProductDto>) getSizesByProductId(productItemDto.getId()));
             return productItemDto;
         };
         return jdbcTemplate.query(sqlGetAllProducts, rowMapper, userId);
@@ -75,12 +74,12 @@ public class ProductCompareDaoImpl implements ProductCompareDao {
 
 
     @Override
-    public Integer getCountComparingProduct(Long userId) throws SQLException {
+    public Integer getCountComparingProduct(Long userId) {
         return jdbcTemplate.queryForObject(sqlGetCountComparedProducts, Integer.class, userId);
     }
 
     @Override
-    public List<String> getMaterialByProductId(Long productId) throws SQLException {
+    public List<String> getMaterialByProductId(Long productId) {
         RowMapper<String> rw = (resultSet, i) -> resultSet.getString("namematerial");
         return jdbcTemplate.query(sqlGetMaterialByProductId, rw, productId);
     }
@@ -91,8 +90,8 @@ public class ProductCompareDaoImpl implements ProductCompareDao {
         return jdbcTemplate.query(sqlIsProductCompered, rs, userId, productId);
     }
 
-    public List<SizeDto> getSizesByProductId(Long id) {
-        return jdbcTemplate.query(sqlGetSizesByProductId, sizeAvailableMapper, id);
+    public List<SizeProductDto> getSizesByProductId(Long id) {
+        return jdbcTemplate.query(sqlGetSizesByProductId, sizeMapper, id);
     }
 
 }

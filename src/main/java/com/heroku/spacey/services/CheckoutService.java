@@ -4,7 +4,7 @@ import com.heroku.spacey.dto.order.CheckoutDto;
 
 public interface CheckoutService {
 
-    CheckoutDto getCheckoutByCartId(Long cartId);
+    CheckoutDto getCheckout();
 
-    CheckoutDto getCheckoutByUserId();
+    CheckoutDto getAuctionCheckout(Long auctionId);
 }

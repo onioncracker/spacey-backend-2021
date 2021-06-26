@@ -1,45 +1,63 @@
 package com.heroku.spacey.services.impl;
 
-import com.heroku.spacey.entity.OrderStatus;
+import com.heroku.spacey.dao.OrderDao;
+import com.heroku.spacey.dao.ProductDao;
+import com.heroku.spacey.dao.EmployeeDao;
+import com.heroku.spacey.dao.OrderStatusDao;
 import com.heroku.spacey.entity.Size;
-
+import com.heroku.spacey.entity.Product;
+import com.heroku.spacey.entity.OrderStatus;
+import com.heroku.spacey.entity.SizeToProduct;
+import com.heroku.spacey.dto.employee.EmployeeDto;
+import com.heroku.spacey.dto.order.CreateOrderDto;
+import com.heroku.spacey.dto.product.ProductCreateOrderDto;
+import com.heroku.spacey.error.NoAvailableCourierException;
+import com.heroku.spacey.services.CartService;
+import com.heroku.spacey.services.OrderService;
+import com.heroku.spacey.utils.security.SecurityUtils;
+import com.heroku.spacey.error.ProductOutOfStockException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
-import com.heroku.spacey.dao.OrderDao;
-import com.heroku.spacey.entity.Product;
-import com.heroku.spacey.dao.ProductDao;
-import com.heroku.spacey.dao.OrderStatusDao;
-import com.heroku.spacey.entity.SizeToProduct;
-import org.springframework.stereotype.Service;
-import com.heroku.spacey.services.OrderService;
-import com.heroku.spacey.dto.order.CreateOrderDto;
-import com.heroku.spacey.utils.security.SecurityUtils;
-import com.heroku.spacey.dto.order.ProductCreateOrderDto;
-import com.heroku.spacey.error.ProductOutOfStockException;
-import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
 import java.sql.Timestamp;
+import java.sql.SQLException;
+import java.util.Set;
+import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private final ProductDao productDao;
     private final OrderDao orderDao;
     private final OrderStatusDao orderStatusDao;
+    private final ProductDao productDao;
+    private final EmployeeDao employeeDao;
     private final SecurityUtils securityUtils;
+    private final CartService cartService;
+
+    private Long orderId;
 
 
     @Override
     @Transactional
-    public void createOrder(CreateOrderDto createOrderDto) throws IllegalArgumentException {
+    public void createOrder(CreateOrderDto createOrderDto) throws IllegalArgumentException, SQLException {
         setOrderComment(createOrderDto);
         setOrderStatus(createOrderDto);
         updateStock(createOrderDto);
+
+        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
+        createOrderDto.setDateCreate(orderTime);
+        orderId = orderDao.insert(createOrderDto);
+
         addProductsToOrder(createOrderDto);
+        addUserToOrders();
+        assignCourier(createOrderDto);
+        cartService.cleanCart();
     }
 
     private void setOrderComment(CreateOrderDto createOrderDto) {
@@ -73,16 +91,22 @@ public class OrderServiceImpl implements OrderService {
 
             for (Size productSizeOnStock : productSizesOnStock) {
                 if (productSizeOnStock.getId().equals(orderProduct.getSizeId())) {
-                    Long quantity = productSizeOnStock.getQuantity();
-                    productSizeOnStock.setQuantity(quantity - orderProduct.getAmount());
-                    SizeToProduct sizeToProduct = new SizeToProduct(productSizeOnStock.getId(),
-                                                                    productOnStock.getId(),
-                                                                    productSizeOnStock.getQuantity());
-                    checkAvailability(sizeToProduct);
-                    productDao.updateProductQuantity(sizeToProduct);
+                    subtractProductsFromStock(productSizeOnStock, orderProduct, productOnStock);
                 }
             }
         }
+    }
+
+    private void subtractProductsFromStock(Size productSizeOnStock,
+                                           ProductCreateOrderDto orderProduct,
+                                           Product productOnStock) {
+        Long quantity = productSizeOnStock.getQuantity();
+        productSizeOnStock.setQuantity(quantity - orderProduct.getAmount());
+        SizeToProduct sizeToProduct = new SizeToProduct(productSizeOnStock.getId(),
+                productOnStock.getId(),
+                productSizeOnStock.getQuantity());
+        checkAvailability(sizeToProduct);
+        productDao.updateProductQuantity(sizeToProduct);
     }
 
     private void checkAvailability(SizeToProduct sizeToProduct) {
@@ -92,14 +116,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void addProductsToOrder(CreateOrderDto createOrderDto) {
-        Timestamp orderTime = new Timestamp(System.currentTimeMillis());
-        Long userId = securityUtils.getUserIdByToken();
-        Long orderId = orderDao.insert(createOrderDto, orderTime, userId);
-        orderDao.addUserToOrders(orderId, userId);
         for (ProductCreateOrderDto product : createOrderDto.getProducts()) {
             int amount = product.getAmount();
             float sum = product.getSum();
             orderDao.addProductToOrder(orderId, product.getProductId(), product.getSizeId(), amount, sum);
         }
+    }
+
+    private void addUserToOrders() {
+        Long userId = securityUtils.getUserIdByToken();
+        orderDao.addUserToOrders(orderId, userId);
+    }
+
+    private void assignCourier(CreateOrderDto createOrderDto) throws SQLException {
+        List<EmployeeDto> availableCouriers = employeeDao.getAvailableCouriers(createOrderDto.getDateDelivery());
+
+        if (availableCouriers.isEmpty()) {
+            throw new NoAvailableCourierException("We couldn't found available courier "
+                                                 + "for selected delivery timeslot.");
+        }
+
+        Random rand = new Random();
+        int selectedCourierIndex = rand.nextInt(availableCouriers.size());
+
+        EmployeeDto selectedCourier = availableCouriers.get(selectedCourierIndex);
+        orderDao.addUserToOrders(orderId, selectedCourier.getUserId());
     }
 }
