@@ -55,10 +55,8 @@ public class OrderServiceImpl implements OrderService {
         orderId = orderDao.insert(createOrderDto);
 
         addProductsToOrder(createOrderDto);
-        // TODO: it must be optional, just for registered user
         addUserToOrders();
         assignCourier(createOrderDto);
-        // TODO: it's too
         cartService.cleanCart();
     }
 

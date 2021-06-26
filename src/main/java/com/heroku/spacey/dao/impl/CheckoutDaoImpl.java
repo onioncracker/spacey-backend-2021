@@ -14,7 +14,6 @@ import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.ArrayList;
 
 @Repository
 @RequiredArgsConstructor
@@ -35,16 +34,10 @@ public class CheckoutDaoImpl implements CheckoutDao {
 
     @Override
     public List<ProductCheckoutDto> getProductsFromCartByUserId(Long userId) {
-        List<ProductCheckoutDto> products = Objects.requireNonNull(jdbcTemplate)
+        return Objects.requireNonNull(jdbcTemplate)
                 .query(sqlSelectProductsFromCartByUserId,
                        productCheckoutMapper,
                        userId);
-
-        if (products.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return products;
     }
 
     @Override
