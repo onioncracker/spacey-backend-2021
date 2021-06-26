@@ -1,19 +1,20 @@
 package com.heroku.spacey.dao;
 
+import com.heroku.spacey.dto.auction.AuctionDto;
 import com.heroku.spacey.entity.Auction;
 
 import java.util.List;
 
 public interface AuctionDao {
-    List<Auction> getAllDecreaseAuctions();
+    List<AuctionDto> getAllDecreaseAuctions();
 
-    List<Auction> getAllIncreaseAuctions();
+    List<AuctionDto> getAllIncreaseAuctions();
 
-    List<Auction> getAllAuctions();
+    List<AuctionDto> getAllAuctions();
 
     boolean isExist(Long id);
 
-    Auction getById(Long id);
+    AuctionDto getById(Long id);
 
     Long insert(Auction auction);
 

@@ -23,39 +23,42 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Override
     public List<DecreaseAuctionDto> getAllDecrease() {
-        List<Auction> decreaseAuctions = auctionDao.getAllDecreaseAuctions();
-        return commonConvertor.mapList(decreaseAuctions, DecreaseAuctionDto.class);
+//        List<Auction> decreaseAuctions = auctionDao.getAllDecreaseAuctions();
+//        return commonConvertor.mapList(decreaseAuctions, DecreaseAuctionDto.class);
+        return null;
     }
 
     @Override
     public List<IncreaseAuctionDto> getAllIncrease() {
-        List<Auction> increaseAuctions = auctionDao.getAllIncreaseAuctions();
-        return commonConvertor.mapList(increaseAuctions, IncreaseAuctionDto.class);
+//        List<Auction> increaseAuctions = auctionDao.getAllIncreaseAuctions();
+//        return commonConvertor.mapList(increaseAuctions, IncreaseAuctionDto.class);
+        return null;
     }
 
     @Override
     public List<AuctionDto> getAll() {
-        List<Auction> auctions = auctionDao.getAllAuctions();
-        return commonConvertor.mapList(auctions, AuctionDto.class);
+//        List<Auction> auctions = auctionDao.getAllAuctions();
+//        return commonConvertor.mapList(auctions, AuctionDto.class);
+        return null;
     }
 
     @Override
     public AuctionDto getById(Long id) {
-        Auction auction = auctionDao.getById(id);
+        AuctionDto auction = auctionDao.getById(id);
         if (auction == null) {
             throw new NotFoundException("Auction not found");
         }
-        return auctionConvertor.adapt(auction);
+        return auction;
     }
 
     @Override
     public Long add(AuctionDto auctionDto) {
         Auction auction = auctionConvertor.adapt(auctionDto);
 
-        Long productId = auctionDto.getProduct().getId();
+        Long productId = auctionDto.getProductId();
         auction.setProductId(productId);
 
-        Long sizeId = auctionDto.getSize().getId();
+        Long sizeId = auctionDto.getSizeId();
         auction.setSizeId(sizeId);
 
         return auctionDao.insert(auction);
