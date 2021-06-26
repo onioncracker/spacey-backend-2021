@@ -132,19 +132,6 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ErrorMessage> userDisabledException(DisabledException ex, WebRequest request) {
-        log.error("403 Status Code", ex);
-        log.error("User status is not active");
-        ErrorMessage message = new ErrorMessage(
-            HttpStatus.UNAUTHORIZED.value(),
-            new Date(),
-            ex.getMessage(),
-            request.getDescription(false));
-
-        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorMessage> badCredentialsException(BadCredentialsException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(

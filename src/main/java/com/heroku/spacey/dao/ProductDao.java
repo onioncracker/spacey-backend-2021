@@ -35,5 +35,7 @@ public interface ProductDao {
 
     int getAmount(Long sizeId, Long productId);
 
+    boolean isAvailable(Long productId);
+
     ProductForUnauthorizedCart getProductByIdAndSize(Long productId, Long sizeId);
 }

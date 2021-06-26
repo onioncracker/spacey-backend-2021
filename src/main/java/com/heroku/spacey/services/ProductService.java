@@ -19,5 +19,5 @@ public interface ProductService {
 
     void cancelProduct(Long id);
 
-    boolean checkAmount(Long productId, Long sizeId, double amount);
+    boolean checkAmount(Long productId, Long sizeId, int amount);
 }

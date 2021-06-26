@@ -10,6 +10,7 @@ import com.heroku.spacey.entity.Cart;
 import com.heroku.spacey.entity.Product;
 import com.heroku.spacey.entity.ProductToCart;
 import com.heroku.spacey.entity.User;
+import com.heroku.spacey.error.NotEnoughProductException;
 import com.heroku.spacey.services.CartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +46,23 @@ public class CartServiceImpl implements CartService {
         if (product.getDiscount() == null) {
             product.setDiscount(0.);
         }
-        double sum = amount * (product.getPrice() * (100 - product.getDiscount()));
+        double sum = amount * (product.getPrice() * ((100 - product.getDiscount()) / 100));
 
         ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId, sizeId);
         if (productToCart == null) {
+            int available = productDao.getAmount(sizeId, productId);
+            if (amount > available) {
+                throw new NotEnoughProductException("Cannot add product: product out of stock");
+            }
             productToCartDao.insert(cart.getCartId(), productId, sizeId, amount, sum);
             log.info("ProductToCart created");
         } else {
-            productToCart.setAmount(productToCart.getAmount() + amount);
+            int newAmount = productToCart.getAmount() + amount;
+            int available = productDao.getAmount(sizeId, productId);
+            if (newAmount > available) {
+                throw new NotEnoughProductException("Cannot add product: product out of stock");
+            }
+            productToCart.setAmount(newAmount);
             productToCart.setSum(productToCart.getSum() + sum);
             productToCartDao.update(productToCart);
             log.info("ProductToCart updated");
@@ -69,7 +79,7 @@ public class CartServiceImpl implements CartService {
         if (product.getDiscount() == null) {
             product.setDiscount(0.);
         }
-        double sum = amount * (product.getPrice() * (100 - product.getDiscount()));
+        double sum = amount * (product.getPrice() * ((100 - product.getDiscount()) / 100));
 
         ProductToCart productToCart = productToCartDao.get(cart.getCartId(), productId, sizeId);
         if (productToCart == null) {
