@@ -4,7 +4,6 @@ import com.heroku.spacey.dto.order.CreateOrderDto;
 import com.heroku.spacey.dto.order.CourierOrdersDto;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderDao {

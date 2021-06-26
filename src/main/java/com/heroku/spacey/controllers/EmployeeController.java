@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 
 @Validated
 @RestController
-//@Secured("ROLE_ADMIN")
+@Secured("ROLE_ADMIN")
 @RequiredArgsConstructor
 @RequestMapping("/api/employees")
 public class EmployeeController {
