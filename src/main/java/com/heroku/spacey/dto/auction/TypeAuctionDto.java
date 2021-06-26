@@ -8,7 +8,7 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class DecreaseAuctionDto {
+public class TypeAuctionDto {
     private Long auctionId;
 
     private UserDto user;

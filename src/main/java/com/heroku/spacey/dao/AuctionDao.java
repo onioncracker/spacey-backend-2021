@@ -6,9 +6,7 @@ import com.heroku.spacey.entity.Auction;
 import java.util.List;
 
 public interface AuctionDao {
-    List<AuctionDto> getAllDecreaseAuctions();
-
-    List<AuctionDto> getAllIncreaseAuctions();
+    List<AuctionDto> getAllByTypeAuctions(Boolean type);
 
     List<AuctionDto> getAllAuctions();
 

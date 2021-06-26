@@ -1,15 +1,12 @@
 package com.heroku.spacey.services;
 
 import com.heroku.spacey.dto.auction.AuctionDto;
-import com.heroku.spacey.dto.auction.DecreaseAuctionDto;
-import com.heroku.spacey.dto.auction.IncreaseAuctionDto;
+import com.heroku.spacey.dto.auction.TypeAuctionDto;
 
 import java.util.List;
 
 public interface AuctionService {
-    List<DecreaseAuctionDto> getAllDecrease();
-
-    List<IncreaseAuctionDto> getAllIncrease();
+    List<AuctionDto> getAllByType(Boolean type);
 
     List<AuctionDto> getAll();
 
@@ -21,7 +18,7 @@ public interface AuctionService {
 
     void remove(Long id);
 
-    void bidDecreasePrice(DecreaseAuctionDto decreaseAuctionDto);
+    void bidDecreasePrice(TypeAuctionDto typeAuctionDto);
 
     void bidIncreasePrice();
 }

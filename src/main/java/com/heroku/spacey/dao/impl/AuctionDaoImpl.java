@@ -25,10 +25,8 @@ public class AuctionDaoImpl implements AuctionDao {
     private AuctionMapper mapper = new AuctionMapper();
     private final JdbcTemplate jdbcTemplate;
 
-    @Value("${get_all_decrease_auctions}")
-    private String getAllDecreaseAuctions;
-    @Value("${get_all_increase_auctions}")
-    private String getAllIncreaseAuctions;
+    @Value("${get_all_by_type_auctions}")
+    private String getAllByTypeAuctions;
     @Value("${get_all_auctions}")
     private String getAllAuctions;
     @Value("${auction_get_by_id}")
@@ -47,17 +45,8 @@ public class AuctionDaoImpl implements AuctionDao {
     }
 
     @Override
-    public List<AuctionDto> getAllDecreaseAuctions() {
-        List<AuctionDto> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllDecreaseAuctions, mapper);
-        if (auctions.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return auctions;
-    }
-
-    @Override
-    public List<AuctionDto> getAllIncreaseAuctions() {
-        List<AuctionDto> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllIncreaseAuctions, mapper);
+    public List<AuctionDto> getAllByTypeAuctions(Boolean type) {
+        List<AuctionDto> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllByTypeAuctions, mapper, type);
         if (auctions.isEmpty()) {
             return new ArrayList<>();
         }
