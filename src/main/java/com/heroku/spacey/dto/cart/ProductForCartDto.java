@@ -15,5 +15,7 @@ public class ProductForCartDto {
     private String size;
     private String photo;
     private int amount;
+    private int unavailableAmount;
+    private double discount;
     private double overallPrice;
 }

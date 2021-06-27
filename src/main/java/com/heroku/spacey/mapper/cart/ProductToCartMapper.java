@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 public class ProductToCartMapper implements RowMapper<ProductToCart> {
     @Override
@@ -15,6 +16,7 @@ public class ProductToCartMapper implements RowMapper<ProductToCart> {
         res.setSizeId(resultSet.getLong("sizeid"));
         res.setAmount(resultSet.getInt("amount"));
         res.setSum(resultSet.getDouble("sum"));
+        res.setAddDateTime(resultSet.getObject("add_date", LocalDateTime.class));
         return res;
     }
 }

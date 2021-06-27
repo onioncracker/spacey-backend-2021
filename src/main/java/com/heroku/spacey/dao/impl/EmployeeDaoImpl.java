@@ -15,8 +15,6 @@ import java.sql.Timestamp;
 import java.util.Map;
 import java.util.List;
 import java.util.Objects;
-import java.util.ArrayList;
-
 
 @Repository
 @RequiredArgsConstructor
@@ -48,14 +46,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 .addFilters(filters)
                 .setPage(page, pageSize);
 
-        List<EmployeeDto> employeeDtos = Objects.requireNonNull(jdbcTemplate).query(employeeQueryAdapter.build(),
-                mapper, employeeQueryAdapter.getParams().toArray());
-
-        if (employeeDtos.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return employeeDtos;
+        return Objects.requireNonNull(jdbcTemplate).query(employeeQueryAdapter.build(),
+                                                          mapper,
+                                                          employeeQueryAdapter.getParams().toArray());
     }
 
     @Override
@@ -72,14 +65,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) {
-        List<EmployeeDto> couriers = Objects.requireNonNull(jdbcTemplate).query(sqlSelectAvailableCouriers,
-                                                                                mapper,
-                                                                                dateDelivery);
-        if (couriers.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return couriers;
+        return Objects.requireNonNull(jdbcTemplate).query(sqlSelectAvailableCouriers,
+                                                          mapper,
+                                                          dateDelivery);
     }
 
     @Override
