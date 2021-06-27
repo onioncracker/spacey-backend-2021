@@ -176,9 +176,9 @@ CREATE TABLE notification_to_users
 CREATE TABLE auctions
 (
     AuctionId BIGSERIAL PRIMARY KEY,
-    UserId BIGSERIAL REFERENCES users,
-    ProductId BIGSERIAL REFERENCES products,
-    SizeId BIGSERIAL REFERENCES sizes,
+    UserId INTEGER REFERENCES users,
+    ProductId INTEGER REFERENCES products,
+    SizeId INTEGER REFERENCES sizes,
     Amount INTEGER,
     AuctionName CHARACTER VARYING(50),
     AuctionType BOOLEAN,

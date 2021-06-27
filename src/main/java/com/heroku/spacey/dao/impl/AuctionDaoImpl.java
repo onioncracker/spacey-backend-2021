@@ -104,7 +104,7 @@ public class AuctionDaoImpl implements AuctionDao {
     @Override
     public void update(Auction auction) {
         Object[] params = new Object[]{
-                auction.getProductId(), auction.getSizeId(), auction.getAmount(),
+                auction.getAuctionProduct().getId(), auction.getSizeId(), auction.getAmount(),
                 auction.getAuctionName(), auction.getAuctionType(), auction.getStartPrice(),
                 auction.getEndPrice(), auction.getPriceStep(), auction.getStartTime(),
                 auction.getEndTime(), auction.getStatus(), auction.getAuctionId()
