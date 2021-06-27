@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 @RestController
@@ -17,7 +18,8 @@ public class OrderController {
 
 
     @PostMapping
-    public HttpStatus createOrder(@RequestBody CreateOrderDto createOrderDto) throws SQLException {
+    public HttpStatus createOrder(@RequestBody CreateOrderDto createOrderDto) throws SQLException,
+                                                                                     NoSuchAlgorithmException {
         orderService.createOrder(createOrderDto);
 
         return HttpStatus.CREATED;
