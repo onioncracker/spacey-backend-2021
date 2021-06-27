@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper.auction;
+package com.heroku.spacey.mapper.auction.by_id;
 
 import com.heroku.spacey.entity.*;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProductForAuctionMapper implements RowMapper<Product> {
+public class ProductForAuctionIdMapper implements RowMapper<Product> {
     @Override
     public Product mapRow(ResultSet resultSet, int i) throws SQLException {
         Product product = new Product();

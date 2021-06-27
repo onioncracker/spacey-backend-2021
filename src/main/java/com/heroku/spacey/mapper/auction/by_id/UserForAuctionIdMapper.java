@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper.auction;
+package com.heroku.spacey.mapper.auction.by_id;
 
 import com.heroku.spacey.entity.User;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserForAuctionMapper implements RowMapper<User> {
+public class UserForAuctionIdMapper implements RowMapper<User> {
     @Override
     public User mapRow(ResultSet resultSet, int i) throws SQLException {
         User user = new User();

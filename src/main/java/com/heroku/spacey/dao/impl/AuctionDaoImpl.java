@@ -2,7 +2,8 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.AuctionDao;
 import com.heroku.spacey.entity.Auction;
-import com.heroku.spacey.mapper.auction.AuctionMapper;
+import com.heroku.spacey.mapper.auction.all.AuctionAllMapper;
+import com.heroku.spacey.mapper.auction.by_id.AuctionIdMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,7 +22,8 @@ import java.util.Objects;
 @Repository
 @PropertySource("classpath:sql/auction_queries.properties")
 public class AuctionDaoImpl implements AuctionDao {
-    private AuctionMapper mapper = new AuctionMapper();
+    private AuctionIdMapper mapById = new AuctionIdMapper();
+    private AuctionAllMapper mapAll = new AuctionAllMapper();
     private final JdbcTemplate jdbcTemplate;
 
     @Value("${get_all_by_type_auctions}")
@@ -45,7 +47,7 @@ public class AuctionDaoImpl implements AuctionDao {
 
     @Override
     public List<Auction> getAllByTypeAuctions(Boolean type) {
-        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllByTypeAuctions, mapper, type);
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllByTypeAuctions, mapAll, type);
         if (auctions.isEmpty()) {
             return new ArrayList<>();
         }
@@ -54,7 +56,7 @@ public class AuctionDaoImpl implements AuctionDao {
 
     @Override
     public List<Auction> getAllAuctions() {
-        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllAuctions, mapper);
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllAuctions, mapAll);
         if (auctions.isEmpty()) {
             return new ArrayList<>();
         }
@@ -70,7 +72,7 @@ public class AuctionDaoImpl implements AuctionDao {
 
     @Override
     public Auction getById(Long id) {
-        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAuctionById, mapper, id);
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAuctionById, mapById, id);
         if (auctions.isEmpty()) {
             return null;
         }

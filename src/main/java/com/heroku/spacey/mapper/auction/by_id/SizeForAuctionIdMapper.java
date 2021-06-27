@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper.auction;
+package com.heroku.spacey.mapper.auction.by_id;
 
 import com.heroku.spacey.entity.Size;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SizeForAuctionMapper implements RowMapper<Size> {
+public class SizeForAuctionIdMapper implements RowMapper<Size> {
     @Override
     public Size mapRow(ResultSet resultSet, int i) throws SQLException {
         Size size = new Size();

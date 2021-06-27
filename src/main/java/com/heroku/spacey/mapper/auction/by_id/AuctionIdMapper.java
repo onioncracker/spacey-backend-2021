@@ -1,4 +1,4 @@
-package com.heroku.spacey.mapper.auction;
+package com.heroku.spacey.mapper.auction.by_id;
 
 import com.heroku.spacey.entity.Auction;
 import com.heroku.spacey.entity.Product;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AuctionMapper implements RowMapper<Auction> {
+public class AuctionIdMapper implements RowMapper<Auction> {
     @Override
     public Auction mapRow(ResultSet resultSet, int i) throws SQLException {
         Auction auction = new Auction();
@@ -27,9 +27,9 @@ public class AuctionMapper implements RowMapper<Auction> {
         auction.setEndTime(resultSet.getTimestamp("endtime"));
         auction.setStatus(resultSet.getString("status"));
 
-        UserForAuctionMapper userMapper = new UserForAuctionMapper();
-        SizeForAuctionMapper sizeMapper = new SizeForAuctionMapper();
-        ProductForAuctionMapper productMapper = new ProductForAuctionMapper();
+        UserForAuctionIdMapper userMapper = new UserForAuctionIdMapper();
+        SizeForAuctionIdMapper sizeMapper = new SizeForAuctionIdMapper();
+        ProductForAuctionIdMapper productMapper = new ProductForAuctionIdMapper();
 
 
         User user = userMapper.mapRow(resultSet, i);
