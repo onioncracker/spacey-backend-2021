@@ -17,8 +17,4 @@ public interface AuctionService {
     void update(AuctionDto auctionDto, Long id);
 
     void remove(Long id);
-
-    void bidDecreasePrice(AllAuctionsDto allAuctionsDto);
-
-    void bidIncreasePrice();
 }

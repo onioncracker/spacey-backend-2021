@@ -73,16 +73,4 @@ public class AuctionServiceImpl implements AuctionService {
         }
         auctionDao.delete(id);
     }
-
-    //TODO: implement decrease price bid for auction
-    @Override
-    public void bidDecreasePrice(AllAuctionsDto allAuctionsDto) {
-
-    }
-
-    //TODO: implement increase price bid for auction
-    @Override
-    public void bidIncreasePrice() {
-
-    }
 }
