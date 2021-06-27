@@ -17,7 +17,6 @@ public class AuctionAllMapper implements RowMapper<Auction> {
         auction.setAuctionName(resultSet.getString("auctionname"));
         auction.setAuctionType(resultSet.getBoolean("auctiontype"));
         auction.setStartPrice(resultSet.getDouble("startprice"));
-//        auction.setStartTime(resultSet.getTimestamp("starttime"));
 
         ProductForAuctionAllMapper productMapper = new ProductForAuctionAllMapper();
         Product product = productMapper.mapRow(resultSet, i);

@@ -2,7 +2,7 @@ package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.AuctionDao;
 import com.heroku.spacey.dto.auction.AuctionDto;
-import com.heroku.spacey.dto.auction.TypeAuctionDto;
+import com.heroku.spacey.dto.auction.AllAuctionsDto;
 import com.heroku.spacey.entity.Auction;
 import com.heroku.spacey.services.AuctionService;
 import com.heroku.spacey.utils.convertors.AuctionConvertor;
@@ -22,15 +22,15 @@ public class AuctionServiceImpl implements AuctionService {
     private final AuctionConvertor auctionConvertor;
 
     @Override
-    public List<AuctionDto> getAllByType(Boolean type) {
+    public List<AllAuctionsDto> getAllByType(Boolean type) {
         List<Auction> auctions = auctionDao.getAllByTypeAuctions(type);
-        return commonConvertor.mapList(auctions, AuctionDto.class);
+        return commonConvertor.mapList(auctions, AllAuctionsDto.class);
     }
 
     @Override
-    public List<AuctionDto> getAll() {
+    public List<AllAuctionsDto> getAll() {
         List<Auction> auctions = auctionDao.getAllAuctions();
-        return commonConvertor.mapList(auctions, AuctionDto.class);
+        return commonConvertor.mapList(auctions, AllAuctionsDto.class);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class AuctionServiceImpl implements AuctionService {
 
     //TODO: implement decrease price bid for auction
     @Override
-    public void bidDecreasePrice(TypeAuctionDto typeAuctionDto) {
+    public void bidDecreasePrice(AllAuctionsDto allAuctionsDto) {
 
     }
 

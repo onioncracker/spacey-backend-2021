@@ -1,5 +1,6 @@
 package com.heroku.spacey.controllers;
 
+import com.heroku.spacey.dto.auction.AllAuctionsDto;
 import com.heroku.spacey.dto.auction.AuctionDto;
 import com.heroku.spacey.services.AuctionService;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,12 @@ public class AuctionController {
     private final AuctionService auctionService;
 
     @GetMapping("/all")
-    public List<AuctionDto> getAllAuctions() {
+    public List<AllAuctionsDto> getAllAuctions() {
         return auctionService.getAll();
     }
 
     @GetMapping("/all_type")
-    public List<AuctionDto> getAllAuctionsByType(@RequestParam Boolean type) {
+    public List<AllAuctionsDto> getAllAuctionsByType(@RequestParam Boolean type) {
         return auctionService.getAllByType(type);
     }
 
