@@ -30,7 +30,7 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
     @Value("${products_in_order}")
     private String sqlProductInOrder;
 
-    @Value("${update_order_status}")
+    @Value("${change_order_status}")
     private String sqlChangeOrderStatus;
 
     @Override
