@@ -37,11 +37,4 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         return checkoutDao.getAuctionCheckoutByAuctionId(auctionId, userId);
     }
-
-//    @Override
-//    public void getAvailableTimeSlots() {
-//        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-//        List<Timestamp> timeSlotsForNextThreeDays = new ArrayList<>();
-//
-//    }
 }
