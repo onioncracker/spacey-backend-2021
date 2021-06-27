@@ -22,6 +22,8 @@ import org.webjars.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.sql.SQLException;
 import java.util.Set;
@@ -37,15 +39,32 @@ public class OrderServiceImpl implements OrderService {
     private final OrderStatusDao orderStatusDao;
     private final ProductDao productDao;
     private final EmployeeDao employeeDao;
-    private final SecurityUtils securityUtils;
     private final CartService cartService;
+    private final SecurityUtils securityUtils;
 
     private Long orderId;
 
 
     @Override
     @Transactional
-    public void createOrder(CreateOrderDto createOrderDto) throws IllegalArgumentException, SQLException {
+    public void createOrderForAuthorizedUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
+                                                                                   SQLException,
+                                                                                   NoSuchAlgorithmException {
+        createOrder(createOrderDto);
+
+        addUserToOrders();
+        cartService.cleanCart();
+    }
+
+    @Override
+    @Transactional
+    public void createOrderForAnonymousUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
+                                                                                  SQLException,
+                                                                                  NoSuchAlgorithmException {
+        createOrder(createOrderDto);
+    }
+
+    private void createOrder(CreateOrderDto createOrderDto) throws NoSuchAlgorithmException, SQLException {
         setOrderComment(createOrderDto);
         setOrderStatus(createOrderDto);
         updateStock(createOrderDto);
@@ -55,9 +74,8 @@ public class OrderServiceImpl implements OrderService {
         orderId = orderDao.insert(createOrderDto);
 
         addProductsToOrder(createOrderDto);
-        addUserToOrders();
-        assignCourier(createOrderDto);
-        cartService.cleanCart();
+        Random rand = SecureRandom.getInstanceStrong();
+        assignCourier(createOrderDto, rand);
     }
 
     private void setOrderComment(CreateOrderDto createOrderDto) {
@@ -128,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
         orderDao.addUserToOrders(orderId, userId);
     }
 
-    private void assignCourier(CreateOrderDto createOrderDto) throws SQLException {
+    private void assignCourier(CreateOrderDto createOrderDto, Random rand) throws SQLException {
         List<EmployeeDto> availableCouriers = employeeDao.getAvailableCouriers(createOrderDto.getDateDelivery());
 
         if (availableCouriers.isEmpty()) {
@@ -136,7 +154,6 @@ public class OrderServiceImpl implements OrderService {
                                                  + "for selected delivery timeslot.");
         }
 
-        Random rand = new Random();
         int selectedCourierIndex = rand.nextInt(availableCouriers.size());
 
         EmployeeDto selectedCourier = availableCouriers.get(selectedCourierIndex);

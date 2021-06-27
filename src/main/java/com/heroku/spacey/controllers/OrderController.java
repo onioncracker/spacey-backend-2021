@@ -6,19 +6,31 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/order")
+@RequestMapping("/api/v1")
 public class OrderController {
 
     private final OrderService orderService;
 
 
-    @PostMapping
-    public HttpStatus createOrder(@RequestBody CreateOrderDto createOrderDto) throws SQLException {
-        orderService.createOrder(createOrderDto);
+    @PostMapping("/order-authorized")
+    public HttpStatus createOrderForAuthorizedUser(@RequestBody CreateOrderDto createOrderDto)
+            throws SQLException, NoSuchAlgorithmException {
+
+        orderService.createOrderForAuthorizedUser(createOrderDto);
+
+        return HttpStatus.CREATED;
+    }
+
+    @PostMapping("/order-anonymous")
+    public HttpStatus createOrderForAnonymousUser(@RequestBody CreateOrderDto createOrderDto)
+            throws SQLException, NoSuchAlgorithmException {
+
+        orderService.createOrderForAnonymousUser(createOrderDto);
 
         return HttpStatus.CREATED;
     }

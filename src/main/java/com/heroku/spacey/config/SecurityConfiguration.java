@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtFilter() throws Exception {
+    public JwtAuthenticationFilter jwtFilter() {
         return new JwtAuthenticationFilter();
     }
 
@@ -65,9 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/v3/api-docs/**", "/v3/api-docs.yaml",
                         "/swagger-resources/**", "/swagger-ui.html",
                         "/swagger-ui/**", "/webjars/**", "/api/category/**",
-                        "/api/product/**", "/api/material/**", "/api/employees/**",
-                        "/api/order-status/**", "/api/checkout/**", "/api/order/**",
-                        "/api/v1/**", "/**")
+                        "/api/product/**", "/api/material/**", "/api/v1/**", "/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
