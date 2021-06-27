@@ -11,12 +11,6 @@ public class UserForAuctionMapper implements RowMapper<User> {
     public User mapRow(ResultSet resultSet, int i) throws SQLException {
         User user = new User();
         user.setUserId(resultSet.getLong("userId"));
-        user.setEmail(resultSet.getString("email"));
-        user.setPassword(resultSet.getString("pass"));
-        user.setFirstName(resultSet.getString("firstName"));
-        user.setLastName(resultSet.getString("lastName"));
-        user.setRoleId(resultSet.getLong("roleId"));
-        user.setStatusId(resultSet.getLong("statusId"));
         return user;
     }
 }

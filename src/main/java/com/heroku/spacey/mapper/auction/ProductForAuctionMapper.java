@@ -1,6 +1,6 @@
 package com.heroku.spacey.mapper.auction;
 
-import com.heroku.spacey.dto.auction.AuctionProductDto;
+import com.heroku.spacey.entity.*;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -8,25 +8,37 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProductForAuctionMapper implements RowMapper<AuctionProductDto> {
+public class ProductForAuctionMapper implements RowMapper<Product> {
     @Override
-    public AuctionProductDto mapRow(ResultSet resultSet, int i) throws SQLException {
-        AuctionProductDto product = new AuctionProductDto();
-        product.setId(resultSet.getLong("productid"));
-        product.setName(resultSet.getString("productname"));
-        product.setProductSex(resultSet.getString("productsex"));
-        product.setPhoto(resultSet.getString("photo"));
-        product.setDescription(resultSet.getString("description"));
-        product.setCategory(resultSet.getString("namecategory"));
-        product.setColor(resultSet.getString("color"));
+    public Product mapRow(ResultSet resultSet, int i) throws SQLException {
+        Product product = new Product();
+        product.setId(resultSet.getLong("p_id"));
+        product.setName(resultSet.getString("p_name"));
+        product.setProductSex(resultSet.getString("p_sex"));
+        product.setPhoto(resultSet.getString("p_photo"));
+        product.setDescription(resultSet.getString("p_desc"));
 
-        Set<String> materials = new HashSet<>();
+        Category category = new Category();
+        category.setId(resultSet.getLong("c_id"));
+        category.setName(resultSet.getString("c_category"));
+
+        Color color = new Color();
+        color.setId(resultSet.getLong("clrs_id"));
+        color.setName(resultSet.getString("clrs_color"));
+
+        Set<Material> materials = new HashSet<>();
         do {
-            materials.add(resultSet.getString("namematerial"));
+            Material material = new Material();
+            material.setId(resultSet.getLong("m_id"));
+            material.setName(resultSet.getString("material_name"));
+            materials.add(material);
         }
         while (resultSet.next());
 
         product.setMaterials(materials);
+        product.setProductCategory(category);
+        product.setProductColor(color);
+
         return product;
     }
 }

@@ -1,5 +1,8 @@
 package com.heroku.spacey.dto.auction;
 
+import com.heroku.spacey.dto.category.CategoryDto;
+import com.heroku.spacey.dto.material.MaterialDto;
+import com.heroku.spacey.entity.Color;
 import lombok.Data;
 
 import java.util.Set;
@@ -11,7 +14,7 @@ public class AuctionProductDto {
     private String productSex;
     private String photo;
     private String description;
-    private String category;
-    private String color;
-    private Set<String> materials;
+    private CategoryDto productCategory;
+    private Color productColor;
+    private Set<MaterialDto> materials;
 }

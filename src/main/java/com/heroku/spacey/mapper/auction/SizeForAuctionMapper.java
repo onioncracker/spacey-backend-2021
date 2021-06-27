@@ -10,9 +10,8 @@ public class SizeForAuctionMapper implements RowMapper<Size> {
     @Override
     public Size mapRow(ResultSet resultSet, int i) throws SQLException {
         Size size = new Size();
-        size.setId(resultSet.getLong("sizeid"));
+        size.setId(resultSet.getLong("s_id"));
         size.setName(resultSet.getString("sizename"));
-        size.setQuantity(resultSet.getLong("quantity"));
         return size;
     }
 }

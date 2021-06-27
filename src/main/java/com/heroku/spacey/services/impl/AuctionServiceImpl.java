@@ -9,6 +9,7 @@ import com.heroku.spacey.utils.convertors.AuctionConvertor;
 import com.heroku.spacey.utils.convertors.CommonConvertor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
@@ -22,41 +23,41 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Override
     public List<AuctionDto> getAllByType(Boolean type) {
-        List<AuctionDto> auctions = auctionDao.getAllByTypeAuctions(type);
+        List<Auction> auctions = auctionDao.getAllByTypeAuctions(type);
         return commonConvertor.mapList(auctions, AuctionDto.class);
     }
 
     @Override
     public List<AuctionDto> getAll() {
-        List<AuctionDto> auctions = auctionDao.getAllAuctions();
+        List<Auction> auctions = auctionDao.getAllAuctions();
         return commonConvertor.mapList(auctions, AuctionDto.class);
     }
 
     @Override
     public AuctionDto getById(Long id) {
-        AuctionDto auction = auctionDao.getById(id);
+        Auction auction = auctionDao.getById(id);
         if (auction == null) {
             throw new NotFoundException("Auction not found");
         }
-        return auction;
+        return auctionConvertor.adapt(auction);
     }
 
     @Override
+    @Transactional
     public Long add(AuctionDto auctionDto) {
-//        Auction auction = auctionConvertor.adapt(auctionDto);
-//
-//        Long productId = auctionDto.getProductId();
-//        auction.setProductId(productId);
-//
-//        Long sizeId = auctionDto.getSizeId();
-//        auction.setSizeId(sizeId);
+        Auction auction = auctionConvertor.adapt(auctionDto);
 
-//        return auctionDao.insert(auction);
-        return 1L;
+        Long productId = auctionDto.getAuctionProduct().getId();
+        auction.setProductId(productId);
+
+        Long sizeId = auctionDto.getProductSize().getId();
+        auction.setSizeId(sizeId);
+
+        return auctionDao.insert(auction);
     }
 
-    // TODO: fix update method
     @Override
+    @Transactional
     public void update(AuctionDto auctionDto, Long id) {
         Auction auction = auctionConvertor.adapt(auctionDto);
         auction.setAuctionId(id);
@@ -64,6 +65,7 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
+    @Transactional
     public void remove(Long id) {
         boolean isFound = auctionDao.isExist(id);
         if (!isFound) {

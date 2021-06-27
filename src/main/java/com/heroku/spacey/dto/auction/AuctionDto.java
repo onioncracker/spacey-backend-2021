@@ -1,17 +1,18 @@
 package com.heroku.spacey.dto.auction;
 
+import com.heroku.spacey.dto.size.SizeDto;
 import lombok.Data;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 public class AuctionDto {
     private Long auctionId;
 
     private Long userId;
-    private AuctionProductDto product;
+    private AuctionProductDto auctionProduct;
 
-    private String sizeName;
+    private SizeDto productSize;
     private Integer amount;
     private String auctionName;
     private Boolean auctionType;
@@ -19,7 +20,7 @@ public class AuctionDto {
     private Double endPrice;
     private Double priceStep;
     private Double buyPrice;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private String status;
 }

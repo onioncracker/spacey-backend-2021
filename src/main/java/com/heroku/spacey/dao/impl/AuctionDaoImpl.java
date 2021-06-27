@@ -1,7 +1,6 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.AuctionDao;
-import com.heroku.spacey.dto.auction.AuctionDto;
 import com.heroku.spacey.entity.Auction;
 import com.heroku.spacey.mapper.auction.AuctionMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +44,8 @@ public class AuctionDaoImpl implements AuctionDao {
     }
 
     @Override
-    public List<AuctionDto> getAllByTypeAuctions(Boolean type) {
-        List<AuctionDto> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllByTypeAuctions, mapper, type);
+    public List<Auction> getAllByTypeAuctions(Boolean type) {
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllByTypeAuctions, mapper, type);
         if (auctions.isEmpty()) {
             return new ArrayList<>();
         }
@@ -54,8 +53,8 @@ public class AuctionDaoImpl implements AuctionDao {
     }
 
     @Override
-    public List<AuctionDto> getAllAuctions() {
-        List<AuctionDto> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllAuctions, mapper);
+    public List<Auction> getAllAuctions() {
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAllAuctions, mapper);
         if (auctions.isEmpty()) {
             return new ArrayList<>();
         }
@@ -70,15 +69,14 @@ public class AuctionDaoImpl implements AuctionDao {
     }
 
     @Override
-    public AuctionDto getById(Long id) {
-        List<AuctionDto> auctions = Objects.requireNonNull(jdbcTemplate).query(getAuctionById, mapper, id);
+    public Auction getById(Long id) {
+        List<Auction> auctions = Objects.requireNonNull(jdbcTemplate).query(getAuctionById, mapper, id);
         if (auctions.isEmpty()) {
             return null;
         }
         return auctions.get(0);
     }
 
-    //TODO: implement proper insert fields for auction
     @Override
     public Long insert(Auction auction) {
         KeyHolder holder = new GeneratedKeyHolder();
@@ -101,7 +99,6 @@ public class AuctionDaoImpl implements AuctionDao {
         return (Long) Objects.requireNonNull(holder.getKeys()).get("auctionId");
     }
 
-    //TODO: implement proper update fields for auction
     @Override
     public void update(Auction auction) {
         Object[] params = new Object[]{
