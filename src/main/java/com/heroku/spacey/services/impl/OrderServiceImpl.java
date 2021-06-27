@@ -47,9 +47,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrder(CreateOrderDto createOrderDto) throws IllegalArgumentException,
-                                                                  SQLException,
-                                                                  NoSuchAlgorithmException {
+    public void createOrderForAuthorizedUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
+                                                                                   SQLException,
+                                                                                   NoSuchAlgorithmException {
+        createOrder(createOrderDto);
+
+        addUserToOrders();
+        cartService.cleanCart();
+    }
+
+    @Override
+    @Transactional
+    public void createOrderForAnonymousUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
+                                                                                  SQLException,
+                                                                                  NoSuchAlgorithmException {
+        createOrder(createOrderDto);
+    }
+
+    private void createOrder(CreateOrderDto createOrderDto) throws NoSuchAlgorithmException, SQLException {
         setOrderComment(createOrderDto);
         setOrderStatus(createOrderDto);
         updateStock(createOrderDto);
@@ -61,9 +76,6 @@ public class OrderServiceImpl implements OrderService {
         addProductsToOrder(createOrderDto);
         Random rand = SecureRandom.getInstanceStrong();
         assignCourier(createOrderDto, rand);
-        // TODO: just for registered user
-        addUserToOrders();
-        cartService.cleanCart();
     }
 
     private void setOrderComment(CreateOrderDto createOrderDto) {

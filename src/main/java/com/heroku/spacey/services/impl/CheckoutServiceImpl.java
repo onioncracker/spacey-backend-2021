@@ -2,8 +2,8 @@ package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.CheckoutDao;
 import com.heroku.spacey.dto.order.CheckoutDto;
-import com.heroku.spacey.services.CheckoutService;
 import com.heroku.spacey.dto.product.ProductCheckoutDto;
+import com.heroku.spacey.services.CheckoutService;
 import com.heroku.spacey.utils.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,6 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final SecurityUtils securityUtils;
 
 
-    // TODO: add scenery for unauthorized user
     @Override
     public CheckoutDto getCheckout() {
         Long userId = securityUtils.getUserIdByToken();

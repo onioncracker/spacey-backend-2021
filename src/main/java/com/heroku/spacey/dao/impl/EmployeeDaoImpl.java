@@ -1,9 +1,9 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.EmployeeDao;
+import com.heroku.spacey.dao.common.EmployeeQueryAdapter;
 import com.heroku.spacey.mapper.EmployeeMapper;
 import com.heroku.spacey.dto.employee.EmployeeDto;
-import com.heroku.spacey.dao.common.EmployeeQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.webjars.NotFoundException;
 import org.springframework.stereotype.Repository;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 @PropertySource("classpath:sql/employee_queries.properties")
 public class EmployeeDaoImpl implements EmployeeDao {
+
     private final EmployeeMapper mapper;
     private final JdbcTemplate jdbcTemplate;
     private final EmployeeQueryAdapter employeeQueryAdapter;
