@@ -182,17 +182,16 @@ CREATE TABLE auctions
 (
     AuctionId BIGSERIAL PRIMARY KEY,
     UserId INTEGER REFERENCES users,
-    AuctionName CHARACTER VARYING(50),
-    Price DECIMAL,
-    AuctionDate TIMESTAMP,
-    Quantity INTEGER,
-    Status CHARACTER VARYING(45)
-);
-
-
-CREATE TABLE product_to_auctions
-(
     ProductId INTEGER REFERENCES products,
-    AuctionId INTEGER REFERENCES auctions,
-    PRIMARY KEY (ProductId, AuctionId)
+    SizeId INTEGER REFERENCES sizes,
+    Amount INTEGER,
+    AuctionName CHARACTER VARYING(50),
+    AuctionType BOOLEAN,
+    StartPrice DECIMAL,
+    EndPrice DECIMAL,
+    PriceStep DECIMAL,
+    BuyPrice DECIMAL,
+    StartTime TIMESTAMP,
+    EndTime TIMESTAMP,
+    Status CHARACTER VARYING(45)
 );
