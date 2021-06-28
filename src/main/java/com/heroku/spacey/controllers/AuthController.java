@@ -76,7 +76,8 @@ public class AuthController {
         if (userService.userExists(registerDto.getEmail())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto), emailComposer));
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto),
+                                                                    emailComposer));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

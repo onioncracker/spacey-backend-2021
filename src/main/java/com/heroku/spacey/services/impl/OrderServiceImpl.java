@@ -14,9 +14,9 @@ import com.heroku.spacey.dto.product.ProductCreateOrderDto;
 import com.heroku.spacey.error.NoAvailableCourierException;
 import com.heroku.spacey.services.CartService;
 import com.heroku.spacey.services.OrderService;
+import com.heroku.spacey.utils.OrderStatusChangerTask;
 import com.heroku.spacey.utils.security.SecurityUtils;
 import com.heroku.spacey.error.ProductOutOfStockException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.webjars.NotFoundException;
@@ -167,26 +167,6 @@ public class OrderServiceImpl implements OrderService {
     private void scheduleOrderStatusChange(CreateOrderDto order) {
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         long timeToStatusChange = order.getDateDelivery().getTime() - 3_600_000 - System.currentTimeMillis();
-        service.schedule(new OrderStatusChangerTask(order), timeToStatusChange, TimeUnit.MILLISECONDS);
-    }
-
-    @AllArgsConstructor
-    private class OrderStatusChangerTask implements Runnable {
-        CreateOrderDto createOrderDto;
-
-        @Override
-        public void run() {
-            Long orderStatusId;
-
-            try {
-                orderStatusId = orderStatusDao.getByName("IN DELIVERY").getOrderStatusId();
-            } catch (NotFoundException e) {
-                OrderStatus orderStatus = new OrderStatus();
-                orderStatus.setStatus("IN DELIVERY");
-                orderStatusId = orderStatusDao.insert(orderStatus);
-            }
-
-            createOrderDto.setOrderStatusId(orderStatusId);
-        }
+        service.schedule(new OrderStatusChangerTask(order, orderStatusDao), timeToStatusChange, TimeUnit.MILLISECONDS);
     }
 }
