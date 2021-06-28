@@ -18,4 +18,6 @@ public interface ProductService {
     void removeProduct(Long id);
 
     void cancelProduct(Long id);
+
+    boolean checkAmount(Long productId, Long sizeId, int amount);
 }

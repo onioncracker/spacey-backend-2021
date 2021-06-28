@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +26,8 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
     }
 
 
-    public List<ProductPageDto> getAllProduct(Integer pageNum,
+    public List<ProductPageDto> getAllProduct(String prompt,
+                                              Integer pageNum,
                                               Integer pageSize,
                                               String sex,
                                               String price,
@@ -51,6 +53,7 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
         }
 
         return catalog.getAllProduct(
+                prompt,
                 categoriesParams,
                 priceParams,
                 sex,

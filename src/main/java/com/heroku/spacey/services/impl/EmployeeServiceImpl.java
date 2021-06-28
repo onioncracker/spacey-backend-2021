@@ -1,66 +1,113 @@
 package com.heroku.spacey.services.impl;
 
+import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
+import com.heroku.spacey.dao.TokenDao;
 import com.heroku.spacey.dao.EmployeeDao;
+import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dto.employee.EmployeeDto;
+import com.heroku.spacey.entity.User;
+import com.heroku.spacey.entity.Token;
+import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.EmployeeService;
+import com.heroku.spacey.utils.EmailComposer;
+import com.heroku.spacey.utils.Status;
+import com.heroku.spacey.utils.registration.OnRegistrationCompleteEvent;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.PropertySource;
 import org.webjars.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
 
+import java.sql.Timestamp;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.UUID;
+import java.util.HashMap;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:const.properties")
 public class EmployeeServiceImpl implements EmployeeService {
 
-    // default values
-    private static final int DEFAULT_PAGE_NUM = 0;
-    private static final int DEFAULT_PAGE_SIZE = 20;
-
+    private final UserDao userDao;
+    private final TokenDao tokenDao;
     private final EmployeeDao employeeDao;
+    private final UserService userService;
+    private final ApplicationEventPublisher eventPublisher;
+
+    @Value("${create_password_url}")
+    private String createPasswordUrl;
+    @Value("${create_password_subject}")
+    private String createPasswordSubject;
+    @Value("${create_password_endpoint}")
+    private String createPasswordEndpoint;
+    @Value("${create_password_template}")
+    private String createPasswordTemplate;
 
 
-    public List<EmployeeDto> getEmployees(String page, String role, String status, String searchPrompt)
-            throws SQLException {
-
+    @Override
+    public List<EmployeeDto> getEmployees(int pageNum, int pageSize,
+                                          String roleId, String statusId, String searchPrompt) {
         Map<String, String> filters = new HashMap<>();
 
-        if (isValid(role)) {
-            filters.put("role", role);
+        if (!StringUtils.isBlank(roleId)) {
+            filters.put("roleid", roleId);
         }
 
-        if (isValid(status)) {
-            filters.put("status", status);
+        if (!StringUtils.isBlank(statusId)) {
+            filters.put("statusid", statusId);
         }
 
-        int pageNum = DEFAULT_PAGE_NUM;
-        int pageSize = DEFAULT_PAGE_SIZE;
-
-        if (isValid(page)) {
-            String[] pageProps = page.split("-");
-            pageNum = Integer.parseInt(pageProps[0]);
-            pageSize = Integer.parseInt(pageProps[1]);
-        }
-
-        if (isValid(searchPrompt)) {
+        if (!StringUtils.isBlank(searchPrompt)) {
             filters.put("search", searchPrompt);
         }
 
         return employeeDao.getAll(filters, pageNum, pageSize);
     }
 
-    public EmployeeDto getEmployeeById(Long userId) throws NotFoundException, SQLException {
+    @Override
+    public EmployeeDto getEmployeeById(Long userId) throws NotFoundException {
         return employeeDao.getById(userId);
     }
 
-    public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
-        employeeDao.insert(employeeDto);
+    @Override
+    public List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) throws SQLException {
+        return employeeDao.getAvailableCouriers(dateDelivery);
     }
 
-    public int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException {
+    @Override
+    public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException {
+        Token token = new Token();
+        token.setToken(UUID.randomUUID().toString());
+        Long tokenId = tokenDao.insert(token);
+        employeeDto.setTokenId(tokenId);
+        employeeDao.insert(employeeDto);
+
+        EmailComposer emailComposer = new EmailComposer(
+                createPasswordUrl,
+                createPasswordSubject,
+                createPasswordEndpoint,
+                createPasswordTemplate);
+        User user = userService.getUserByEmail(employeeDto.getEmail());
+        if (user == null) {
+            throw new UserNotFoundException("Haven't found such employee email.");
+        }
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, emailComposer));
+    }
+
+    @Override
+    public void activateEmployee(User user) {
+        user.setStatusId(Status.ACTIVATED.getValue());
+        userDao.updateUserStatus(user);
+    }
+
+    @Override
+    public int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException {
         if (employeeDao.update(employeeDto) == 0) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }
@@ -68,15 +115,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.update(employeeDto);
     }
 
-    public int deleteEmployee(Long userId) throws SQLException {
+    @Override
+    public int deleteEmployee(Long userId) {
         if (employeeDao.delete(userId) == 0) {
             throw new NotFoundException("Haven't found employee with such ID.");
         }
 
         return employeeDao.delete(userId);
-    }
-
-    private boolean isValid(String value) {
-        return value != null && !value.isBlank();
     }
 }

@@ -4,9 +4,9 @@ import com.heroku.spacey.dao.ProductCatalogDao;
 import com.heroku.spacey.dao.common.ProductCatalogQueryAdapter;
 import com.heroku.spacey.dto.product.ProductItemDto;
 import com.heroku.spacey.dto.product.ProductPageDto;
-import com.heroku.spacey.dto.product.SizeDto;
-import com.heroku.spacey.mapper.SizeQuantityMapper;
+import com.heroku.spacey.dto.size.SizeProductDto;
 import com.heroku.spacey.mapper.product.ProductItemMapper;
+import com.heroku.spacey.mapper.product.SizeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +16,11 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.webjars.NotFoundException;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductCatalogQueryAdapter productCatalogQueryAdapter;
-    private final SizeQuantityMapper sizeQuantityMapper;
+    private final SizeMapper sizeMapper;
 
     @Value("${get_all_products}")
     private String sqlGetAll;
@@ -48,7 +50,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
             }
             ProductItemMapper.productItemMapper(rs, productItemDto);
             productItemDto.setMaterials((ArrayList<String>) getMaterials(id));
-            productItemDto.setSizes((ArrayList<SizeDto>) getSizes(id));
+            productItemDto.setSizes((ArrayList<SizeProductDto>) getSizes(id));
             return productItemDto;
         };
 
@@ -56,7 +58,8 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
     }
 
     @Override
-    public List<ProductPageDto> getAllProduct(String[] categories,
+    public List<ProductPageDto> getAllProduct(String prompt,
+                                              String[] categories,
                                               Integer[] prices,
                                               String sex,
                                               String[] colors,
@@ -66,7 +69,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
 
         productCatalogQueryAdapter
                 .createSelect(sqlGetAll)
-                .addFilters(categories, sex, prices, colors)
+                .addFilters(prompt, categories, sex, prices, colors)
                 .addOrdering(order)
                 .setPage(pageNum, pageSize);
 
@@ -75,6 +78,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
             productDto.setId(resultSet.getInt("productid"));
             productDto.setName(resultSet.getString("productname"));
             productDto.setPhoto(resultSet.getString("photo"));
+            productDto.setDiscount(resultSet.getInt("discount"));
             productDto.setPrice(resultSet.getString("price"));
             return productDto;
         };
@@ -88,7 +92,7 @@ public class ProductCatalogDaoImpl implements ProductCatalogDao {
         return jdbcTemplate.query(sqlGetMaterialsById, rowMapper, id);
     }
 
-    private List<SizeDto> getSizes(Long id) {
-        return jdbcTemplate.query(sqlGetSizesById, sizeQuantityMapper, id);
+    private List<SizeProductDto> getSizes(Long id) {
+        return jdbcTemplate.query(sqlGetSizesById, sizeMapper, id);
     }
 }

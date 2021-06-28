@@ -20,9 +20,14 @@ public class ProductCatalogQueryAdapter {
     }
 
 
-    public ProductCatalogQueryAdapter addFilters(String[] categories, String sex, Integer[] price, String[] colors) {
+    public ProductCatalogQueryAdapter addFilters(String prompt, String[] categories, String sex, Integer[] price, String[] colors) {
         boolean whereFlag = false;
         List<String> filtersParts = new ArrayList<>();
+
+        if (prompt != null) {
+            whereFlag = true;
+            filtersParts.add("LOWER (productname) like '" + prompt + "%' ");
+        }
 
         if (categories != null) {
             whereFlag = true;
@@ -73,6 +78,10 @@ public class ProductCatalogQueryAdapter {
         }
         if (order.equals("old")) {
             query.append("ORDER BY createddate DESC ");
+        }
+
+        if (order.equals("name")) {
+            query.append("ORDER BY productname ");
         }
         return this;
     }

@@ -1,14 +1,13 @@
 package com.heroku.spacey.controllers;
 
 import com.heroku.spacey.dto.order.OrderDetailsDto;
+import com.heroku.spacey.dto.order.OrderStatusDto;
 import com.heroku.spacey.services.OrderDetailsService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
@@ -19,9 +18,30 @@ public class OrderDetailsController {
 
     private final OrderDetailsService orderDetailsService;
 
-    @Secured("COURIER")
+    @Secured("ROLE_COURIER")
     @GetMapping("/{orderId}")
     public OrderDetailsDto getOrderDetailsById(@PathVariable Long orderId) throws SQLException {
         return orderDetailsService.getOrderDetails(orderId);
+    }
+
+    @Secured("ROLE_COURIER")
+    @PutMapping("")
+    public HttpStatus editOrderStatus(@RequestBody OrderStatusDto orderStatusDto) {
+        orderDetailsService.updateOrderStatus(orderStatusDto);
+        return HttpStatus.OK;
+    }
+
+    @Secured("ROLE_COURIER")
+    @PutMapping("/delivered/{orderId}")
+    public HttpStatus setDelivered(@PathVariable Long orderId) {
+        orderDetailsService.setDeliveredStatus(orderId);
+        return HttpStatus.OK;
+    }
+
+    @Secured("ROLE_COURIER")
+    @PutMapping("/fail/{orderId}")
+    public HttpStatus setFail(@PathVariable Long orderId) {
+        orderDetailsService.setFailStatus(orderId);
+        return HttpStatus.OK;
     }
 }

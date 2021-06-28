@@ -1,10 +1,18 @@
 package com.heroku.spacey.dao;
 
-import com.heroku.spacey.entity.Order;
+import com.heroku.spacey.dto.order.CreateOrderDto;
+import com.heroku.spacey.dto.order.CourierOrdersDto;
+
+import java.sql.Date;
+import java.util.List;
 
 public interface OrderDao {
 
-    void insert(Order order);
+    Long insert(CreateOrderDto order);
 
-    void addProductToOrder(Long orderId, Long productId, int amount, float sum);
+    void addProductToOrder(Long orderId, Long productId, Long sizeId, int amount, float sum);
+
+    void addUserToOrders(Long orderId, Long userId);
+
+    List<CourierOrdersDto> getCourierOrders(Long orderId, Date date);
 }

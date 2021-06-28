@@ -1,16 +1,22 @@
 package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.ProductDao;
+import com.heroku.spacey.dto.cart.ProductForUnauthorizedCart;
 import com.heroku.spacey.entity.Product;
+import com.heroku.spacey.mapper.cart.ProductForUnauthorizedCartMapper;
+import com.heroku.spacey.entity.SizeToProduct;
 import com.heroku.spacey.mapper.product.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.webjars.NotFoundException;
+
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -36,6 +42,12 @@ public class ProductDaoImpl implements ProductDao {
     private String materialToProduct;
     @Value("${add_size_to_product}")
     private String sizeToProduct;
+    @Value("${delete_material_to_product}")
+    private String deleteMaterialToProduct;
+    @Value("${delete_size_to_product}")
+    private String deleteSizeToProduct;
+    @Value("${update_product_quantity}")
+    private String updateProductQuantity;
     @Value("${update_product}")
     private String updateProduct;
     @Value("${delete_product}")
@@ -44,6 +56,12 @@ public class ProductDaoImpl implements ProductDao {
     private String deactivateProduct;
     @Value("${save_photo}")
     private String savePhoto;
+    @Value("${get_amount_by_size}")
+    private String getAmountBySize;
+    @Value("${getProductByIdAndSizeId}")
+    private String getProductByIdAndSizeId;
+    @Value("${is_available_by_id}")
+    private String isAvailableById;
 
     public ProductDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -77,7 +95,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public boolean isExist(Long id) {
         List<Integer> products = Objects.requireNonNull(jdbcTemplate)
-                .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
+            .query(isExistProduct, (rs, i) -> rs.getInt("productId"), id);
         return !products.isEmpty();
     }
 
@@ -88,15 +106,13 @@ public class ProductDaoImpl implements ProductDao {
             PreparedStatement ps = connection.prepareStatement(addProduct, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, product.getCategoryId());
             ps.setLong(2, product.getColorId());
-            ps.setLong(3, product.getAmount());
-            ps.setString(4, product.getName());
-            ps.setString(5, product.getProductSex());
-            ps.setDouble(6, product.getPrice());
-            ps.setString(7, product.getPhoto());
-            ps.setString(8, product.getDescription());
-            ps.setDouble(9, product.getDiscount());
-            ps.setBoolean(10, product.getIsAvailable());
-            ps.setBoolean(11, product.getIsOnAuction());
+            ps.setString(3, product.getName());
+            ps.setString(4, product.getProductSex());
+            ps.setDouble(5, product.getPrice());
+            ps.setString(6, product.getPhoto());
+            ps.setString(7, product.getDescription());
+            ps.setDouble(8, product.getDiscount());
+            ps.setBoolean(9, product.getIsAvailable());
             return ps;
         }, holder);
         return (Long) Objects.requireNonNull(holder.getKeys()).get("productId");
@@ -107,6 +123,10 @@ public class ProductDaoImpl implements ProductDao {
         Objects.requireNonNull(jdbcTemplate).update(materialToProduct, materialId, productId);
     }
 
+    @Override
+    public void deleteMaterialToProduct(Long productId) {
+        Objects.requireNonNull(jdbcTemplate).update(deleteMaterialToProduct, productId);
+    }
 
     @Override
     public void addSizeToProduct(Long sizeId, Long productId, Long quantity) {
@@ -114,11 +134,25 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    public void deleteSizeToProduct(Long productId) {
+        Objects.requireNonNull(jdbcTemplate).update(deleteSizeToProduct, productId);
+    }
+
+    @Override
+    public int updateProductQuantity(SizeToProduct sizeToProduct) {
+        Long quantity = sizeToProduct.getQuantity();
+        Long sizeId = sizeToProduct.getSizeId();
+        Long productId = sizeToProduct.getProductId();
+
+        return Objects.requireNonNull(jdbcTemplate).update(updateProductQuantity, quantity, sizeId, productId);
+    }
+
+    @Override
     public void update(Product product) {
         Object[] params = new Object[]{
-                product.getAmount(), product.getName(), product.getProductSex(), product.getPrice(),
-                product.getPhoto(), product.getDescription(), product.getDiscount(),
-                product.getIsAvailable(), product.getIsOnAuction(), product.getId()
+            product.getColorId(), product.getCategoryId(), product.getName(), product.getProductSex(), product.getPrice(),
+            product.getPhoto(), product.getDescription(), product.getDiscount(),
+            product.getIsAvailable(), product.getId()
         };
         Objects.requireNonNull(jdbcTemplate).update(updateProduct, params);
     }
@@ -131,5 +165,38 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void deactivate(Long id) {
         Objects.requireNonNull(jdbcTemplate).update(deactivateProduct, id);
+    }
+
+    @Override
+    public int getAmount(Long sizeId, Long productId) {
+        Integer result = DataAccessUtils.singleResult(jdbcTemplate.query(getAmountBySize,
+            SingleColumnRowMapper.newInstance(Integer.class), sizeId, productId));
+        if (result == null) {
+            log.error("either size or product does not exist in db");
+            throw new NotFoundException("Size not found");
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isAvailable(Long productId) {
+        Boolean result = DataAccessUtils.singleResult(jdbcTemplate.query(isAvailableById,
+            SingleColumnRowMapper.newInstance(Boolean.class), productId));
+        if (result == null) {
+            log.error("Product does not exist in db");
+            throw new NotFoundException("Product not found");
+        }
+        return result;
+    }
+
+    @Override
+    public ProductForUnauthorizedCart getProductByIdAndSize(Long productId, Long sizeId) {
+        List<ProductForUnauthorizedCart> list = jdbcTemplate.query(getProductByIdAndSizeId,
+            new ProductForUnauthorizedCartMapper(), sizeId, productId);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+
     }
 }

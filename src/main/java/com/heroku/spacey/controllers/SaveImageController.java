@@ -16,7 +16,7 @@ import java.io.IOException;
 public class SaveImageController {
 
     private final AwsImageService imageService;
-    @Secured("PRODUCT_MANAGER")
+    @Secured("ROLE_PRODUCT_MANAGER")
     @PostMapping("/{id}")
     public HttpStatus addPhoto(@RequestPart(name = "image") MultipartFile img, @PathVariable Long id) throws IOException {
         imageService.save(img, id);

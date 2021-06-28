@@ -11,12 +11,19 @@ CREATE TABLE user_status
     StatusName CHARACTER VARYING (30)
 );
 
+CREATE TABLE verification_token
+(
+    TokenId BIGSERIAL PRIMARY KEY,
+    ConfirmationToken VARCHAR(255),
+    Date TIMESTAMP
+);
 
 CREATE TABLE users
 (
     UserId BIGSERIAL PRIMARY KEY,
     RoleId INTEGER REFERENCES roles,
     StatusId INTEGER REFERENCES user_status,
+    TokenId INTEGER REFERENCES verification_token,
     Email CHARACTER VARYING(45),
     Pass CHARACTER VARYING(256),
     FirstName CHARACTER VARYING(20),
@@ -58,7 +65,6 @@ CREATE TABLE products
     ProductId BIGSERIAL PRIMARY KEY,
     CategoryId INTEGER REFERENCES categories ON DELETE CASCADE,
     ColorId INTEGER REFERENCES colors ON DELETE CASCADE,
-    Amount INTEGER,
     ProductName CHARACTER VARYING(50),
     CreatedDate TIMESTAMP,
     ProductSex CHARACTER VARYING(20),
@@ -66,8 +72,7 @@ CREATE TABLE products
     Photo CHARACTER VARYING(512),
     Description CHARACTER VARYING(512),
     Discount NUMERIC,
-    IsAvailable BOOL,
-    IsOnAuction BOOL
+    IsAvailable BOOL
 );
 
 

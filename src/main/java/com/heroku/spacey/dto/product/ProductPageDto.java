@@ -8,4 +8,5 @@ public class ProductPageDto {
     private String photo;
     private String name;
     private String price;
+    private int discount;
 }

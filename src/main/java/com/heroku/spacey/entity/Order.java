@@ -3,10 +3,13 @@ package com.heroku.spacey.entity;
 import lombok.Data;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 public class Order {
     private Long orderId;
+
+    private List<Product> products;
 
     private String orderStatus;
     private Long orderStatusId;

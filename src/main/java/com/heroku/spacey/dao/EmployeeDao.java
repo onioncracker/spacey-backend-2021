@@ -3,19 +3,21 @@ package com.heroku.spacey.dao;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 public interface EmployeeDao {
 
-    EmployeeDto getById(Long userId) throws SQLException;
+    List<EmployeeDto> getAll(Map<String, String> filters, int pageNum, int pageSize);
 
-    List<EmployeeDto> getAll(Map<String, String> filters, int pageNum, int pageSize)
-            throws SQLException;
+    EmployeeDto getById(Long userId);
 
-    void insert(EmployeeDto employeeDto) throws SQLException;
+    List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) throws SQLException;
 
-    int update(EmployeeDto employeeDto) throws SQLException;
+    Long insert(EmployeeDto employeeDto);
 
-    int delete(Long userId) throws SQLException;
+    int update(EmployeeDto employeeDto);
+
+    int delete(Long userId);
 }

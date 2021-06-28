@@ -1,5 +1,6 @@
 package com.heroku.spacey.entity;
 
+import com.heroku.spacey.utils.Status;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.Collections;
 @Data
 public class User implements UserDetails, Serializable {
     private Long userId;
+    private Long tokenId;
     private String email;
     private String firstName;
     private String lastName;
@@ -23,7 +25,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(userRole));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userRole));
     }
 
     @Override
@@ -48,6 +50,6 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return statusId == Status.ACTIVATED.getValue();
     }
 }

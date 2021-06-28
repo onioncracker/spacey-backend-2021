@@ -1,9 +1,10 @@
 package com.heroku.spacey.dto.order;
 
+import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 @Data
 public class CheckoutDto {
