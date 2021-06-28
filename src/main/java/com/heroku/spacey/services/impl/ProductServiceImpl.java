@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
-    private ProductDao productDao;
+    private final ProductDao productDao;
     private final CommonConvertor commonConvertor;
     private final ProductConvertor productConvertor;
 
