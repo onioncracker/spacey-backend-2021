@@ -30,4 +30,18 @@ public class OrderDetailsController {
         orderDetailsService.updateOrderStatus(orderStatusDto);
         return HttpStatus.OK;
     }
+
+    @Secured("ROLE_COURIER")
+    @PutMapping("/delivered/{orderId}")
+    public HttpStatus setDelivered(@PathVariable Long orderId) {
+        orderDetailsService.setDeliveredStatus(orderId);
+        return HttpStatus.OK;
+    }
+
+    @Secured("ROLE_COURIER")
+    @PutMapping("/fail/{orderId}")
+    public HttpStatus setFail(@PathVariable Long orderId) {
+        orderDetailsService.setFailStatus(orderId);
+        return HttpStatus.OK;
+    }
 }

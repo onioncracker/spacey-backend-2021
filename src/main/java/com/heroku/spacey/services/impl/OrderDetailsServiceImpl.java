@@ -26,4 +26,16 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     public void updateOrderStatus(OrderStatusDto orderStatusDto) {
         orderDetailsDao.updateOrderStatus(orderStatusDto);
     }
+
+    @Override
+    @Transactional
+    public void setDeliveredStatus(Long orderId) {
+        orderDetailsDao.setDeliveredStatus(orderId);
+    }
+
+    @Override
+    @Transactional
+    public void setFailStatus(Long orderId) {
+        orderDetailsDao.setFailStatus(orderId);
+    }
 }
