@@ -9,10 +9,7 @@ import com.heroku.spacey.dto.user.LoginDto;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.entity.User;
-import com.heroku.spacey.services.EmailService;
-import com.heroku.spacey.services.PasswordService;
-import com.heroku.spacey.services.TokenService;
-import com.heroku.spacey.services.UserService;
+import com.heroku.spacey.services.*;
 import com.heroku.spacey.utils.EmailComposer;
 import com.heroku.spacey.utils.registration.OnRegistrationCompleteEvent;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +35,7 @@ public class AuthController {
     private final TokenService tokenService;
     private final EmailService emailService;
     private final PasswordService passwordService;
+    private final EmployeeService employeeService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Value("${confirm_registration_url}")
@@ -134,6 +132,16 @@ public class AuthController {
         return HttpStatus.OK;
     }
 
+
+    @GetMapping("/create-password")
+    public HttpStatus showCreatePasswordPage(@RequestParam("token") String token) throws TimeoutException {
+        String tokenValidation = passwordService.validatePasswordResetToken(token);
+        if (tokenValidation == null) {
+            throw new com.amazonaws.services.apigateway.model.NotFoundException("User token is incorrect!");
+        }
+        return HttpStatus.OK;
+    }
+
     @PostMapping("/reset_password_save")
     public HttpStatus saveResetPassword(@RequestBody @Validated ResetPasswordDto resetPasswordDto) {
         User user = userService.getUserByEmail(resetPasswordDto.getEmail());
@@ -141,6 +149,18 @@ public class AuthController {
             throw new NotFoundException("User not found!");
         }
         passwordService.saveResetPassword(user, resetPasswordDto);
+        return HttpStatus.OK;
+    }
+
+    @PostMapping("/create-password-save")
+    public HttpStatus saveCreatePassword(@RequestBody @Validated ResetPasswordDto resetPasswordDto) {
+        User user = userService.getUserByEmail(resetPasswordDto.getEmail());
+        if (user == null) {
+            throw new com.amazonaws.services.apigateway.model.NotFoundException("Employee not found!");
+        }
+        passwordService.saveCreatePassword(user, resetPasswordDto);
+        employeeService.activateEmployee(user);
+
         return HttpStatus.OK;
     }
 
