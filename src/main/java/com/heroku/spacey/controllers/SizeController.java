@@ -5,12 +5,14 @@ import com.heroku.spacey.dto.size.SizeDto;
 import com.heroku.spacey.services.SizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Secured("ROLE_PRODUCT_MANAGER")
 @RequestMapping("/api/v1/size")
 public class SizeController {
     private final SizeService sizeService;

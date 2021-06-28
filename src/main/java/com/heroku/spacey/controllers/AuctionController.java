@@ -5,6 +5,7 @@ import com.heroku.spacey.dto.auction.AuctionDto;
 import com.heroku.spacey.services.AuctionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,12 +32,14 @@ public class AuctionController {
     }
 
     @PostMapping("/add")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus addAuction(@RequestBody AuctionDto auctionDto) {
         auctionService.add(auctionDto);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("/edit/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus editAuction(@RequestBody AuctionDto auctionDto,
                                    @PathVariable Long id) {
         AuctionDto auction = auctionService.getById(id);
@@ -45,6 +48,7 @@ public class AuctionController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus deleteAuction(@PathVariable Long id) {
         AuctionDto auction = auctionService.getById(id);
         auctionService.remove(auction.getAuctionId());
