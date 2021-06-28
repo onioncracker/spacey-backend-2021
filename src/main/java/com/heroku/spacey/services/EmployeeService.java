@@ -1,6 +1,7 @@
 package com.heroku.spacey.services;
 
 import com.heroku.spacey.dto.employee.EmployeeDto;
+import com.heroku.spacey.entity.User;
 import org.webjars.NotFoundException;
 
 import java.sql.Timestamp;
@@ -17,6 +18,8 @@ public interface EmployeeService {
     List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) throws SQLException;
 
     void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException;
+
+    void activateEmployee(User user);
 
     int updateEmployee(EmployeeDto employeeDto) throws IllegalArgumentException, SQLException;
 
