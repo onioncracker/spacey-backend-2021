@@ -96,8 +96,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (NotFoundException e) {
             OrderStatus orderStatus = new OrderStatus();
             orderStatus.setStatus("SUBMITTED");
-            orderStatusDao.insert(orderStatus);
-            orderStatusId = orderStatusDao.getByName("SUBMITTED").getOrderStatusId();
+            orderStatusId = orderStatusDao.insert(orderStatus);
         }
         createOrderDto.setOrderStatusId(orderStatusId);
     }
