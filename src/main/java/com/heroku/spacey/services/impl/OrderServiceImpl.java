@@ -16,6 +16,7 @@ import com.heroku.spacey.services.CartService;
 import com.heroku.spacey.services.OrderService;
 import com.heroku.spacey.utils.security.SecurityUtils;
 import com.heroku.spacey.error.ProductOutOfStockException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.webjars.NotFoundException;
@@ -29,6 +30,9 @@ import java.sql.SQLException;
 import java.util.Set;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Slf4j
 @Service
@@ -47,10 +51,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderForAuthorizedUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
-                                                                                   SQLException,
-                                                                                   NoSuchAlgorithmException {
-        createOrder(createOrderDto);
+    public void createOrderForAuthorizedUser(CreateOrderDto order) throws IllegalArgumentException,
+                                                                          SQLException,
+                                                                          NoSuchAlgorithmException {
+        createOrder(order);
 
         addUserToOrders();
         cartService.cleanCart();
@@ -58,38 +62,39 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderForAnonymousUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
-                                                                                  SQLException,
-                                                                                  NoSuchAlgorithmException {
-        createOrder(createOrderDto);
+    public void createOrderForAnonymousUser(CreateOrderDto order) throws IllegalArgumentException,
+                                                                         SQLException,
+                                                                         NoSuchAlgorithmException {
+        createOrder(order);
     }
 
-    private void createOrder(CreateOrderDto createOrderDto) throws NoSuchAlgorithmException, SQLException {
-        setOrderComment(createOrderDto);
-        setOrderStatus(createOrderDto);
-        updateStock(createOrderDto);
+    private void createOrder(CreateOrderDto order) throws NoSuchAlgorithmException, SQLException {
+        setOrderComment(order);
+        setOrderStatus(order);
+        updateStock(order);
 
         Timestamp orderTime = new Timestamp(System.currentTimeMillis());
-        createOrderDto.setDateCreate(orderTime);
-        orderId = orderDao.insert(createOrderDto);
+        order.setDateCreate(orderTime);
+        orderId = orderDao.insert(order);
 
-        addProductsToOrder(createOrderDto);
+        addProductsToOrder(order);
         Random rand = SecureRandom.getInstanceStrong();
-        assignCourier(createOrderDto, rand);
+        assignCourier(order, rand);
+        scheduleOrderStatusChange(order);
     }
 
-    private void setOrderComment(CreateOrderDto createOrderDto) {
-        StringBuilder commentOptions = new StringBuilder(createOrderDto.getCommentOrder());
-        if (createOrderDto.isDoNotDisturb()) {
+    private void setOrderComment(CreateOrderDto order) {
+        StringBuilder commentOptions = new StringBuilder(order.getCommentOrder());
+        if (order.isDoNotDisturb()) {
             commentOptions.append("\nDo not disturb me, please.");
         }
-        if (createOrderDto.isNoContact()) {
+        if (order.isNoContact()) {
             commentOptions.append("\nI want this to be a 'no contact' delivery.");
         }
-        createOrderDto.setCommentOrder(commentOptions.toString());
+        order.setCommentOrder(commentOptions.toString());
     }
 
-    private void setOrderStatus(CreateOrderDto createOrderDto) {
+    private void setOrderStatus(CreateOrderDto order) {
         Long orderStatusId;
         try {
             orderStatusId = orderStatusDao.getByName("SUBMITTED").getOrderStatusId();
@@ -98,11 +103,11 @@ public class OrderServiceImpl implements OrderService {
             orderStatus.setStatus("SUBMITTED");
             orderStatusId = orderStatusDao.insert(orderStatus);
         }
-        createOrderDto.setOrderStatusId(orderStatusId);
+        order.setOrderStatusId(orderStatusId);
     }
 
-    private void updateStock(CreateOrderDto createOrderDto) {
-        for (ProductCreateOrderDto orderProduct : createOrderDto.getProducts()) {
+    private void updateStock(CreateOrderDto order) {
+        for (ProductCreateOrderDto orderProduct : order.getProducts()) {
             Product productOnStock = productDao.get(orderProduct.getProductId());
             Set<Size> productSizesOnStock = productOnStock.getSizes();
 
@@ -132,8 +137,8 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void addProductsToOrder(CreateOrderDto createOrderDto) {
-        for (ProductCreateOrderDto product : createOrderDto.getProducts()) {
+    private void addProductsToOrder(CreateOrderDto order) {
+        for (ProductCreateOrderDto product : order.getProducts()) {
             int amount = product.getAmount();
             float sum = product.getSum();
             orderDao.addProductToOrder(orderId, product.getProductId(), product.getSizeId(), amount, sum);
@@ -145,8 +150,8 @@ public class OrderServiceImpl implements OrderService {
         orderDao.addUserToOrders(orderId, userId);
     }
 
-    private void assignCourier(CreateOrderDto createOrderDto, Random rand) throws SQLException {
-        List<EmployeeDto> availableCouriers = employeeDao.getAvailableCouriers(createOrderDto.getDateDelivery());
+    private void assignCourier(CreateOrderDto order, Random rand) throws SQLException {
+        List<EmployeeDto> availableCouriers = employeeDao.getAvailableCouriers(order.getDateDelivery());
 
         if (availableCouriers.isEmpty()) {
             throw new NoAvailableCourierException("We couldn't found available courier "
@@ -157,5 +162,31 @@ public class OrderServiceImpl implements OrderService {
 
         EmployeeDto selectedCourier = availableCouriers.get(selectedCourierIndex);
         orderDao.addUserToOrders(orderId, selectedCourier.getUserId());
+    }
+
+    private void scheduleOrderStatusChange(CreateOrderDto order) {
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+        long timeToStatusChange = order.getDateDelivery().getTime() - 3_600_000 - System.currentTimeMillis();
+        service.schedule(new OrderStatusChangerTask(order), timeToStatusChange, TimeUnit.MILLISECONDS);
+    }
+
+    @AllArgsConstructor
+    private class OrderStatusChangerTask implements Runnable {
+        CreateOrderDto createOrderDto;
+
+        @Override
+        public void run() {
+            Long orderStatusId;
+
+            try {
+                orderStatusId = orderStatusDao.getByName("IN DELIVERY").getOrderStatusId();
+            } catch (NotFoundException e) {
+                OrderStatus orderStatus = new OrderStatus();
+                orderStatus.setStatus("IN DELIVERY");
+                orderStatusId = orderStatusDao.insert(orderStatus);
+            }
+
+            createOrderDto.setOrderStatusId(orderStatusId);
+        }
     }
 }
