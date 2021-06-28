@@ -15,4 +15,6 @@ public interface PasswordService {
     boolean resetPasswordMatchOldPassword(User user, ResetPasswordDto resetPasswordDto);
 
     void saveResetPassword(User user, ResetPasswordDto resetPasswordDto);
+
+    void saveCreatePassword(User user, ResetPasswordDto resetPasswordDto);
 }

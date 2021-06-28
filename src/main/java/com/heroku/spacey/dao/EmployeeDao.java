@@ -15,7 +15,7 @@ public interface EmployeeDao {
 
     List<EmployeeDto> getAvailableCouriers(Timestamp dateDelivery) throws SQLException;
 
-    void insert(EmployeeDto employeeDto);
+    Long insert(EmployeeDto employeeDto);
 
     int update(EmployeeDto employeeDto);
 

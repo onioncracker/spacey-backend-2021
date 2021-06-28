@@ -27,6 +27,8 @@ public class EmployeeDto {
     @NameConstraint
     private String lastName;
 
+    private Long tokenId;
+
     @NotNull
     private Long statusId;
     private String statusName;
