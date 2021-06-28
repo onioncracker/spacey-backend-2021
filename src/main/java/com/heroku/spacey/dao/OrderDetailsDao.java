@@ -9,4 +9,8 @@ public interface OrderDetailsDao {
     OrderDetailsDto getOrderDetails(Long orderId) throws SQLException;
 
     void updateOrderStatus(OrderStatusDto orderStatusDto);
+
+    void setDeliveredStatus(Long orderId);
+
+    void setFailStatus(Long orderId);
 }

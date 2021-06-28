@@ -33,6 +33,9 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
     @Value("${change_order_status}")
     private String sqlChangeOrderStatus;
 
+    @Value("${set_order_status}")
+    private String sqlSetOrderStatus;
+
     @Override
     public OrderDetailsDto getOrderDetails(Long orderId) {
         OrderDetailsMapper mapper = new OrderDetailsMapper(getAllProductInOrder(orderId));
@@ -50,5 +53,17 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
                 orderStatusDto.getOrderStatusId(),
                 orderStatusDto.getOrderId()
         );
+    }
+
+    @Override
+    public void setDeliveredStatus(Long orderId) {
+        String deliveredStatus = "DELIVERED";
+        jdbcTemplate.update(sqlSetOrderStatus, deliveredStatus, orderId);
+    }
+
+    @Override
+    public void setFailStatus(Long orderId) {
+        String failStatus = "FAIL";
+        jdbcTemplate.update(sqlSetOrderStatus, failStatus, orderId);
     }
 }
