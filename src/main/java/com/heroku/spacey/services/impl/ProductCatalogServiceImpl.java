@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -40,7 +41,7 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
         String[] colorsParams = null;
 
         if (StringUtils.hasText(categories)) {
-            categoriesParams = categories.split(",");
+            categoriesParams = categories.toLowerCase().split(",");
         }
 
         if (StringUtils.hasText(price)) {
@@ -49,7 +50,7 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
         }
 
         if (StringUtils.hasText(colors)) {
-            colorsParams = colors.split(",");
+            colorsParams = colors.toLowerCase().split(",");
         }
 
         return catalog.getAllProduct(
