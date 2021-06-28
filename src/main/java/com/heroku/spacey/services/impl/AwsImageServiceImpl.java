@@ -82,6 +82,10 @@ public class AwsImageServiceImpl implements AwsImageService {
 
     @Override
     public void delete(String url) {
+        if (url == null || url.isEmpty()) {
+            return;
+        }
+
         if (!s3client.doesObjectExist(bucketName, getPhotoNameByUrl(url))) {
             throw new NotFoundException("image not found in AWSs3 cloud");
         }
