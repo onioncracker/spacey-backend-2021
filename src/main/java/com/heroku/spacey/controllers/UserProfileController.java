@@ -1,5 +1,6 @@
 package com.heroku.spacey.controllers;
 
+import com.heroku.spacey.dto.employee.EmployeeProfileDto;
 import com.heroku.spacey.dto.user.UserProfileDto;
 import com.heroku.spacey.services.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,12 @@ public class UserProfileController {
     public HttpStatus updateUserProfile(@RequestBody UserProfileDto userProfileDto) {
         userProfileService.updateUserInfo(userProfileDto);
         return HttpStatus.OK;
+    }
+
+    @Secured({"ROLE_COURIER",
+              "ROLE_PRODUCT_MANAGER"})
+    @GetMapping("/employee")
+    public EmployeeProfileDto getEmployeeInfo() {
+        return userProfileService.getEmployeeInfo();
     }
 }

@@ -2,14 +2,17 @@ package com.heroku.spacey.dao.impl;
 
 import com.heroku.spacey.dao.UserProfileDao;
 import com.heroku.spacey.dto.user.UserProfileDto;
+import com.heroku.spacey.dto.employee.EmployeeProfileDto;
 import com.heroku.spacey.mapper.UserProfileMapper;
+import com.heroku.spacey.mapper.EmployeeProfileMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,6 +20,8 @@ import java.util.Date;
 public class UserProfileDaoImpl implements UserProfileDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final UserProfileMapper userProfileMapper;
+    private final EmployeeProfileMapper employeeProfileMapper;
 
     @Value("${get_user_info}")
     private String sqlGetUserInfo;
@@ -24,10 +29,13 @@ public class UserProfileDaoImpl implements UserProfileDao {
     @Value("${update_user_info}")
     private String sqlUpdateUserInfo;
 
+    @Value("${get_employee_info}")
+    private String sqlGetEmployeeInfo;
+
+
     @Override
     public UserProfileDto getUserInfo(Long userId) {
-        UserProfileMapper mapper = new UserProfileMapper();
-        return jdbcTemplate.query(sqlGetUserInfo, mapper, userId);
+        return Objects.requireNonNull(jdbcTemplate).query(sqlGetUserInfo, userProfileMapper, userId);
     }
 
     @Override
@@ -43,8 +51,17 @@ public class UserProfileDaoImpl implements UserProfileDao {
         String house = userProfileDto.getHouse();
         String apartment = userProfileDto.getApartment();
 
-        Object[] param = new Object[]{firstName, lastName, phoneNumber, dateOfBirth, sex, city, street, house, apartment, userId};
+        Object[] param = new Object[]{firstName, lastName, phoneNumber, dateOfBirth,
+                                      sex, city, street, house, apartment, userId};
 
         jdbcTemplate.update(sqlUpdateUserInfo, param);
+    }
+
+    @Override
+    public EmployeeProfileDto getEmployeeInfo(Long userId) {
+        return Objects.requireNonNull(jdbcTemplate).query(sqlGetEmployeeInfo,
+                                                          employeeProfileMapper,
+                                                          userId);
+
     }
 }

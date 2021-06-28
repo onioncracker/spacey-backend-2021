@@ -1,16 +1,17 @@
 package com.heroku.spacey.services.impl;
 
 import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
+import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dao.TokenDao;
 import com.heroku.spacey.dao.EmployeeDao;
-import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.entity.User;
 import com.heroku.spacey.entity.Token;
+import com.heroku.spacey.error.UserAlreadyExistsException;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.EmployeeService;
-import com.heroku.spacey.utils.EmailComposer;
 import com.heroku.spacey.utils.Status;
+import com.heroku.spacey.utils.EmailComposer;
 import com.heroku.spacey.utils.registration.OnRegistrationCompleteEvent;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void createEmployee(EmployeeDto employeeDto) throws IllegalArgumentException {
+        if (userService.userExists(employeeDto.getEmail())) {
+            throw new UserAlreadyExistsException("User with such email already exists.");
+        }
+
         Token token = new Token();
         token.setToken(UUID.randomUUID().toString());
         Long tokenId = tokenDao.insert(token);
