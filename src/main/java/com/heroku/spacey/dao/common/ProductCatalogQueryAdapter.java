@@ -2,10 +2,7 @@ package com.heroku.spacey.dao.common;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ProductCatalogQueryAdapter {
@@ -32,7 +29,7 @@ public class ProductCatalogQueryAdapter {
         if (categories != null) {
             whereFlag = true;
             params.addAll(Arrays.asList(categories));
-            filtersParts.add(generateInStatement("namecategory", categories));
+            filtersParts.add(generateInStatement("LOWER (namecategory)", categories));
         }
 
         if (price != null) {
@@ -44,14 +41,14 @@ public class ProductCatalogQueryAdapter {
         if (colors != null) {
             whereFlag = true;
             params.addAll(Arrays.asList(colors));
-            filtersParts.add(generateInStatement("c.color", colors));
+            filtersParts.add(generateInStatement("LOWER (c.color)", colors));
         }
 
 
         if (sex != null) {
             whereFlag = true;
-            params.add(sex);
-            filtersParts.add(" productsex = ? ");
+            params.add(sex.toLowerCase());
+            filtersParts.add("LOWER (productsex) = ? ");
         }
 
         if (whereFlag) {

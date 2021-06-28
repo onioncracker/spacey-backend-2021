@@ -40,7 +40,7 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
         String[] colorsParams = null;
 
         if (StringUtils.hasText(categories)) {
-            categoriesParams = categories.split(",");
+            categoriesParams = categories.toLowerCase().split(",");
         }
 
         if (StringUtils.hasText(price)) {
@@ -49,7 +49,7 @@ public class ProductCatalogServiceImpl implements ProductCatalogService {
         }
 
         if (StringUtils.hasText(colors)) {
-            colorsParams = colors.split(",");
+            colorsParams = colors.toLowerCase().split(",");
         }
 
         return catalog.getAllProduct(
