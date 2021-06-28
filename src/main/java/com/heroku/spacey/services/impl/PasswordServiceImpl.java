@@ -60,4 +60,13 @@ public class PasswordServiceImpl implements PasswordService {
         }
         changeUserPassword(user, resetPasswordDto.getPassword());
     }
+
+    @Override
+    public void saveCreatePassword(User user, ResetPasswordDto resetPasswordDto) {
+        if (!passwordConformity(resetPasswordDto.getPassword(), resetPasswordDto.getPasswordRepeat())) {
+            throw new InputMismatchException("Passwords mismatch");
+        }
+
+        changeUserPassword(user, resetPasswordDto.getPassword());
+    }
 }
