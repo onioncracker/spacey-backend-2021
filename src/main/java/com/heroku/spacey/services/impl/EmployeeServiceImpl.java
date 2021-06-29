@@ -11,7 +11,6 @@ import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.error.UserAlreadyExistsException;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.EmployeeService;
-import com.heroku.spacey.utils.Status;
 import com.heroku.spacey.utils.EmailComposer;
 import com.heroku.spacey.utils.registration.OnRegistrationCompleteEvent;
 import lombok.extern.slf4j.Slf4j;
