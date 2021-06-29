@@ -4,6 +4,7 @@ import com.heroku.spacey.dao.CheckoutDao;
 import com.heroku.spacey.dto.order.CheckoutDto;
 import com.heroku.spacey.dto.product.ProductCheckoutDto;
 import com.heroku.spacey.mapper.order.CheckoutMapper;
+import com.heroku.spacey.mapper.order.CheckoutInfoMapper;
 import com.heroku.spacey.mapper.order.ProductCheckoutMapper;
 import lombok.RequiredArgsConstructor;
 import org.webjars.NotFoundException;
@@ -21,6 +22,7 @@ import java.util.Objects;
 public class CheckoutDaoImpl implements CheckoutDao {
 
     private final CheckoutMapper checkoutMapper;
+    private final CheckoutInfoMapper checkoutInfoMapper;
     private final ProductCheckoutMapper productCheckoutMapper;
     private final JdbcTemplate jdbcTemplate;
 
@@ -43,7 +45,7 @@ public class CheckoutDaoImpl implements CheckoutDao {
     @Override
     public CheckoutDto getCheckoutInfoByUserId(Long userId) {
         List<CheckoutDto> checkoutInfos = Objects.requireNonNull(jdbcTemplate).query(sqlSelectCheckoutInfoByUserId,
-                                                                                     checkoutMapper,
+                                                                                     checkoutInfoMapper,
                                                                                      userId);
         if (checkoutInfos.isEmpty()) {
             throw new NotFoundException("Haven't found checkout info for the user.");

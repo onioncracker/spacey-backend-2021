@@ -51,10 +51,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void createOrderForAuthorizedUser(CreateOrderDto order) throws IllegalArgumentException,
-                                                                          SQLException,
-                                                                          NoSuchAlgorithmException {
-        createOrder(order);
+    public void createOrderForAuthorizedUser(CreateOrderDto order, boolean isAfterAuction)
+            throws IllegalArgumentException,
+            SQLException,
+            NoSuchAlgorithmException {
+        createOrder(order, isAfterAuction);
 
         addUserToOrders();
         cartService.cleanCart();
@@ -65,13 +66,17 @@ public class OrderServiceImpl implements OrderService {
     public void createOrderForAnonymousUser(CreateOrderDto order) throws IllegalArgumentException,
                                                                          SQLException,
                                                                          NoSuchAlgorithmException {
-        createOrder(order);
+        createOrder(order, false);
     }
 
-    private void createOrder(CreateOrderDto order) throws NoSuchAlgorithmException, SQLException {
+    private void createOrder(CreateOrderDto order, boolean isAfterAuction) throws NoSuchAlgorithmException,
+                                                                                  SQLException {
         setOrderComment(order);
         setOrderStatus(order);
-        updateStock(order);
+
+        if (!isAfterAuction) {
+            updateStock(order);
+        }
 
         Timestamp orderTime = new Timestamp(System.currentTimeMillis());
         order.setDateCreate(orderTime);
