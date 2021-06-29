@@ -4,6 +4,7 @@ import com.heroku.spacey.dao.RoleDao;
 import com.heroku.spacey.dao.StatusDao;
 import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dao.TokenDao;
+import com.heroku.spacey.dto.auth.UserTokenDto;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.error.UserNotActivatedException;
@@ -88,14 +89,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String generateAuthenticationToken(String email, String password) {
-        Authentication authenticate = authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(email, password));
-        User user = (User) authenticate.getPrincipal();
+    public String generateAuthenticationToken(User user) {
         if (statusDao.getStatusName(user.getStatusId()).equals(Status.UNACTIVATED.name())) {
             throw new UserNotActivatedException("v kmv ");
         }
         return jwtTokenProvider.generateToken(user);
+    }
+
+    @Override
+    public UserTokenDto authenticate(String email, String password) {
+        Authentication authenticate = authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        User user = (User) authenticate.getPrincipal();
+        String token = generateAuthenticationToken(user);
+        String role = user.getUserRole();
+        return new UserTokenDto(token, role);
     }
 
     @Override
