@@ -21,7 +21,16 @@ public class OrderController {
     public HttpStatus createOrderForAuthorizedUser(@RequestBody CreateOrderDto createOrderDto)
             throws SQLException, NoSuchAlgorithmException {
 
-        orderService.createOrderForAuthorizedUser(createOrderDto);
+        orderService.createOrderForAuthorizedUser(createOrderDto, false);
+
+        return HttpStatus.CREATED;
+    }
+
+    @PostMapping("/order-auction-authorized")
+    public HttpStatus createOrderAfterAuctionForAuthorizedUser(@RequestBody CreateOrderDto createOrderDto)
+            throws SQLException, NoSuchAlgorithmException {
+
+        orderService.createOrderForAuthorizedUser(createOrderDto, true);
 
         return HttpStatus.CREATED;
     }

@@ -7,11 +7,13 @@ import java.sql.SQLException;
 
 public interface OrderService {
 
-    void createOrderForAuthorizedUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
-                                                                            SQLException,
-                                                                            NoSuchAlgorithmException;
+    void createOrderForAuthorizedUser(CreateOrderDto createOrderDto, boolean isAfterAuction)
+            throws IllegalArgumentException,
+            SQLException,
+            NoSuchAlgorithmException;
 
-    void createOrderForAnonymousUser(CreateOrderDto createOrderDto) throws IllegalArgumentException,
-                                                                              SQLException,
-                                                                              NoSuchAlgorithmException;
+    void createOrderForAnonymousUser(CreateOrderDto createOrderDto)
+            throws IllegalArgumentException,
+            SQLException,
+            NoSuchAlgorithmException;
 }
