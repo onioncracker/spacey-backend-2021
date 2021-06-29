@@ -83,8 +83,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenDto> login(@RequestBody LoginDto loginDto) {
-        String token = userService.generateAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(new UserTokenDto(token));
+        UserTokenDto response = userService.authenticate(loginDto.getEmail(), loginDto.getPassword());
+        return ResponseEntity
+            .ok()
+            .header(HttpHeaders.AUTHORIZATION, response.getAuthToken())
+            .body(response);
     }
 
     @GetMapping("/registration_confirm")

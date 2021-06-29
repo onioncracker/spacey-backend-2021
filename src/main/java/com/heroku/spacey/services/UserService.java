@@ -1,5 +1,6 @@
 package com.heroku.spacey.services;
 
+import com.heroku.spacey.dto.auth.UserTokenDto;
 import com.heroku.spacey.dto.user.UserRegisterDto;
 import com.heroku.spacey.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +18,9 @@ public interface UserService extends UserDetailsService {
 
     User getUserByToken(String verificationToken);
 
-    String generateAuthenticationToken(String email, String password);
+    String generateAuthenticationToken(User user);
+
+    UserTokenDto authenticate(String email, String password);
 
     User getUserByEmail(String email);
 
