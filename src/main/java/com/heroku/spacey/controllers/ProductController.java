@@ -7,6 +7,7 @@ import com.heroku.spacey.dto.product.ProductDto;
 import com.heroku.spacey.dto.product.UpdateProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,14 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @Secured("ROLE_PRODUCT_MANAGER")
     @ResponseStatus(HttpStatus.CREATED)
     public Long addProduct(@RequestBody AddProductDto addProductDto) {
         return productService.addProduct(addProductDto);
     }
 
     @PutMapping("/edit/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus editProduct(@RequestBody UpdateProductDto updateProductDto,
                                   @PathVariable Long id) {
         ProductDto product = productService.getById(id);
@@ -43,6 +46,7 @@ public class ProductController {
     }
 
     @PutMapping("/remove/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus removeProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         productService.removeProduct(product.getId());
@@ -50,6 +54,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/cancel/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus cancelAddingProduct(@PathVariable Long id) {
         ProductDto product = productService.getById(id);
         awsImageService.delete(product.getPhoto());

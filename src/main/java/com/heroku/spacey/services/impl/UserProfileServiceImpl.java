@@ -1,6 +1,7 @@
 package com.heroku.spacey.services.impl;
 
 import com.heroku.spacey.dao.UserProfileDao;
+import com.heroku.spacey.dto.employee.EmployeeProfileDto;
 import com.heroku.spacey.dto.user.UserProfileDto;
 import com.heroku.spacey.services.UserProfileService;
 import com.heroku.spacey.utils.security.SecurityUtils;
@@ -24,5 +25,10 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Transactional
     public void updateUserInfo(UserProfileDto userProfileDto) {
         userProfileDao.updateUserInfo(userProfileDto, securityUtils.getUserIdByToken());
+    }
+
+    @Override
+    public EmployeeProfileDto getEmployeeInfo() {
+        return userProfileDao.getEmployeeInfo(securityUtils.getUserIdByToken());
     }
 }

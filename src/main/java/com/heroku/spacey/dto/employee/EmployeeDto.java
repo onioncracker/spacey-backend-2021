@@ -9,9 +9,9 @@ import com.heroku.spacey.utils.validators.EmailConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class EmployeeDto {
     @Min(0)
     private Long userId;

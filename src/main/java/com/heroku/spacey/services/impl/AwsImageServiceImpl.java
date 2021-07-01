@@ -62,9 +62,6 @@ public class AwsImageServiceImpl implements AwsImageService {
         }
 
         String photoName = productId + getPhotoExtensionByName(image.getOriginalFilename());
-        if (s3client.doesObjectExist(bucketName, photoName)) {
-            throw new IllegalArgumentException("image with this name already exist in AWSs3 cloud");
-        }
 
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + image.getName());
         image.transferTo(convFile);
@@ -82,8 +79,14 @@ public class AwsImageServiceImpl implements AwsImageService {
 
     @Override
     public void delete(String url) {
+        if (url == null || url.isEmpty()) {
+            log.warn("null or empty url for photo");
+            return;
+        }
+
         if (!s3client.doesObjectExist(bucketName, getPhotoNameByUrl(url))) {
-            throw new NotFoundException("image not found in AWSs3 cloud");
+            log.warn("image not found in AWSs3 cloud");
+            return;
         }
         s3client.deleteObject(bucketName, getPhotoNameByUrl(url));
         log.info("image deleted from AWS");

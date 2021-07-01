@@ -4,6 +4,7 @@ import com.heroku.spacey.services.MaterialService;
 import com.heroku.spacey.dto.material.MaterialDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class MaterialController {
     }
 
     @PostMapping("/add")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus addMaterial(@RequestBody MaterialDto materialDto) {
         materialService.addMaterial(materialDto);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("/edit/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus editMaterial(@RequestBody MaterialDto materialDto,
                                    @PathVariable Long id) {
         MaterialDto material = materialService.getById(id);
@@ -39,6 +42,7 @@ public class MaterialController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus deleteMaterial(@PathVariable Long id) {
         MaterialDto material = materialService.getById(id);
         materialService.deleteMaterial(material.getId());

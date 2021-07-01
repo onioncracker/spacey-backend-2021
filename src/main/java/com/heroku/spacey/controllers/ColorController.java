@@ -4,6 +4,7 @@ import com.heroku.spacey.dto.color.ColorDto;
 import com.heroku.spacey.services.ColorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class ColorController {
     }
 
     @PostMapping("/add")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus addColor(@RequestBody ColorDto colorDto) {
         colorService.addColor(colorDto);
         return HttpStatus.CREATED;
     }
 
     @PutMapping("/edit/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus editColor(@RequestBody ColorDto colorDto,
                                 @PathVariable Long id) {
         ColorDto color = colorService.getById(id);
@@ -39,6 +42,7 @@ public class ColorController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Secured("ROLE_PRODUCT_MANAGER")
     public HttpStatus deleteColor(@PathVariable Long id) {
         ColorDto color = colorService.getById(id);
         colorService.deleteColor(color.getId());
