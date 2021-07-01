@@ -12,6 +12,7 @@ public class SizeForAuctionIdMapper implements RowMapper<Size> {
         Size size = new Size();
         size.setId(resultSet.getLong("s_id"));
         size.setName(resultSet.getString("sizename"));
+        size.setQuantity(resultSet.getLong("size_quantity"));
         return size;
     }
 }
