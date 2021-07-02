@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CartService {
     void addProductToCart(Long productId, Long sizeId, int amount);
-    void deleteProductFromCart(Long productId, Long sizeId, int amount);
+    void removeProductFromCart(Long productId, Long sizeId, int amount);
     Cart getCartForCurrentUser();
     void cleanCart();
     List<ProductForCartDto> getAllProductsInCart();

@@ -79,7 +79,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Timestamp orderTime = new Timestamp(System.currentTimeMillis());
+        Timestamp dateDelivery = new Timestamp(System.currentTimeMillis());
         order.setDateCreate(orderTime);
+        order.setDateDelivery(dateDelivery);
         orderId = orderDao.insert(order);
 
         addProductsToOrder(order);
@@ -172,6 +174,9 @@ public class OrderServiceImpl implements OrderService {
     private void scheduleOrderStatusChange(CreateOrderDto order) {
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         long timeToStatusChange = order.getDateDelivery().getTime() - 3_600_000 - System.currentTimeMillis();
+        if (timeToStatusChange <= 0) {
+            timeToStatusChange = 1000;
+        }
         service.schedule(new OrderStatusChangerTask(order, orderStatusDao), timeToStatusChange, TimeUnit.MILLISECONDS);
     }
 }

@@ -3,6 +3,7 @@ package com.heroku.spacey.services.impl;
 import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import com.heroku.spacey.dao.UserDao;
 import com.heroku.spacey.dao.TokenDao;
+import com.heroku.spacey.dao.StatusDao;
 import com.heroku.spacey.dao.EmployeeDao;
 import com.heroku.spacey.dto.employee.EmployeeDto;
 import com.heroku.spacey.entity.User;
@@ -10,7 +11,6 @@ import com.heroku.spacey.entity.Token;
 import com.heroku.spacey.error.UserAlreadyExistsException;
 import com.heroku.spacey.services.UserService;
 import com.heroku.spacey.services.EmployeeService;
-import com.heroku.spacey.utils.Status;
 import com.heroku.spacey.utils.EmailComposer;
 import com.heroku.spacey.utils.registration.OnRegistrationCompleteEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final UserDao userDao;
     private final TokenDao tokenDao;
+    private final StatusDao statusDao;
     private final EmployeeDao employeeDao;
     private final UserService userService;
     private final ApplicationEventPublisher eventPublisher;
@@ -107,7 +108,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void activateEmployee(User user) {
-        user.setStatusId(Status.ACTIVATED.getValue());
+        user.setStatusId(statusDao.getStatusId("ACTIVE"));
         userDao.updateUserStatus(user);
     }
 

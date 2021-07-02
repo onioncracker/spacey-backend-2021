@@ -69,22 +69,25 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Void> userRegistration(@RequestBody @Validated UserRegisterDto registerDto) {
         EmailComposer emailComposer = new EmailComposer(
-                confirmRegistrationUrl,
-                confirmRegistrationSubject,
-                confirmRegistrationEndpoint,
-                confirmRegistrationTemplate);
+            confirmRegistrationUrl,
+            confirmRegistrationSubject,
+            confirmRegistrationEndpoint,
+            confirmRegistrationTemplate);
         if (userService.userExists(registerDto.getEmail())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(userService.registerUser(registerDto),
-                                                                    emailComposer));
+            emailComposer));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenDto> login(@RequestBody LoginDto loginDto) {
-        String token = userService.generateAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, token).body(new UserTokenDto(token));
+        UserTokenDto response = userService.authenticate(loginDto.getEmail(), loginDto.getPassword());
+        return ResponseEntity
+            .ok()
+            .header(HttpHeaders.AUTHORIZATION, response.getAuthToken())
+            .body(response);
     }
 
     @GetMapping("/registration_confirm")
@@ -99,23 +102,23 @@ public class AuthController {
         Token newToken = tokenService.generateNewVerificationToken(user, existingToken);
         String token = newToken.getToken();
         EmailComposer emailComposer = new EmailComposer(
-                resendRegistrationUrl,
-                resendRegistrationSubject,
-                resendRegistrationEndpoint,
-                resendRegistrationTemplate);
+            resendRegistrationUrl,
+            resendRegistrationSubject,
+            resendRegistrationEndpoint,
+            resendRegistrationTemplate);
         String recipient = user.getEmail();
         emailService.sendSimpleMessageWithTemplate(recipient, emailComposer.getSubject(),
-                emailComposer.composeUri(token), emailComposer.getTemplate());
+            emailComposer.composeUri(token), emailComposer.getTemplate());
         return HttpStatus.OK;
     }
 
     @PostMapping("/reset_password")
     public HttpStatus resetPassword(@RequestParam("email") String userEmail) {
         EmailComposer emailComposer = new EmailComposer(
-                resetPasswordUrl,
-                resetPasswordSubject,
-                resetPasswordEndpoint,
-                resetPasswordTemplate);
+            resetPasswordUrl,
+            resetPasswordSubject,
+            resetPasswordEndpoint,
+            resetPasswordTemplate);
         User user = userService.getUserByEmail(userEmail);
         if (user == null) {
             throw new UserNotFoundException("User email not found!");

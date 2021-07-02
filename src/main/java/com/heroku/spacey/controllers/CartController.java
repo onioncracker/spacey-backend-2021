@@ -33,9 +33,9 @@ public class CartController {
     }
 
     @Secured("ROLE_USER")
-    @DeleteMapping("/delete-product")
-    public HttpStatus deleteProduct(@RequestBody EditCartDto editCartDto) {
-        cartService.deleteProductFromCart(editCartDto.getProductId(), editCartDto.getSizeId(), editCartDto.getAmount());
+    @PostMapping("/remove-product")
+    public HttpStatus removeProduct(@RequestBody EditCartDto editCartDto) {
+        cartService.removeProductFromCart(editCartDto.getProductId(), editCartDto.getSizeId(), editCartDto.getAmount());
         return HttpStatus.OK;
     }
 
