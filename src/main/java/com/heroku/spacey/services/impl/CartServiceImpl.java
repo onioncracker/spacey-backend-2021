@@ -73,7 +73,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void deleteProductFromCart(Long productId, Long sizeId, int amount) {
+    public void removeProductFromCart(Long productId, Long sizeId, int amount) {
         Cart cart = getCartForCurrentUser();
         Product product = productDao.get(productId);
         if (product.getDiscount() == null) {
