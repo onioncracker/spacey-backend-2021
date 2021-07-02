@@ -23,7 +23,7 @@ public class CreateOrderDto {
     private Timestamp dateCreate;
     private Timestamp dateDelivery;
     private float overallPrice;
-    private String commentOrder;
+    private String commentOrder = "";
 
     private boolean doNotDisturb;
     private boolean noContact;

@@ -62,9 +62,6 @@ public class AwsImageServiceImpl implements AwsImageService {
         }
 
         String photoName = productId + getPhotoExtensionByName(image.getOriginalFilename());
-        if (s3client.doesObjectExist(bucketName, photoName)) {
-            throw new IllegalArgumentException("image with this name already exist in AWSs3 cloud");
-        }
 
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + image.getName());
         image.transferTo(convFile);
